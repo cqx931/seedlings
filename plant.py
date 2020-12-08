@@ -14,13 +14,20 @@ MAX = 10
 SPEED = 50
 
 ############# DataMuse API ##############
-#rel_bga Frequent followers
+# In use
+#rel_bga: Related word_Frequent followers(w′ such that P(w′|w) ≥ 0.001, per Google Books Ngrams)
+#rel_jja: Popular nouns modified by the given adjective, per Google Books Ngrams
+#rel_jjb: Popular adjectives used to modify the given noun, per Google Books Ngrams
+#rel_ant: Related word_Antonyms
+# rel_trg: words that are triggered by (strongly associated with) the word
+#ml means like
+#sp spell like
+
 #rel_bgb Frequent predecessors
 #lc Left Context
 #rc right context
-#ml means like
-
 # rel_bgb is better than lc
+
 ######################################
 # Tools
 

@@ -44,7 +44,12 @@ var data = {
 
 let soil = [];
 
-const testPlants = ["ivy","plant", "ginkgo"];
+const testPlants = ["koru"];
+// done: ivy
+// Issues:
+// plant, words split issue?
+// bamboo, ginkgo, pine, dandelion, pine : scattering
+
 // shuffle(testPlants);
 initializeSoil();
 adjustView(700);

@@ -1,6 +1,8 @@
 // Switches
 const isCompost = true;
 const ANIME = true;
+const OFFLINE = false;
+// offline version reads from pre-recorded file.
 
 // noise
 noise.seed(Math.random());
@@ -383,7 +385,7 @@ class Plant{
   }
 
   compost(){
-    const FALLING_TIME = 1000;
+    const FALLING_TIME = 2000;
     const t = d3.transition()
     .duration(FALLING_TIME)
     .ease(d3.easeLinear);
@@ -394,19 +396,32 @@ class Plant{
     // (TODO: branches animation?)
     // all branch_text -> soil
     const self = this;
+    let counter = 0;
     this.g.selectAll('.branch_text').each(function(d){
       d3.select(this).style("transform","");
-      d3.select(this).transition(t).attr("x",self.x);
-      d3.select(this).transition(t).attr("y",self.y);
-      const w = d3.select(this).text().replace(/(\||\/|\\| )+/g, "");
-      const x = d3.select(this).attr('x'),
+
+      const w = d3.select(this).text().replace(/(\|\w+|\/|\\| |=)+/g, "");
+      let x = d3.select(this).attr('x'),
             y =  parseFloat(d3.select(this).attr('y')) + self.COMPOST_DISTANCE;
+
+      if (self.type == "bamboo" || "pine") {
+        x = self.x;
+        y = self.y + self.COMPOST_DISTANCE;
+      }
+
+      if(self.type == "ginkgo") x = x + counter*50;
+      d3.select(this).transition(t).attr("x",x);
+      d3.select(this).transition(t).attr("y",y);
+
+      counter ++;
+
       setTimeout(function(){
         // create new soil words
         const s = new SoilWord(w, x, y, true);
         self.g.selectAll('.branch').remove();
       }, FALLING_TIME)
     })
+
     // remove outer branch layer
 
     // TODO: words falling animation
@@ -556,7 +571,7 @@ class Pine extends Plant {
 
     this.initializeRoots();
     drawGround(x,y,c);
-    drawSeed(seed,x,y,c,this.HEIGHT);
+    drawSeed(this.seed,x,y,c,this.HEIGHT);
     drawMainBranch(x,y,x,y - this.HEIGHT, c);
     drawDomain(this.domain,x,y,c);
   }
@@ -702,21 +717,21 @@ class Dandelion extends Plant {
    this.LENGTH = this.WIDTH/3;
    this.growingSpeed = 500;
   }
+
   calculateTime(){
     return START_DELAY + this.result.length * 200 + 1000;
   }
-  growBranch(w, i){
 
+  growBranch(w, i){
      var b = this.g.append("g")
             .style("transition-delay", START_DELAY +i*200 + "ms")
             .attr("class","branch");
 
-     var angle = 18*i + Math.random();
-     // console.log(angle)
+     var angle = 180 + 18*i + Math.random();
+     var local_Y = this.y - this.HEIGHT;
      var l = this.LENGTH + (i % 2 == 0 ?  -20 : 0);
-
      // find the end point
-     var endy = l * Math.sin(Math.radians(angle)) + this.y
+     var endy = l * Math.sin(Math.radians(angle)) + local_Y
      var endx = l * Math.cos(Math.radians(angle)) + this.x
 
      b.append("line")
@@ -724,7 +739,7 @@ class Dandelion extends Plant {
        .style("position", "absolute")
        .style("stroke-dasharray", DASH_STYLE)
        .attr("x1", this.x)
-       .attr("y1", this.y)
+       .attr("y1", local_Y)
        .attr("x2", endx)
        .attr("y2", endy)
        .attr("class","branch_line");
@@ -732,8 +747,8 @@ class Dandelion extends Plant {
        b.append("text")
         .attr("x", endx-20)
         .attr("y", endy-20)
-        .style("transform", "translate(5px) rotate("+ (angle/3) +"deg) ")
-        .style("transform-origin", this.x + "px " + this.y + "px 0px")
+        .style("transform", "translate(5px) rotate(" + (angle/5 - 60) +"deg) ")
+        .style("transform-origin", this.x + "px " + local_Y + "px 0px")
         .attr("dy", ".35em")
         .text(w)
         // .attr("")
@@ -747,6 +762,7 @@ class Dandelion extends Plant {
      //drawText
 
   }
+
   draw() {
     var x = this.x, y = this.y;
     var WIDTH = this.WIDTH, LENGTH = this.LENGTH;
@@ -798,16 +814,14 @@ class Koru extends Plant {
     var w = getTextWidth(this.word);
 
      drawSeed(this.word, x,y,c)
-     drawMainBranch(x,y,x,y - w - 60, c);
+     drawMainBranch(x,y,x,y - 60, c);
 
       var t = this.g.append("text")
        .attr("class", "koruResult")
-       .attr("transform", "translate(" + (x - 100) +"," + (y - w - 250) +") scale(0.5)")
+       .attr("transform", "translate(" + (x - 100) +"," + (y - 250) +") scale(0.5)")
 
       this.spiralWrapper = t.append("textPath")
        .attr("xlink:href",'#Spiral');
-
-
   }
 }
 
@@ -819,6 +833,11 @@ class Bamboo extends Plant {
 
   calculateTime(){
     return this.totalAnimation = START_DELAY + this.result.length * 1000 + 1000;
+  }
+
+  updateResult(result) {
+    this.result = result;
+    this.resultToBeDisplayed = Array.from(result).reverse();;
   }
 
   growBranch(w, i) {
@@ -884,11 +903,11 @@ class Bamboo extends Plant {
 var PLANTS = {
 "ginkgo":Ginkgo,
 "plant":Plant,
-// "koru":Koru,
-"ivy":Ivy
-// "bamboo":Bamboo,
-// "pine":Pine,
-// "dandelion":Dandelion
+"koru":Koru,
+"ivy":Ivy,
+"bamboo":Bamboo,
+"pine":Pine,
+"dandelion":Dandelion
 }
 
 // Functions
