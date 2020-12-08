@@ -1,4 +1,3 @@
-
 // ************** Generate the diagram  *****************
 
 var margin = {top: 20, right: 50, bottom: 20, left: 50},
@@ -28,7 +27,6 @@ var plantsData = {
   "domain":"jerusalem",
   "x": 300,
   "y": 400,
-  // "return":"serene",
   "results":["sie", "sine", "snake", "serene", "spectre", "solstice", "sepulchre", "senescence","subordinate","subservience"], //9
  }
 };
@@ -44,7 +42,8 @@ var data = {
 
 let soil = [];
 
-const testPlants = ["koru"];
+const testPlants = ["pine"];
+// todo: koru
 // done: ivy
 // Issues:
 // plant, words split issue?

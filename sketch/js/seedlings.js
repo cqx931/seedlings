@@ -1,8 +1,6 @@
 // Switches
 const isCompost = true;
 const ANIME = true;
-const OFFLINE = false;
-// offline version reads from pre-recorded file.
 
 // noise
 noise.seed(Math.random());
@@ -10,11 +8,11 @@ const SCALE_FACTOR = 20;
 const COMPOST_TIME = 4000;
 const STROKE_COLOR = "grey";
 const FONT_SIZE = 14,
-    DASH_STYLE = FONT_SIZE/2 + ", " + FONT_SIZE/2,
-    SECTION_GAP = 50, // between two plants
-    GROUND_WIDTH = 200,
-    START_DELAY = 500, // chunk - branch
-    LEFT_MARGIN = 200;
+      DASH_STYLE = FONT_SIZE/2 + ", " + FONT_SIZE/2,
+      SECTION_GAP = 50, // between two plants
+      GROUND_WIDTH = 200,
+      START_DELAY = 500, // chunk - branch
+      LEFT_MARGIN = 200;
 
 const dragEvent = d3.drag().on("drag", function(d) {
     d3.select(this).attr("x", d.x-10).attr("y", d.y+5);
@@ -33,10 +31,10 @@ class SoilWord {
 
     this.x = x;
     this.y = y;
-    this.active = this.active ? this.isValidity() : false;
+    this.active = this.active == undefined ? this.isValid(text) : false;
     const tmp = d3.select("#soil").append("text")
                   .attr("class","soil")
-                  .style("fill-opacity", active ? 1: 0.5)
+                  .style("fill-opacity", this.active ? 1: 0.5)
                   .attr("id", this.id)
                   .text(this.text)
                   .attr("x", this.x)
@@ -48,7 +46,7 @@ class SoilWord {
     if (active) soil.push(this);
   }
 
-  isValid(){
+  isValid(w){
     return !(stopWords.includes(w) || punctuations.includes(w));
   }
 
@@ -215,9 +213,13 @@ class Plant{
           console.log("error");
           // $('.message').html("Oops, please try another seed.")
         } else {
-          console.log(data)
-          var json = JSON.parse(data);
-          callback(json);
+          console.log(typeof data, data)
+          if (typeof data == "object") callback(data)
+          else {
+            var json = JSON.parse(data);
+            callback(json);
+          }
+
        }
      });
 

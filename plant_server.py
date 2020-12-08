@@ -6,6 +6,9 @@ from flask_cors import CORS, cross_origin
 import plant
 import json
 
+# flags
+SAVE_JSONS = True;
+
 app = Flask(__name__)
 # app.config['SECRET_KEY'] = 'the quick brown fox jumps over the lazy   dog'
 # app.config['CORS_HEADERS'] = 'Content-Type'
@@ -32,6 +35,12 @@ def askDatamuse():
     "endWord":lastWord,
     "results":result
     }
+
+    if (SAVE_JSONS):
+        filename = w + "_" + c + "_" + t
+        with open("localStorage/" + filename + '.json','w') as f:
+            json.dump(data, f)
+
     return json.dumps(data)
 
 if __name__ == "__main__":
