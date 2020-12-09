@@ -1,5 +1,5 @@
 // Switches
-const isCompost = true;
+const isCompost = false;
 const ANIME = true;
 
 // noise
@@ -21,7 +21,7 @@ const dragEvent = d3.drag().on("drag", function(d) {
 
 const stopWords = ['i','me','my','myself','we','our','ours','ourselves','you','your','yours','yourself','yourselves','he','him','his','himself','she','her','hers','herself','it','its','itself','they','them','their','theirs','themselves','what','which','who','whom','this','that','these','those','am','is','are','was','were','be','been','being','have','has','had','having','do','does','did','doing','a','an','the','and','but','if','or','because','as','until','while','of','at','by','for','with','about','against','between','into','through','during','before','after','above','below','to','from','up','down','in','out','on','off','over','under','again','further','then','once','here','there','when','where','why','how','all','any','both','each','few','more','most','other','some','such','no','nor','not','only','own','same','so','than','too','very','s','t','can','will','just','don','should','now'];
 
-const punctuations = [",", ".",":","'","?","!","“","”"];
+const punctuations = [",", ".",":","'","?","!","“","”",,"’"];
 
 class SoilWord {
 
@@ -33,7 +33,7 @@ class SoilWord {
     this.y = y;
     this.active = this.active == undefined ? this.isValid(text) : false;
     const tmp = d3.select("#soil").append("text")
-                  .attr("class","soil")
+                  .attr("class","soil" + (this.active ? " active":""))
                   .style("fill-opacity", this.active ? 1: 0.5)
                   .attr("id", this.id)
                   .text(this.text)
@@ -47,11 +47,14 @@ class SoilWord {
   }
 
   isValid(w){
+    w = w.toLowerCase();
     return !(stopWords.includes(w) || punctuations.includes(w));
   }
 
   dblclick(event,d) {
-    console.log("grow new plant");
+    const domain = getClosestSoilText(this);
+    plant(d3.select(this).text(), domain, randomPlant(),
+      Math.floor(d3.select(this).attr('x'))-200, Math.floor(d3.select(this).attr('y')));
   }
 
   clicked(event, d) {
@@ -852,11 +855,11 @@ class Bamboo extends Plant {
       var content = w + (i == 0 ? "" : "=");
       var h = getTextWidth(content, true);
 
-      if (i == 1) {
-        setTimeout(function(){
-          adjustView(x,y + window.innerHeight / 2);
-        }, START_DELAY + (i + 1) * 1000)
-      }
+      // if (i == 1) {
+      //   setTimeout(function(){
+      //     adjustView(x,y + window.innerHeight / 2);
+      //   }, START_DELAY + (i + 1) * 1000)
+      // }
 
       b.append("text")
        .attr("x", x)
@@ -905,7 +908,7 @@ class Bamboo extends Plant {
 var PLANTS = {
 "ginkgo":Ginkgo,
 "plant":Plant,
-"koru":Koru,
+//"koru":Koru,
 "ivy":Ivy,
 "bamboo":Bamboo,
 "pine":Pine,
@@ -955,6 +958,28 @@ function drawMainBranch(x1,y1,x2,y2,g) {
     .attr("class","main_branch");
 }
 
+function getClosestSoilText(thisSoil) {
+  let dmin=10000, closest;
+  d3.selectAll(".soil.active").each(function() {
+    if (d3.select(thisSoil).text() == d3.select(this).text()) {
+      return true;
+    }
+
+    const d = getDistance(d3.select(thisSoil).attr('x'), d3.select(thisSoil).attr('y'), d3.select(this).attr('x'), d3.select(this).attr('y'));
+
+    if (d < dmin) {
+      dmin = d;
+      closest = d3.select(this)
+    }
+  })
+  return closest.text();
+}
+
+function getDistance(x1,y1,x2,y2){
+  const a = x1 - x2;
+  const b = y1 - y2;
+  return Math.sqrt( a*a + b*b );
+}
 Math.radians = function(degrees) {
   return degrees * Math.PI / 180;
 }

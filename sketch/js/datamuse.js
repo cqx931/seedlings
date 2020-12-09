@@ -2,10 +2,10 @@
 // 1. PythonAnywhere
 // 2. localServer
 // 3. localStorage
-const destination = "localStorage";
+const destination = "pythonAnywhere";
 
 // Where pre-fetched apis are located
-const localStorageLocation = "../localStorage/";
+const localStorageLocation = "../localStorage/section2/";
 
 // Urls for each destinations
 const urlOptions = {

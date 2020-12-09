@@ -12,6 +12,7 @@ api = datamuse.Datamuse()
 # Parameters
 MAX = 10
 SPEED = 50
+enablePrint = False
 
 ############# DataMuse API ##############
 # In use
@@ -68,7 +69,8 @@ def isGood(item, history, domain):
 def reversePrint(toPrint):
     toPrint.reverse()
     for item in toPrint:
-        print(item)
+        if (enablePrint):
+            print(item)
 
 ######################################
 # Plants
@@ -118,21 +120,25 @@ def plant(start, domain,pos=""):
                 toPrint.append(next + "|" + word)
                 a_next = getSimilarWord(next, history)
                 toPrint.append(" "*(len(next)-len(a_next)) + a_next + "\\")
-                print(" "*(len(next)-len(a_next)) + a_next + "\\")
+                if (enablePrint):
+                     print(" "*(len(next)-len(a_next)) + a_next + "\\")
                 word = a_next
                 break
             elif "n" in pos:
                 next = item["word"]
                 history.append(next)
                 toPrint.append(word + "|" + next)
-                print(word + "|" + next)
+                if (enablePrint):
+                     print(word + "|" + next)
                 next = getSimilarWord(next, history)
                 toPrint.append("/" + next)
-                print("/" + next)
+                if (enablePrint):
+                     print("/" + next)
                 word = next
                 break
 
-    print("-->", word)
+    if (enablePrint):
+         print("-->", word)
     # reversePrint(toPrint)
     return toPrint, word
 
@@ -142,7 +148,8 @@ def ivy(start, domain):
     word = start
     history = [word]
     count = 0;
-    print(word, end="", flush=True)
+    if (enablePrint):
+         print(word, end="", flush=True)
     while( count < 50):
 
         next = api.words(rel_bga=word, topics=domain, max=SPEED, md="pf")
@@ -162,7 +169,8 @@ def ivy(start, domain):
                 continue
             next = item["word"]
             history.append(next)
-            print(" " + next, end="", flush=True)
+            if (enablePrint):
+                 print(" " + next, end="", flush=True)
             word = next
             break
         if word is '.' or ("NN" in getPosTag(word) and len(history) > 5) or len(history) > 13:
@@ -174,7 +182,8 @@ def ivy(start, domain):
     while(-idk <= len(history) and "NN" not in getPosTag(word)):
         idk = idk - 1
     lastword = history[idk]
-    print("-->", lastword)
+    if (enablePrint):
+         print("-->", lastword)
     return history, lastword
 
 def dandelion(word, domain):
@@ -197,13 +206,16 @@ def dandelion(word, domain):
         else:
             w = item["word"]
             history.append(w)
-            print(" " + w, end="", flush=True)
+            if (enablePrint):
+                 print(" " + w, end="", flush=True)
         if len(history) == MAX:
             break
 
     shuffle(history)
-    print()
-    print("->", history[-1])
+    if (enablePrint):
+         print()
+    if (enablePrint):
+         print("->", history[-1])
     return history, history[-1]
 
 def bamboo(start, domain):
@@ -212,11 +224,13 @@ def bamboo(start, domain):
     print("Plant " + start + " in " + domain + " as bamboo:")
     word = start
     history = [word]
-    print(word)
+    if (enablePrint):
+         print(word)
     for i in range(5):
         next = api.words(sp= "*"+ word[0], topics=domain, max=SPEED, md="f")
         if len(next) == 0:
-            print("Nothing is grown")
+            if (enablePrint):
+                 print("Nothing is grown")
             break
         next = next[0:5]
         shuffle(next)
@@ -226,9 +240,11 @@ def bamboo(start, domain):
                 continue
             history.append(w)
             word = w
-            print(w)
+            if (enablePrint):
+                 print(w)
             break
-    print("-->", history[-1])
+    if (enablePrint):
+         print("-->", history[-1])
     return history, history[-1]
 
 def koru(seed, domain=""):
@@ -237,7 +253,8 @@ def koru(seed, domain=""):
     print("Plant " + seed + " as koru:")
     word = seed
     history = [word]
-    print(word)
+    if (enablePrint):
+         print(word)
     for i in range(MAX):
         next = api.words(rel_ant=word, max=SPEED, md="f")
 
@@ -254,7 +271,8 @@ def koru(seed, domain=""):
                         if len(next) != 0:
                             history.append(w)
                             word = w
-                            print("~", w)
+                            if (enablePrint):
+                                 print("~", w)
                             break
             continue
 
@@ -266,9 +284,11 @@ def koru(seed, domain=""):
                 continue
             history.append(w)
             word = w
-            print("-",w)
+            if (enablePrint):
+                 print("-",w)
             break
-    print("-->", history[-1])
+    if (enablePrint):
+         print("-->", history[-1])
     return history, history[-1]
 
 def pine(seed, domain):
@@ -292,10 +312,12 @@ def pine(seed, domain):
                 continue
             history.append(w)
             word = w
-            print(w)
+            if (enablePrint):
+                 print(w)
             break
     lastword = choice(history)
-    print("-->", lastword)
+    if (enablePrint):
+         print("-->", lastword)
     return history, lastword
 # def some root ....
 
@@ -313,10 +335,12 @@ def ginkgo(center,domain):
                 continue
             w = item["word"]
             history.append(w)
-            print(w + " " + word)
+            if (enablePrint):
+                 print(w + " " + word)
             break
     lastword = choice(history)
-    print("-->", lastword)
+    if (enablePrint):
+         print("-->", lastword)
     return history, lastword
 
 PLANTS = {
@@ -333,7 +357,8 @@ def randomPlant(start, domain):
     word = start
     last = ""
     for i in range(7):
-        print("HERE:",word)
+        if (enablePrint):
+             print("HERE:",word)
         tag = getPosTag(word)
         while(True):
             key, function = choice(list(PLANTS.items()))
