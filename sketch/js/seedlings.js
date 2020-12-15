@@ -154,7 +154,14 @@ class Plant{
     this.endPos;
 
     // d3 elements
-    this.g;
+    var self = this;
+    this.g = svg.append("g")
+           .attr("class","seedling " + this.type)
+           .attr("id", this.id)
+           .on('contextmenu', function(d){
+             self.onrightClicked(d,self);
+           });
+
     this.roots = [];
     this.totalAnimation = data.results ? this.calculateTime() : 0; // Is this still in use?
 
@@ -183,6 +190,28 @@ class Plant{
 
   calculateHeight() {
     return this.word.length*13 + 10;
+  }
+
+  onrightClicked(d,self) {
+    let rightClickOnPlant = self.id;
+    $( "svg" ).bind("contextmenu", function(e){
+      if (rightClickOnPlant == null) {
+        $( "svg" ).unbind("contextmenu");
+      }
+      e.preventDefault();
+      $('#options').show();
+      $('#options').css('left', e.clientX + 'px');
+      $('#options').css('top', e.clientY + 'px');
+
+      $('#remove').click(function(){
+        console.log(rightClickOnPlant+ "");
+        removePlantById(rightClickOnPlant);
+
+        $('#options').hide();
+        $( "svg" ).unbind("contextmenu");
+        rightClickOnPlant = null;
+      });
+    })
   }
 
   updateSeed(word) {
@@ -272,7 +301,6 @@ class Plant{
 
         if (i > 1) {
           var last = this.result[i-1];
-
           if (last.indexOf(ws[1]) >= 0 && last.indexOf("\\") > 0) flag = "end"
           else if (last.indexOf(ws[0]) >= 0 && last.indexOf("/") > 0) flag = "start"
           // console.log(w, flag, last, ws[1],last.indexOf(ws[1]), last.indexOf("\\"));
@@ -363,10 +391,6 @@ class Plant{
 
   draw() {
     var x = this.x, y = this.y;
-    this.g = svg.append("g")
-            .attr("class","plant seedling")
-            .attr("id", this.id);
-
     var c = this.g.append("g")
            .attr("class","chunk");
 
@@ -380,6 +404,7 @@ class Plant{
     this.HEIGHT = this.calculateHeight();
     // MAIN BRANCH
     drawMainBranch(x,y,x,y - this.HEIGHT, c);
+
   }
 
   animate() {
@@ -518,10 +543,6 @@ class Ginkgo extends Plant {
 
   draw() {
       var x = this.x, y = this.y;
-      this.g = svg.append("g")
-             .attr("class","ginkgo seedling")
-             .attr("id", this.id);
-
       var c = this.g.append("g")
              .attr("class","chunk");
 
@@ -567,10 +588,6 @@ class Pine extends Plant {
 
   draw() {
     var x = this.x, y = this.y;
-    this.g = svg.append("g")
-           .attr("class","pine seedling")
-           .attr("id", this.id);
-
     var c = this.g.append("g")
            .attr("class","chunk");
 
@@ -685,10 +702,6 @@ class Ivy extends Plant {
 
   draw() {
     var x = this.x, y = this.y;
-    this.g = svg.append("g")
-           .attr("class","ivy seedling")
-           .attr("id", this.id);
-
      var c = this.g.append("g")
             .attr("class","chunk");
 
@@ -771,10 +784,6 @@ class Dandelion extends Plant {
   draw() {
     var x = this.x, y = this.y;
     var WIDTH = this.WIDTH, LENGTH = this.LENGTH;
-
-     this.g = svg.append("g")
-           .attr("class","dandelion seedling")
-           .attr("id", this.id);
      var c = this.g.append("g")
             .attr("class","chunk");
 
@@ -809,10 +818,6 @@ class Koru extends Plant {
 
   draw() {
     var x = this.x, y = this.y;
-    this.g = svg.append("g")
-           .attr("class","koru seedling")
-           .attr("id", this.id);
-
     var c = this.g.append("g")
            .attr("class","chunk");
 
@@ -874,10 +879,6 @@ class Bamboo extends Plant {
 
   draw() {
     var x = this.x, y = this.y;
-    this.g = svg.append("g")
-           .attr("class","bamboo seedling")
-           .attr("id", this.id);
-
     var WIDTH = 500;
 
     var c = this.g.append("g")

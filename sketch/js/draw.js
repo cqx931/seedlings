@@ -52,7 +52,8 @@ const testPlants = ["pine"];
 // shuffle(testPlants);
 initializeSoil();
 adjustView(700);
-plant("soap",'sea', testPlants[0], getRandomArbitrary(100, 200), 720)
+plant("soap",'sea', testPlants[0], getRandomArbitrary(100, 200), 720);
+
 // plant("humanity",'technology',  testPlants[1], getRandomArbitrary(350, 400), 600, 15000)
 // // plant("distance",'anatomy', "pine", 600, 530, 20000)
 // plant("body",'literature', testPlants[2], getRandomArbitrary(900, 1000), 710, 30000)
@@ -129,6 +130,7 @@ function initializeSoil() {
     for (let w of words) {
       const t = new SoilWord(w, xPos, yPos, true);
       xPos += (t.boundingBox.width + Math.random() * 10+ 10);
+      console.log(t.boundingBox.width);
       const rightEdge = window.innerWidth - 100 > LEFT_MARGIN + 1100 ? LEFT_MARGIN + 1100 : window.innerWidth-100;
       if (xPos > rightEdge) {
         yPos += 30;
@@ -270,6 +272,12 @@ function adjustView(y, now){
   $('html,body').animate({
          scrollTop: y +"px"
      }, now ? 500 : 3000);
+}
+
+function removePlantById(id) {
+  $('#' + id).remove();
+  delete plants[id];
+  console.log("Total Plants:", Object.keys(plants).length);
 }
 
 function shuffle(array) {

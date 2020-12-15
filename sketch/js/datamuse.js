@@ -10,7 +10,7 @@ const localStorageLocation = "../localStorage/section2/";
 // Urls for each destinations
 const urlOptions = {
   "pythonAnywhere": "https://cqx931.pythonanywhere.com",
-  "localServer": "https://127.0.0.1:5000"
+  "localServer": "http://127.0.0.1:5000"
 }
 
 function datamuse(params, plant, callback) {
