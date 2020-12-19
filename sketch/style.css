@@ -7,8 +7,9 @@
 }
 
 @font-face {
-  font-family: 'CourierM';
-  src: url('CourierM.ttf')  format('truetype');
+  font-family: 'SourceCodePro-Light';
+  src: url('font/SourceCodePro-Light.ttf')  format('truetype');
+  src: url('font/SourceCodePro-Light.ttf.woff')  format('woff');
 }
 
 svg, form, #remove{
@@ -184,9 +185,10 @@ button:hover, #run:hover, #remove:hover {
 } */
 
 /****** General CSS *******/
-g text {font: 14px 'CourierM';x: 655;y: 200;}
+g text {font: 16px 'SourceCodePro-Light';x: 655;y: 200;}
 g text.soil {
   z-index:30;
+  letter-spacing: -0.5px;
 }
 .roots {
   z-index:1;

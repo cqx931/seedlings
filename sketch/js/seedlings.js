@@ -4,6 +4,7 @@ const ANIME = true;
 
 // noise
 noise.seed(Math.random());
+
 const SCALE_FACTOR = 20;
 const COMPOST_TIME = 4000;
 const STROKE_COLOR = "grey";
@@ -16,12 +17,12 @@ const FONT_SIZE = 14,
 
 const dragEvent = d3.drag().on("drag", function(d) {
     d3.select(this).attr("x", d.x-10).attr("y", d.y+5);
-    // TODO: update soilWord object
+    // TODO!: update soilWord object
   });
 
-const stopWords = ['i','me','my','myself','we','our','ours','ourselves','you','your','yours','yourself','yourselves','he','him','his','himself','she','her','hers','herself','it','its','itself','they','them','their','theirs','themselves','what','which','who','whom','this','that','these','those','am','is','are','was','were','be','been','being','have','has','had','having','do','does','did','doing','a','an','the','and','but','if','or','because','as','until','while','of','at','by','for','with','about','against','between','into','through','during','before','after','above','below','to','from','up','down','in','out','on','off','over','under','again','further','then','once','here','there','when','where','why','how','all','any','both','each','few','more','most','other','some','such','no','nor','not','only','own','same','so','than','too','very','s','t','can','will','just','don','should','now'];
+const stopWords = ['i','me','my','myself','we','we’ve', 'our','ours','ourselves','you','your','yours','yourself','yourselves','he','him','his','himself','she','her','hers','herself','it','its','itself','they','them','their','theirs','themselves','what','which','who','whom','this','that','these','those','am','is','isn\’t', 'are','was','were','be','been','being','have','has','had','having','do','don\’t','don\'t', 'does','did','doing','a','an','the','and','but','if','or','because','as','until','while','of','at','by','for','with','about','against','between','into','through','during','before','after','above','below','to','from','up','down','in','out','on','off','over','under','again','further','then','once','here','there','there\’s', 'when','where','why','how','all','any','both','each','few','more','most','other','some','such','no','nor','not','only','own','same','so','than','too','very','s','t','can','will','won\’t','won\'t', 'just','don','should','now'];
 
-const punctuations = [",", ".",":","'","?","!","“","”",,"’"];
+const punctuations = [",", ".",":","'","?","!","“","”","’",";"];
 
 class SoilWord {
 
@@ -34,7 +35,7 @@ class SoilWord {
     this.active = this.active == undefined ? this.isValid(text) : false;
     const tmp = d3.select("#soil").append("text")
                   .attr("class","soil" + (this.active ? " active":""))
-                  .style("fill-opacity", this.active ? 1: 0.5)
+                  .style("fill-opacity", this.active ? 0.87: 0.4)
                   .attr("id", this.id)
                   .text(this.text)
                   .attr("x", this.x)
@@ -53,8 +54,10 @@ class SoilWord {
 
   dblclick(event,d) {
     const domain = getClosestSoilText(this);
-    plant(d3.select(this).text(), domain, randomPlant(),
-      Math.floor(d3.select(this).attr('x'))-200, Math.floor(d3.select(this).attr('y')));
+    const soilX = this.active != undefined ? this.x : d3.select(this).attr('x');
+    const soilY = this.active != undefined ? this.y : d3.select(this).attr('y');
+    plant(this.text, domain, randomPlant(),
+      Math.floor(soilX)-200, Math.floor(soilY));
   }
 
   clicked(event, d) {
@@ -326,6 +329,8 @@ class Plant{
        .attr("text-anchor", flag)
        .text(w)
        .attr("class","branch_text")
+       .call(getBBox);
+
 
        if (flag == "end") this.currentP.x -= w.length*4
        else if (flag == "start") this.currentP.y += w.length*4
@@ -345,7 +350,6 @@ class Plant{
   }
 
   grow() {
-    //setTimeout
     let branchIdx = 0;
     const gs = this.growingSpeed;
     const self = this;
@@ -960,14 +964,15 @@ function drawMainBranch(x1,y1,x2,y2,g) {
 }
 
 function getClosestSoilText(thisSoil) {
-  let dmin=10000, closest;
+  let dmin=100000, closest;
+
   d3.selectAll(".soil.active").each(function() {
     if (d3.select(thisSoil).text() == d3.select(this).text()) {
       return true;
     }
-
-    const d = getDistance(d3.select(thisSoil).attr('x'), d3.select(thisSoil).attr('y'), d3.select(this).attr('x'), d3.select(this).attr('y'));
-
+    const soilX = thisSoil.active != undefined ? thisSoil.x : d3.select(thisSoil).attr('x');
+    const soilY = thisSoil.active != undefined ? thisSoil.y : d3.select(thisSoil).attr('y');
+    const d = getDistance(soilX, soilY, d3.select(this).attr('x'), d3.select(this).attr('y'));
     if (d < dmin) {
       dmin = d;
       closest = d3.select(this)
@@ -975,6 +980,12 @@ function getClosestSoilText(thisSoil) {
   })
   return closest.text();
 }
+
+function getBBox(selection) {
+    selection.each(function(d) {
+        d.bbox = this.getBBox();
+    });
+};
 
 function getDistance(x1,y1,x2,y2){
   const a = x1 - x2;
