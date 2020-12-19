@@ -16,8 +16,15 @@ const FONT_SIZE = 14,
       LEFT_MARGIN = 200;
 
 const dragEvent = d3.drag().on("drag", function(d) {
-    d3.select(this).attr("x", d.x-10).attr("y", d.y+5);
-    // TODO!: update soilWord object
+    // update d3 text element with the drag position
+    const newX = d.x-10, newY = d.y+5;
+    d3.select(this).attr("x", newX).attr("y", newY);
+
+    // update the soilWord object
+    const s = soil[this.id];
+    s.x = newX;
+    s.y = newY;
+    s.boundingBox = this.getBBox();
   });
 
 const stopWords = ['i','me','my','myself','we','we’ve', 'our','ours','ourselves','you','your','yours','yourself','yourselves','he','him','his','himself','she','her','hers','herself','it','its','itself','they','them','their','theirs','themselves','what','which','who','whom','this','that','these','those','am','is','isn\’t', 'are','was','were','be','been','being','have','has','had','having','do','don\’t','don\'t', 'does','did','doing','a','an','the','and','but','if','or','because','as','until','while','of','at','by','for','with','about','against','between','into','through','during','before','after','above','below','to','from','up','down','in','out','on','off','over','under','again','further','then','once','here','there','there\’s', 'when','where','why','how','all','any','both','each','few','more','most','other','some','such','no','nor','not','only','own','same','so','than','too','very','s','t','can','will','won\’t','won\'t', 'just','don','should','now'];
@@ -44,7 +51,10 @@ class SoilWord {
                   .on("click", this.clicked)
                   .on("dblclick", this.dblclick);
     this.boundingBox = document.getElementById(this.id).getBBox();
-    if (active) soil.push(this);
+    if (active) {
+      soil[this.id] = this;
+      soilOder.push(this.id);
+    }
   }
 
   isValid(w){
@@ -53,11 +63,10 @@ class SoilWord {
   }
 
   dblclick(event,d) {
-    const domain = getClosestSoilText(this);
-    const soilX = this.active != undefined ? this.x : d3.select(this).attr('x');
-    const soilY = this.active != undefined ? this.y : d3.select(this).attr('y');
-    plant(this.text, domain, randomPlant(),
-      Math.floor(soilX)-200, Math.floor(soilY));
+    let self = this.active == undefined ? soil[this.id] : this;
+    const domain = getClosestSoilText(self);
+    plant(self.text, domain, randomPlant(),
+      Math.floor(self.x)-200, Math.floor(self.y));
   }
 
   clicked(event, d) {
@@ -248,7 +257,6 @@ class Plant{
           console.log("error");
           // $('.message').html("Oops, please try another seed.")
         } else {
-          console.log(typeof data, data)
           if (typeof data == "object") callback(data)
           else {
             var json = JSON.parse(data);
@@ -328,9 +336,7 @@ class Plant{
        .attr("dy", ".35em")
        .attr("text-anchor", flag)
        .text(w)
-       .attr("class","branch_text")
-       .call(getBBox);
-
+       .attr("class","branch_text");
 
        if (flag == "end") this.currentP.x -= w.length*4
        else if (flag == "start") this.currentP.y += w.length*4
@@ -737,7 +743,7 @@ class Dandelion extends Plant {
    super(data);
    this.WIDTH = 400;
    this.LENGTH = this.WIDTH/3;
-   this.growingSpeed = 500;
+   this.growingSpeed = 1500;
   }
 
   calculateTime(){
@@ -965,9 +971,9 @@ function drawMainBranch(x1,y1,x2,y2,g) {
 
 function getClosestSoilText(thisSoil) {
   let dmin=100000, closest;
-
   d3.selectAll(".soil.active").each(function() {
-    if (d3.select(thisSoil).text() == d3.select(this).text()) {
+    if (thisSoil.text == d3.select(this).text()) {
+      console.log("same text")
       return true;
     }
     const soilX = thisSoil.active != undefined ? thisSoil.x : d3.select(thisSoil).attr('x');
@@ -981,11 +987,6 @@ function getClosestSoilText(thisSoil) {
   return closest.text();
 }
 
-function getBBox(selection) {
-    selection.each(function(d) {
-        d.bbox = this.getBBox();
-    });
-};
 
 function getDistance(x1,y1,x2,y2){
   const a = x1 - x2;

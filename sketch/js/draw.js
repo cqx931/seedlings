@@ -27,8 +27,9 @@ const svg = d3.select(".content").append("svg")
 const soilSVG = svg.append("g")
                    .attr("id","soil")
 // global data
-let plants = {};
-let soil = [];
+let plants = {}; // All the plants
+let soil = {}; // The soil object
+let soilOder = []; // A list of soil id
 
 const testPlants = ["pine"];
 // todo: koru
@@ -40,8 +41,8 @@ const testPlants = ["pine"];
 // shuffle(testPlants);
 initializeSoil(function(){
 
-  const idx = getRandomInt(15);
-  const target = soil[idx];
+  const targetIdx = getRandomInt(10);
+  const target = soil[soilOder[targetIdx]];
   target.dblclick();
 
 });
@@ -59,11 +60,12 @@ function checkIntersections(r){
         x1 = r.nextPos.x, y1 = r.nextPos.y;
   // RootID - "_root" = plantID
   const plantId = rootId.split("_")[0];
-  for (var i = 0; i < soil.length; i++) {
-    let b = soil[i].boundingBox;
+  for (var i = 0; i < soilOder.length; i++) {
+    const s = soil[soilOder[i]];
+    let b = s.boundingBox;
     const collid = lineRect(x,y,x1,y1,b.x,b.y,b.width,b.height);
     if (collid) {
-      const newW = soil[i].text;
+      const newW = s.text;
       const pos = RiTa.pos(newW)[0];
       if (newW.indexOf("’") > 0) return;
       if (r.plant.lookFor && pos.indexOf(r.plant.lookFor) < 0) {
@@ -156,7 +158,6 @@ function initializeSoil(callback) {
 
 function updateD3CanvasHeight(newH) {
   if (newH < HEIGHT) return;
-  console.log("update new h:", newH);
   d3.select("svg").attr("height", newH);
 }
 
@@ -177,6 +178,7 @@ function guid() {
 }
 
 function plant(word, domain, p, x, y, delay=0) {
+  console.log("Plant", word, "in", domain, "as", p);
   var data = {
     "id": guid(),
     "type":p,
@@ -244,6 +246,11 @@ function anime(g) {
 function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
 }
+
+function getRandomItem(obj) {
+    var keys = Object.keys(obj);
+    return obj[keys[ keys.length * Math.random() << 0]];
+};
 
 function randomPlant() {
     var keys = Object.keys(PLANTS);
