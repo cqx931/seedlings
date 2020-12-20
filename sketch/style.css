@@ -35,6 +35,8 @@ body{
 .seedling{
   background-color: white;
 }
+
+
 input{
     margin:5px;
     border:1px #DDD solid;
@@ -180,15 +182,28 @@ button:hover, #run:hover, #remove:hover {
 .darktheme g text {
   color:white !important;
 }
-/* line {
-  stroke:white !important;
-} */
 
 /****** General CSS *******/
-g text {font: 16px 'SourceCodePro-Light';x: 655;y: 200;}
+g text {
+  font: 16px 'SourceCodePro-Light';
+}
 g text.soil {
   z-index:30;
   letter-spacing: -0.5px;
+}
+
+.soil.active:hover{
+  cursor:pointer;
+}
+
+g text.bg {
+  opacity:0.5;
+  stroke: white;
+  stroke-width: 0.4em;
+}
+.seedling:hover text.bg{
+  /* add text bg when plant on hover to increase readability */
+  opacity:1;
 }
 .roots {
   z-index:1;
@@ -223,9 +238,7 @@ g text.soil {
 textPath {
   letter-spacing: 18px;
 }
-.soil:hover{
-  cursor:pointer;
-}
+
 .dandelion .branch_text{
   position: absolute;
   width: 20px;

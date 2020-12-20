@@ -63,7 +63,7 @@ function checkIntersections(r){
   for (var i = 0; i < soilOder.length; i++) {
     const s = soil[soilOder[i]];
     let b = s.boundingBox;
-    const collid = lineRect(x,y,x1,y1,b.x,b.y,b.width,b.height);
+    const collid = lineRect(x,y,x1,y1, b.x,b.y,b.width,b.height);
     if (collid) {
       const newW = s.text;
       const pos = RiTa.pos(newW)[0];
@@ -144,6 +144,7 @@ function initializeSoil(callback) {
       } else {
         if (punctuations.includes(w)) xPos -= SPACE_WIDTH;
         const t = new SoilWord(w, xPos, yPos, true);
+        // console.log(t.text, t.boundingBox.width);
         xPos += (t.boundingBox.width + SPACE_WIDTH);
         if (textIdx != 4 && xPos > RIGHT_EDGE) lineBreak();
       }

@@ -27,7 +27,7 @@ const dragEvent = d3.drag().on("drag", function(d) {
     s.boundingBox = this.getBBox();
   });
 
-const stopWords = ['i','me','my','myself','we','we’ve', 'our','ours','ourselves','you','your','yours','yourself','yourselves','he','him','his','himself','she','her','hers','herself','it','its','itself','they','them','their','theirs','themselves','what','which','who','whom','this','that','these','those','am','is','isn\’t', 'are','was','were','be','been','being','have','has','had','having','do','don\’t','don\'t', 'does','did','doing','a','an','the','and','but','if','or','because','as','until','while','of','at','by','for','with','about','against','between','into','through','during','before','after','above','below','to','from','up','down','in','out','on','off','over','under','again','further','then','once','here','there','there\’s', 'when','where','why','how','all','any','both','each','few','more','most','other','some','such','no','nor','not','only','own','same','so','than','too','very','s','t','can','will','won\’t','won\'t', 'just','don','should','now'];
+const stopWords = ['i','me','my','myself','we','we’ve', 'our','ours','ourselves','you','your','yours','yourself','yourselves','he','him','his','himself','she','her','hers','herself','it','its','itself','they','them','their','theirs','themselves','what','which','who','whom','this','that','these','those','am','is','isn\’t', 'are','was','were','be','been','being','have','has','had','having','do','don\’t', 'does','did','doing','a','an','the','and','but','if','or','because','as','until','while','of','at','by','for','with','about','against','between','into','through','during','before','after','above','below','to','from','up','down','in','out','on','off','over','under','again','further','then','once','here','there','there\’s', 'when','where','why','how','all','any','both','each','few','more','most','other','some','such','no','nor','not','only','own','same','so','than','too','very','s','t','can','will','won\’t', 'just','don','should','now'];
 
 const punctuations = [",", ".",":","'","?","!","“","”","’",";"];
 
@@ -48,7 +48,8 @@ class SoilWord {
                   .attr("x", this.x)
                   .attr("y", this.y)
                   .call(dragEvent)
-                  .on("click", this.clicked)
+                  .on("mouseover", this.mouseover)
+                  .on("mouseout", this.mouseout)
                   .on("dblclick", this.dblclick);
     this.boundingBox = document.getElementById(this.id).getBBox();
     if (active) {
@@ -64,18 +65,25 @@ class SoilWord {
 
   dblclick(event,d) {
     let self = this.active == undefined ? soil[this.id] : this;
+    if (!self.active) return; // don't plant for inactive soil
     const domain = getClosestSoilText(self);
     plant(self.text, domain, randomPlant(),
       Math.floor(self.x)-200, Math.floor(self.y));
   }
 
-  clicked(event, d) {
+  mouseover(event, d) {
     if (event.defaultPrevented) return; // dragged
 
-    d3.select(this).transition()
-        .attr("stroke", "black")
+    d3.select(this)
       .transition()
-      .attr("stroke", "")
+      .attr("stroke", "black");
+  }
+
+  mouseout(event, d) {
+    console.log("mouseout")
+    d3.select(this)
+      .transition()
+      .attr("stroke", "");
   }
 
 }
@@ -196,7 +204,7 @@ class Plant{
   updateDomain(word) {
     if (this.domain != word) {
       this.domain = word;
-      $('#'+this.id + " .chunk .domain").text(word);
+      $('#'+this.id + " .chunk .domain text").text(word);
     }
   }
 
@@ -229,7 +237,7 @@ class Plant{
   updateSeed(word) {
     if (this.word != word) {
       this.word = word;
-      const seed = $('#'+this.id + " .chunk .seed");
+      const seed = $('#'+this.id + " .chunk .seed text");
       const h = word.length*13;
       seed.text(word)
        .attr("y", this.y - h + FONT_SIZE)
@@ -328,15 +336,22 @@ class Plant{
         }
       }
 
-      // w = w.replace(/[\|\/\\]/g, ' ');
+      const textX = this.currentP.x - FONT_SIZE*1/4,
+            textY = this.currentP.y - FONT_SIZE*1.5*i  - this.HEIGHT - FONT_SIZE;
 
-      b.append("text")
-       .attr("x", this.currentP.x - FONT_SIZE*1/4)
-       .attr("y", this.currentP.y - FONT_SIZE*1.5*i  - this.HEIGHT - FONT_SIZE)
-       .attr("dy", ".35em")
-       .attr("text-anchor", flag)
-       .text(w)
-       .attr("class","branch_text");
+            b.append("text")
+             .text(w)
+             .attr("x", textX)
+             .attr("y", textY)
+             .attr("text-anchor", flag)
+             .attr("class","branch_text bg");
+
+            b.append("text")
+             .text(w)
+             .attr("x", textX)
+             .attr("y", textY)
+             .attr("text-anchor", flag)
+             .attr("class","branch_text");
 
        if (flag == "end") this.currentP.x -= w.length*4
        else if (flag == "start") this.currentP.y += w.length*4
@@ -540,12 +555,22 @@ class Ginkgo extends Plant {
         .attr("y2", endy)
         .attr("class","branch_line");
 
+        const transform =  "translate(5px) rotate("+ (angle) +"deg) ",
+        origin = x + "px " + y + "px 0px";
+
         b.append("text")
          .attr("x", x)
          .attr("y", y)
-         .style("transform", "translate(5px) rotate("+ (angle) +"deg) ")
-         .style("transform-origin", x + "px " + y + "px 0px")
-         .attr("dy", ".35em")
+         .style("transform", transform)
+         .style("transform-origin", origin)
+         .text("            " + w )
+         .attr("class","branch_text bg");
+
+        b.append("text")
+         .attr("x", x)
+         .attr("y", y)
+         .style("transform", transform)
+         .style("transform-origin", origin)
          .text("            " + w )
          .attr("class","branch_text");
 
@@ -612,11 +637,18 @@ class Pine extends Plant {
       var b = this.g.append("g")
              .style("transition-delay", 1500 + "ms")
              .attr("class","branch");
+    const posY = this.y - FONT_SIZE*1.5*idx - this.HEIGHT;
+
+     b.append("text")
+      .attr("x", this.x)
+      .attr("y", posY)
+      .attr("text-anchor", "middle")
+      .text(word)
+      .attr("class","branch_text bg");
 
       b.append("text")
        .attr("x", this.x)
-       .attr("y", this.y - FONT_SIZE*1.5*idx - this.HEIGHT)
-       .attr("dy", ".35em")
+       .attr("y", posY)
        .attr("text-anchor", "middle")
        .text(word)
        .attr("class","branch_text");
@@ -703,7 +735,13 @@ class Ivy extends Plant {
        b.append("text")
         .attr("x", this.currentP.x)
         .attr("y", ypos)
-        .attr("dy", ".35em")
+        .attr("text-anchor", "middle")
+        .text(w)
+        .attr("class","branch_text bg");
+
+       b.append("text")
+        .attr("x", this.currentP.x)
+        .attr("y", ypos)
         .attr("text-anchor", "middle")
         .text(w)
         .attr("class","branch_text");
@@ -772,14 +810,23 @@ class Dandelion extends Plant {
        .attr("y2", endy)
        .attr("class","branch_line");
 
+       const transform = "translate(5px) rotate(" + (angle/5 - 60) +"deg) ";
+       const origin = this.x + "px " + local_Y + "px 0px";
+
        b.append("text")
         .attr("x", endx-20)
         .attr("y", endy-20)
-        .style("transform", "translate(5px) rotate(" + (angle/5 - 60) +"deg) ")
-        .style("transform-origin", this.x + "px " + local_Y + "px 0px")
-        .attr("dy", ".35em")
+        .style("transform", transform)
+        .style("transform-origin", origin)
         .text(w)
-        // .attr("")
+        .attr("class","branch_text bg");
+
+       b.append("text")
+        .attr("x", endx-20)
+        .attr("y", endy-20)
+        .style("transform", transform)
+        .style("transform-origin", origin)
+        .text(w)
         .attr("class","branch_text");
 
       if (i == this.result.length -1) this.endPos = {
@@ -879,7 +926,13 @@ class Bamboo extends Plant {
       b.append("text")
        .attr("x", x)
        .attr("y", y)
-       .attr("dy", ".35em")
+       .attr("text-anchor", "end")
+       .text(content)
+       .attr("class","branch_text bg");
+
+      b.append("text")
+       .attr("x", x)
+       .attr("y", y)
        .attr("text-anchor", "end")
        .text(content)
        .attr("class","branch_text");
@@ -900,14 +953,14 @@ class Bamboo extends Plant {
 
     var HEIGHT = getTextWidth(this.word, true);
 
-    c.append("text")
-     .attr("x", x - FONT_SIZE/2)
-     .attr("y", y - 10)
-     .style("writing-mode", "tb")
-     .attr("text-anchor", "end")
-     .attr("dy", ".35em")
-     .text(this.word)
-     .attr("class","seed");
+    // c.append("text")
+    //  .attr("x", x - FONT_SIZE/2)
+    //  .attr("y", y - 10)
+    //  .style("writing-mode", "tb")
+    //  .attr("text-anchor", "end")
+    //  .attr("dy", ".35em")
+    //  .text(this.word)
+    //  .attr("class","seed");
 
    drawMainBranch(x,y,x,y - HEIGHT, c);
 
@@ -929,22 +982,49 @@ var PLANTS = {
 // Functions
 function drawSeed(seed,x,y,g,h) {
   h = (h != undefined) ? h : seed.length*13;
-  return g.append("text")
-   .attr("x", x + FONT_SIZE/2)
-   .attr("y", y - h + FONT_SIZE)
+
+  const s = g.append("g")
+  .attr("class","seed");
+
+  const xPos = x + FONT_SIZE/2,
+  yPos = y - h + FONT_SIZE;
+
+  s.append("text")
+   .attr("x", xPos)
+   .attr("y", yPos)
+   .style("writing-mode", "tb")
+   .attr("dy", ".35em")
+   .attr("class", "bg")
+   .text(seed)
+
+  s.append("text")
+   .attr("x", xPos)
+   .attr("y", yPos)
    .style("writing-mode", "tb")
    .attr("dy", ".35em")
    .text(seed)
-   .attr("class","seed");
+
+  return s;
 }
 
 function drawDomain(domain,x,y,g) {
-  g.append("text")
-   .attr("x", x + FONT_SIZE/2)
-   .attr("y", y + FONT_SIZE/2)
+  const d = g.append("g")
+             .attr("class", "domain");
+  const xPos = x + FONT_SIZE/2,
+        yPos = y + FONT_SIZE/2;
+
+ d.append("text")
+  .attr("x", xPos)
+  .attr("y", yPos)
+  .attr("dy", ".35em")
+  .attr("class", "bg")
+  .text(domain);
+
+  d.append("text")
+   .attr("x", xPos)
+   .attr("y", yPos)
    .attr("dy", ".35em")
-   .text(domain)
-   .attr("class","domain");
+   .text(domain);
 }
 
 function drawGround(x,y,g) {
@@ -986,7 +1066,6 @@ function getClosestSoilText(thisSoil) {
   })
   return closest.text();
 }
-
 
 function getDistance(x1,y1,x2,y2){
   const a = x1 - x2;
