@@ -7,7 +7,6 @@ noise.seed(Math.random());
 
 const SCALE_FACTOR = 20;
 const COMPOST_TIME = 4000;
-const STROKE_COLOR = "grey";
 const FONT_SIZE = 14,
       DASH_STYLE = FONT_SIZE/2 + ", " + FONT_SIZE/2,
       SECTION_GAP = 50, // between two plants
@@ -41,16 +40,18 @@ class SoilWord {
     this.y = y;
     this.active = this.active == undefined ? this.isValid(text) : false;
     const tmp = d3.select("#soil").append("text")
-                  .attr("class","soil" + (this.active ? " active":""))
-                  .style("fill-opacity", this.active ? 0.87: 0.4)
                   .attr("id", this.id)
                   .text(this.text)
                   .attr("x", this.x)
                   .attr("y", this.y)
                   .call(dragEvent)
-                  .on("mouseover", this.mouseover)
-                  .on("mouseout", this.mouseout)
-                  .on("dblclick", this.dblclick);
+                  .attr("class","soil" + (this.active ? " active":""))
+                  .style("fill-opacity", this.active ? 0.87: 0.4)
+                  .on("mouseover", this.active ? this.mouseover : "")
+                  .on("mouseout", this.active ? this.mouseout : "")
+                  .on("dblclick", this.active ? this.dblclick : "")
+                  .on("contextmenu", this.active ? this.rightclick : "");
+
     this.boundingBox = document.getElementById(this.id).getBBox();
     if (active) {
       soil[this.id] = this;
@@ -71,16 +72,34 @@ class SoilWord {
       Math.floor(self.x)-200, Math.floor(self.y));
   }
 
+  rightclick(e,d) {
+    let self = this.active == undefined ? soil[this.id] : this;
+    e.preventDefault();
+    $('#options').hide();
+    $('#plantTypes').show();
+    $('#plantTypes').css('left', e.clientX + 'px');
+    $('#plantTypes').css('top', e.clientY + 'px');
+    $('body').addClass("rightClicked");
+    $('#plantTypes ul li').click(function(){
+      const type = $(this).text();
+      const domain = getClosestSoilText(self);
+      plant(self.text, domain, type,
+        Math.floor(self.x)-200, Math.floor(self.y));
+
+      $('#plantTypes').hide();
+      $( "svg" ).unbind("contextmenu");
+      $('body').removeClass("rightClicked");
+    });
+  }
+
   mouseover(event, d) {
     if (event.defaultPrevented) return; // dragged
-
     d3.select(this)
       .transition()
       .attr("stroke", "black");
   }
 
   mouseout(event, d) {
-    console.log("mouseout")
     d3.select(this)
       .transition()
       .attr("stroke", "");
@@ -133,7 +152,6 @@ class Root {
       // const duplicate = this.history.includes(this.currentPos);
 
       this.wrapper.append("line")
-        .style("stroke", STROKE_COLOR)
         .attr("x1", this.currentPos.x)
         .attr("y1", this.currentPos.y)
         .attr("x2", this.nextPos.x)
@@ -217,18 +235,20 @@ class Plant{
     $( "svg" ).bind("contextmenu", function(e){
       if (rightClickOnPlant == null) {
         $( "svg" ).unbind("contextmenu");
+        $('svg').removeClass("contextMenu");
       }
       e.preventDefault();
       $('#options').show();
       $('#options').css('left', e.clientX + 'px');
       $('#options').css('top', e.clientY + 'px');
+      $('body').addClass("rightClicked");
 
       $('#remove').click(function(){
         console.log(rightClickOnPlant+ "");
         removePlantById(rightClickOnPlant);
 
         $('#options').hide();
-        $( "svg" ).unbind("contextmenu");
+        $( 'body' ).unbind("rightClicked");
         rightClickOnPlant = null;
       });
     })
@@ -546,7 +566,6 @@ class Ginkgo extends Plant {
       var endx = this.LENGTH * Math.cos(Math.radians(angle)) + x
 
       b.append("line")
-        .style("stroke", STROKE_COLOR)
         .style("position", "absolute")
         .style("stroke-dasharray", DASH_STYLE)
         .attr("x1", x)
@@ -755,7 +774,6 @@ class Ivy extends Plant {
 
      // special draw ground
      c.append("line")
-       .style("stroke", STROKE_COLOR)
        .style("stroke-dasharray", DASH_STYLE)
        .attr("x1", x)
        .attr("y1", y)
@@ -801,7 +819,6 @@ class Dandelion extends Plant {
      var endx = l * Math.cos(Math.radians(angle)) + this.x
 
      b.append("line")
-       .style("stroke", STROKE_COLOR)
        .style("position", "absolute")
        .style("stroke-dasharray", DASH_STYLE)
        .attr("x1", this.x)
@@ -1029,7 +1046,6 @@ function drawDomain(domain,x,y,g) {
 
 function drawGround(x,y,g) {
   g.append("line")
-    .style("stroke", STROKE_COLOR)
     .style("stroke-dasharray", DASH_STYLE)
     .attr("x1", x-GROUND_WIDTH/2)
     .attr("y1", y)
@@ -1040,7 +1056,6 @@ function drawGround(x,y,g) {
 
 function drawMainBranch(x1,y1,x2,y2,g) {
    g.append("line")
-    .style("stroke", STROKE_COLOR)
     .style("stroke-dasharray", DASH_STYLE)
     .attr("x1", x1)
     .attr("y1", y1)

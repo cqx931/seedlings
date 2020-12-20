@@ -46,7 +46,7 @@ initializeSoil(function(){
   target.dblclick();
 
 });
-adjustView(Y_OFFSET);
+adjustView(Y_OFFSET, 1000);
 
 // plant("soap",'sea', randomPlant(), getRandomArbitrary(100, 200), 720);
 // plant("humanity",'technology',  testPlants[1], getRandomArbitrary(350, 400), 600, 15000)
@@ -73,7 +73,10 @@ function checkIntersections(r){
         return;
       }
       const plant = plants["" + plantId];
-      plant.updateDomain(RiTa.stem(newW), RiTa.LANCASTER);
+      plant && plant.updateDomain(RiTa.stem(newW), RiTa.LANCASTER);
+      if(plant == undefined) {
+        console.log("plant undefined")
+      }
       clearInterval(r.timer);
       r.plant.next = r.plant.endWord;
       if (r.plant.branchTimer == null) {
@@ -272,11 +275,11 @@ function clearCanvas() {
 
 }
 
-function adjustView(y, now){
+function adjustView(y, time){
   y =  y - window.innerHeight + 200;
   $('html,body').animate({
          scrollTop: y +"px"
-     }, now ? 500 : 3000);
+     }, time != undefined ? time : 3000);
 }
 
 function removePlantById(id) {
@@ -301,3 +304,11 @@ function shuffle(array) {
 
   return array;
 }
+
+$( document ).ready(function() {
+
+  $(".content").click(function(){
+    $('.contextMenu').hide();
+    $('body').removeClass("rightClicked");
+  })
+});
