@@ -74,8 +74,9 @@ function checkIntersections(r){
       }
       const plant = plants["" + plantId];
       plant && plant.updateDomain(RiTa.stem(newW), RiTa.LANCASTER);
-      if(plant == undefined) {
-        console.log("plant undefined")
+      if (plant == undefined) {
+        // TODO: fix
+        // console.log("plant undefined")
       }
       clearInterval(r.timer);
       r.plant.next = r.plant.endWord;

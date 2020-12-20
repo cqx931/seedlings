@@ -231,6 +231,7 @@ class Plant{
   }
 
   onrightClicked(d,self) {
+    console.log(self.id, plants[self.id])
     let rightClickOnPlant = self.id;
     $( "svg" ).bind("contextmenu", function(e){
       if (rightClickOnPlant == null) {
@@ -244,12 +245,11 @@ class Plant{
       $('body').addClass("rightClicked");
 
       $('#remove').click(function(){
-        console.log(rightClickOnPlant+ "");
         removePlantById(rightClickOnPlant);
-
         $('#options').hide();
-        $( 'body' ).unbind("rightClicked");
         rightClickOnPlant = null;
+        $( "svg" ).unbind("contextmenu");
+        $( 'body' ).removeClass("rightClicked");
       });
     })
   }
