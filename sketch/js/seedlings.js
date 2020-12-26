@@ -53,7 +53,7 @@ class SoilWord {
                   .on("contextmenu", this.active ? this.rightclick : "");
 
     this.boundingBox = document.getElementById(this.id).getBBox();
-    if (active) {
+    if (this.active) {
       soil[this.id] = this;
       soilOder.push(this.id);
     }
@@ -119,7 +119,6 @@ class Root {
     this.y = y;
     this.level = l;
     this.initialAngle = a;
-
     // path info
     this.currentPos = {x:x,y:y};
     this.currentAngle = 0;
@@ -153,10 +152,10 @@ class Root {
     this.initialAngle = undefined;
   }
 
-  grow() {
+  grow() { //root
     if (this.life > 0) {
       // do {
-        this.update();
+      this.update();
       // } while(!this.history.includes(this.currentPos))
       // const duplicate = this.history.includes(this.currentPos);
       const fillO = (this.life/this.maxLife).map(0,1,0.3,0.8);
@@ -192,6 +191,7 @@ class Plant{
     // Text Info
     this.word = data.seed;
     this.domain = data.domain;
+    this.domainHistory = [this.domain];
     this.endWord;
     this.result = data.results ? data.results:[];
     this.resultToBeDisplayed = Array.from(this.result);
@@ -214,18 +214,45 @@ class Plant{
            });
 
     this.roots = [];
+    this.collision = false;
     this.totalAnimation = data.results ? this.calculateTime() : 0; // Is this still in use?
 
     // Visual Parameters
     this.growingSpeed = 1000;
     this.rootGrowingSpeed = 250;
-    this.lifeSpan = 300;
+    this.lifeSpan = 200;
     this.datamuseResultMax = 5;
     this.HEIGHT = 100;
     this.COMPOST_DISTANCE = 50;
 
+
     // Save it plants
     plants[this.id+""] = this;
+  }
+
+  /*********** Updates ***********/
+  reGenerate(newSeed) {
+    if(this.next == null) return;
+    this.updateSeed(this.next);
+    this.next = null;
+    // if(newSeed) this.word = newSeed;
+    this.collision = false;
+    if (isCompost) {
+      this.compost();
+      const self = this;
+      setTimeout(function(){
+        self.grow();
+      }, COMPOST_TIME);
+    } else{
+      this.clear();
+      this.grow();
+    }
+  }
+
+  clear() {
+    this.currentP = {x:this.x,y:this.y};
+    this.g.selectAll('.branch').remove();
+    if (this.type != "ivy") this.g.select('.main_branch').remove();
   }
 
   updateResult(result) {
@@ -236,36 +263,9 @@ class Plant{
   updateDomain(word) {
     if (this.domain != word) {
       this.domain = word;
+      this.domainHistory.push(word);
       $('#'+this.id + " .chunk .domain text").text(word);
     }
-  }
-
-  calculateHeight() {
-    return this.word.length*13 + 10;
-  }
-
-  onrightClicked(d,self) {
-    console.log(self.id, plants[self.id])
-    let rightClickOnPlant = self.id;
-    $( "svg" ).bind("contextmenu", function(e){
-      if (rightClickOnPlant == null) {
-        $( "svg" ).unbind("contextmenu");
-        $('svg').removeClass("contextMenu");
-      }
-      e.preventDefault();
-      $('#options').show();
-      $('#options').css('left', e.clientX + 'px');
-      $('#options').css('top', e.clientY + 'px');
-      $('body').addClass("rightClicked");
-
-      $('#remove').click(function(){
-        removePlantById(rightClickOnPlant);
-        $('#options').hide();
-        rightClickOnPlant = null;
-        $( "svg" ).unbind("contextmenu");
-        $( 'body' ).removeClass("rightClicked");
-      });
-    })
   }
 
   updateSeed(word) {
@@ -276,14 +276,13 @@ class Plant{
       seed.text(word)
        .attr("y", this.y - h + FONT_SIZE)
       this.HEIGHT = this.calculateHeight();
+      if (this.type != "ivy") {
+        drawMainBranch(this.x,this.y,this.x,this.y - this.HEIGHT, this.g.select('.chunk'));
+      }
     }
   }
 
-  clear() {
-    this.lifeSpan += 200;
-    this.currentP = {x:this.x,y:this.y};
-    this.g.selectAll('.branch').remove();
-  }
+  /*********** End of Updates ***********/
 
   getResult(callback){
      var params = {
@@ -331,8 +330,58 @@ class Plant{
     })
   }
 
-  calculateTime(){
-    return START_DELAY + this.result.length * 500 + 1000;
+  grow() { // plant
+    let branchIdx = 0;
+    const gs = this.growingSpeed;
+    const self = this;
+
+    function afterResult(data) {
+      // stop growing root after retrieve result
+      clearInterval(self.rootTimer);
+      self.rootTimer = false;
+
+      self.updateResult(data.results);
+      self.endWord = data.endWord
+      // only set a timer if there is no current timer running
+      if (self.branchTimer) {
+        console.log("branch timer conflict!", self)
+        return;
+      }
+      self.branchTimer = setInterval(() => {
+          if (self.result.length > 0) {
+            if (self.resultToBeDisplayed.length > 0) {
+              const w = self.resultToBeDisplayed.pop();
+              self.growBranch(w, branchIdx);
+            } else {
+              // finished display all the branches
+              clearInterval(self.branchTimer);
+              self.branchTimer = false;
+              // start growing roots
+              if (self.rootTimer) {
+                console.log("root timer conflict!", self)
+                return;
+              }
+              self.rootTimer = setInterval(() => {
+                if (self.lifeSpan <= 0) {
+                  clearInterval(self.rootTimer);
+                  clearInterval(self.branchTimer);
+                  return;
+                }
+                console.log("growing roots", self.lifeSpan)
+                self.growRoots(self.rootTimer);
+                self.lifeSpan --;
+              }, Math.floor(self.rootGrowingSpeed));
+            }
+          }
+          branchIdx ++;
+        }, gs);
+        console.log("Branch:", self.branchTimer)
+
+
+
+    }
+
+    this.getResult(afterResult);
   }
 
   growBranch(w, i) {
@@ -405,43 +454,6 @@ class Plant{
     }
   }
 
-  grow() {
-    let branchIdx = 0;
-    const gs = this.growingSpeed;
-    const self = this;
-
-    function afterResult(data) {
-      // stop growing root after retrieve result
-      console.log("stop growing roots")
-      clearInterval(self.rootTimer);
-      self.updateResult(data.results);
-      self.endWord = data.endWord
-      self.branchTimer = setInterval(() => {
-          if (self.result.length > 0) {
-            if (self.resultToBeDisplayed.length > 0) {
-              const w = self.resultToBeDisplayed.pop();
-              self.growBranch(w, branchIdx);
-            } else {
-              clearInterval(self.branchTimer);
-              // growing roots
-              console.log("start growing roots")
-              self.rootTimer = setInterval(() => {
-                if (self.lifeSpan <= 0) clearInterval(self.rootTimer);
-                self.growRoots(self.rootTimer);
-                self.lifeSpan --;
-              }, Math.floor(self.rootGrowingSpeed));
-            }
-          }
-          branchIdx ++;
-        }, gs);
-
-
-
-    }
-
-    this.getResult(afterResult);
-  }
-
   initializeRoots() {
     const rWrapper = this.g.append("g")
            .attr("class","roots");
@@ -450,8 +462,7 @@ class Plant{
     this.roots.push(r);
   }
 
-
-  draw() {
+  draw() { //plant
     var x = this.x, y = this.y;
     var c = this.g.append("g")
            .attr("class","chunk");
@@ -466,7 +477,6 @@ class Plant{
     this.HEIGHT = this.calculateHeight();
     // MAIN BRANCH
     drawMainBranch(x,y,x,y - this.HEIGHT, c);
-
   }
 
   animate() {
@@ -482,7 +492,6 @@ class Plant{
     .duration(FALLING_TIME)
     .ease(d3.easeLinear);
 
-    console.log("compost");
     this.lifeSpan += 200;
     this.currentP = {x:this.x,y:this.y};
     // (TODO: branches animation?)
@@ -519,21 +528,36 @@ class Plant{
     // TODO: words falling animation
   }
 
-  reGenerate(newSeed) {
-    if(this.next == null) return;
-    this.updateSeed(this.next);
-    this.next = null;
-    // if(newSeed) this.word = newSeed;
-    if (isCompost) {
-      this.compost();
-      const self = this;
-      setTimeout(function(){
-        self.grow();
-      }, COMPOST_TIME);
-    } else{
-      this.clear();
-      this.grow();
-    }
+  calculateHeight() {
+    return this.word.length*13 + 10;
+  }
+
+  calculateTime(){
+    return START_DELAY + this.result.length * 500 + 1000;
+  }
+
+  onrightClicked(d,self) {
+    console.log(self.id, plants[self.id])
+    let rightClickOnPlant = self.id;
+    $( "svg" ).bind("contextmenu", function(e){
+      if (rightClickOnPlant == null) {
+        $( "svg" ).unbind("contextmenu");
+        $('svg').removeClass("contextMenu");
+      }
+      e.preventDefault();
+      $('#options').show();
+      $('#options').css('left', e.clientX + 'px');
+      $('#options').css('top', e.clientY + 'px');
+      $('body').addClass("rightClicked");
+
+      $('#remove').click(function(){
+        removePlantById(rightClickOnPlant);
+        $('#options').hide();
+        rightClickOnPlant = null;
+        $( "svg" ).unbind("contextmenu");
+        $( 'body' ).removeClass("rightClicked");
+      });
+    })
   }
 }
 
@@ -571,7 +595,7 @@ class Ginkgo extends Plant {
     this.updateBranch();
   }
 
-  growBranch(w,i) {
+  growBranch(w,i) { // gingkgo
       const x = this.x, y = this.currentP.y;
       var b = this.g.append("g")
              .style("transition-delay", START_DELAY +i*500 + "ms")
@@ -620,7 +644,6 @@ class Ginkgo extends Plant {
     drawGround(x,y,c)
     // SEED
     var seed = drawSeed(this.word,x,y-20,c)
-    this.HEIGHT = this.calculateHeight();
     drawMainBranch(x,y,x,y-this.HEIGHT, c);
     drawDomain(this.domain,x,y,c);
     this.initializeRoots();
@@ -633,10 +656,10 @@ class Ginkgo extends Plant {
 class Pine extends Plant {
   constructor(data) {
    super(data);
-   this.growingSpeed = 5000;
+   this.growingSpeed = 500;
    this.lifeSpan = 300;
    this.WIDTH = 400;
-   this.HEIGHT = 80;
+   this.HEIGHT = this.calculateHeight();;
   }
 
   // processSpecificParameters(p, seed, result) {
@@ -664,58 +687,34 @@ class Pine extends Plant {
 
     this.initializeRoots();
     drawGround(x,y,c);
-    drawSeed(this.seed,x,y,c,this.HEIGHT);
+    console.log(this.word);
+    drawSeed(this.word,x,y,c,this.HEIGHT);
     drawMainBranch(x,y,x,y - this.HEIGHT, c);
     drawDomain(this.domain,x,y,c);
   }
 
-  growBranch(word, idx) {
+  growBranch(word, idx) { //pine
       var b = this.g.append("g")
              .style("transition-delay", 1500 + "ms")
              .attr("class","branch");
     const posY = this.y - FONT_SIZE*1.5*idx - this.HEIGHT;
+    const xOffset = getRandomIntInclusive(-5,5);
 
      b.append("text")
-      .attr("x", this.x)
+      .attr("x", this.x + xOffset)
       .attr("y", posY)
       .attr("text-anchor", "middle")
       .text(word)
       .attr("class","branch_text bg");
 
       b.append("text")
-       .attr("x", this.x)
+       .attr("x", this.x + xOffset)
        .attr("y", posY)
        .attr("text-anchor", "middle")
        .text(word)
        .attr("class","branch_text");
 
   }
-
-  // grow() {
-  //   //setTimeout
-  //   let branchIdx = 0;
-  //   this.branchTimer = setInterval(() => {
-  //     const self = this;
-  //     let w;
-  //     if (self.result > 15) clearInterval(this.branchTimer);
-  //     self.getNewWord(function(w) {
-  //       if (!w) clearInterval(this.branchTimer);
-  //       self.growBranch(w, branchIdx);
-  //       branchIdx ++;
-  //     });
-  //
-  //   }, this.growingSpeed);
-  //
-  //
-  //   const rootTimer = setInterval(() => {
-  //     const self = this;
-  //     if (self.lifeSpan <= 0) clearInterval(rootTimer);
-  //     self.growRoots();
-  //     self.lifeSpan --;
-  //   }, Math.floor(this.growingSpeed/10));
-  //
-  // }
-
 
 }
 
@@ -726,6 +725,7 @@ class Ivy extends Plant {
    this.datamuseResultMax = 50;
    this.COMPOST_DISTANCE = 100;
    this.growingSpeed = 2000;
+   this.lifeSpan = 150;
   }
 
   calculateTime(){
@@ -758,7 +758,7 @@ class Ivy extends Plant {
     })
   }
 
-  growBranch(w, idx) {
+  growBranch(w, idx) { //ivy
 
        var b = this.g.append("g")
               .style("transition-delay", START_DELAY + idx * 1000 + "ms")
@@ -817,13 +817,14 @@ class Dandelion extends Plant {
    this.WIDTH = 400;
    this.LENGTH = this.WIDTH/3;
    this.growingSpeed = 1500;
+   this.lifeSpan = 100;
   }
 
   calculateTime(){
     return START_DELAY + this.result.length * 200 + 1000;
   }
 
-  growBranch(w, i){
+  growBranch(w, i){ //dandelion
      var b = this.g.append("g")
             .style("transition-delay", START_DELAY +i*200 + "ms")
             .attr("class","branch");
@@ -900,7 +901,7 @@ class Koru extends Plant {
     return this.totalAnimation = START_DELAY +  this.totalLength * 200 + 3000;
   }
 
-  growBranch(w, i) {
+  growBranch(w, i) { //koru
       const b = this.spiralWrapper.append("tspan")
              .style("font-size", FONT_SIZE + i)
              .style("transition-delay", START_DELAY +i*200 + "ms")
@@ -930,6 +931,7 @@ class Bamboo extends Plant {
   constructor(data) {
    super(data);
    this.growingSpeed = 3000;
+
   }
 
   calculateTime(){
@@ -941,16 +943,18 @@ class Bamboo extends Plant {
     this.resultToBeDisplayed = Array.from(result).reverse();;
   }
 
-  growBranch(w, i) {
-
+  growBranch(w, i) { //bamboo
       const x = this.currentP.x, y = this.currentP.y;
-
       var b = this.g.append("g")
              .style("transition-delay", START_DELAY + i * 1000 + "ms")
              .attr("class","branch");
       var content = w + (i == 0 ? "" : "=");
       var h = getTextWidth(content, true);
-
+      if ( y - h < 0) {
+        // don't show the word if it's not fully visible
+        console.warn("Beyond the edge of the canvas");
+        return;
+      }
       // if (i == 1) {
       //   setTimeout(function(){
       //     adjustView(x,y + window.innerHeight / 2);
@@ -972,6 +976,7 @@ class Bamboo extends Plant {
        .attr("class","branch_text");
 
        this.currentP.y -= h;
+
   }
 
   draw() {
@@ -1001,6 +1006,8 @@ class Bamboo extends Plant {
       this.currentP.x += 30;
       this.currentP.y -= 10;
   }
+
+
 }
 
 var PLANTS = {

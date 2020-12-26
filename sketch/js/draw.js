@@ -42,7 +42,7 @@ const testPlants = ["pine"];
 
 // plant("soap",'sea', randomPlant(), getRandomArbitrary(100, 200), 720);
 // plant("humanity",'technology',  testPlants[1], getRandomArbitrary(350, 400), 600, 15000)
-// // plant("distance",'anatomy', "pine", 600, 530, 20000)
+
 // plant("body",'literature', testPlants[2], getRandomArbitrary(900, 1000), 710, 30000)
 /**********************************/
 
@@ -56,8 +56,11 @@ function checkIntersections(r){
     const s = soil[soilOder[i]];
     let b = s.boundingBox;
     const collid = lineRect(x,y,x1,y1, b.x,b.y,b.width,b.height);
-    if (collid) {
-      const newW = s.text;
+    // only true if the plant if it is a new domain
+    if (!r.plant.collision && collid) {
+      r.plant.collision = true;
+      console.log("collid", r.plant.collision)
+      const newW = RiTa.stem(s.text);
       const pos = RiTa.pos(newW)[0];
       if (newW.indexOf("’") > 0) return;
       if (r.plant.lookFor && pos.indexOf(r.plant.lookFor) < 0) {
@@ -65,16 +68,23 @@ function checkIntersections(r){
         return;
       }
       const plant = plants["" + plantId];
-      plant && plant.updateDomain(RiTa.stem(newW), RiTa.LANCASTER);
+
       if (plant == undefined) {
         // TODO: fix
         // console.log("plant undefined")
+        return;
       }
+      if (plant.domainHistory.indexOf(newW) > -1) {
+        console.log("Duplicate domain, skip");
+        r.plant.collision = false;
+        return;
+      }
+      plant && plant.updateDomain(newW, RiTa.LANCASTER);
+      // clear root
       clearInterval(r.timer);
       r.plant.next = r.plant.endWord;
-      if (r.plant.branchTimer == null) {
-        r.plant.reGenerate();
-      }
+      console.log("regenerate");
+      setTimeout(r.plant.reGenerate(), 2000);
     }
   }
   return false;
@@ -242,6 +252,12 @@ function anime(g) {
 
 function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
+}
+
+function getRandomIntInclusive(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
 }
 
 function getRandomItem(obj) {
