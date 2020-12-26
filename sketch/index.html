@@ -34,6 +34,17 @@
 <script src="js/perlin.js"></script>
 <script src="js/seedlings.js"></script>
 <script src="js/draw.js"></script>
+<script type="text/javascript">
+
+initializeSoil(function(){
+  const targetIdx = getRandomInt(10);
+  const target = soil[soilOder[targetIdx]];
+  console.log("Init:", target.text)
+  target.dblclick();
+});
+adjustView(Y_OFFSET, 1000);
+
+</script>
   </div>
   <div id="Test" class="test">
   </div>

@@ -216,7 +216,7 @@ line {
   stroke:grey;
 }
 .seedling:hover line{
-  stroke:black !important;
+  stroke:#444 !important;
 }
 .seedling:hover text.bg{
   /* add text bg when plant on hover to increase readability */

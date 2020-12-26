@@ -109,13 +109,15 @@ class SoilWord {
 
 class Root {
 
-  constructor(id, plant, x, y, a) {
-    this.life = 70;
+  constructor(id, plant, x, y, l, a) {
+    this.maxLife = 200;
+    this.life = this.maxLife;
 
     this.id = id;
     this.plant = plant;
     this.x = x;
     this.y = y;
+    this.level = l;
     this.initialAngle = a;
 
     // path info
@@ -130,11 +132,18 @@ class Root {
   }
 
   update() {
-    const noiseX = this.currentPos.x/SCALE_FACTOR + Math.random()*0.1;
-    const noiseY = this.currentPos.y/SCALE_FACTOR + Math.random()*0.1;
+    const divergeFactor  = 1 - this.life/this.maxLife;
+    const noiseX = this.currentPos.x/SCALE_FACTOR + Math.random()*0.1*this.level*divergeFactor;
+    const noiseY = this.currentPos.y/SCALE_FACTOR + Math.random()*0.1*this.level*divergeFactor;
 
-    const angle = this.initialAngle ? (this.initialAngle + getRandomArbitrary(0.3, 0.5) * Math.PI) : noise.simplex2(noiseX, noiseY) * Math.PI + Math.PI/2;
-    const dis = Math.random() * SCALE_FACTOR/5; // scale
+    let angle;
+    if (this.initialAngle) {
+      angle = this.initialAngle + getRandomArbitrary(0.3, 0.5) * Math.PI;
+    } else {
+      angle = noise.simplex2(noiseX, noiseY) * Math.PI + Math.PI/2;
+    }
+    const dis = Math.random() * SCALE_FACTOR/4 * (divergeFactor > 0.3 ? 1:1.2);
+
     const deltaX = dis * Math.cos(angle);
     const deltaY = dis * Math.sin(angle);
 
@@ -150,12 +159,15 @@ class Root {
         this.update();
       // } while(!this.history.includes(this.currentPos))
       // const duplicate = this.history.includes(this.currentPos);
+      const fillO = (this.life/this.maxLife).map(0,1,0.3,0.8);
 
       this.wrapper.append("line")
         .attr("x1", this.currentPos.x)
         .attr("y1", this.currentPos.y)
         .attr("x2", this.nextPos.x)
         .attr("y2", this.nextPos.y)
+        .attr("stroke-opacity", fillO)
+
       this.history.push(this.currentPos);
       this.life --;
       checkIntersections(this);
@@ -190,6 +202,7 @@ class Plant{
     this.y = data.y;
     this.currentP = {x:this.x,y:this.y};
     this.endPos;
+    this.maxNumOfRoots = 13;
 
     // d3 elements
     var self = this;
@@ -205,6 +218,7 @@ class Plant{
 
     // Visual Parameters
     this.growingSpeed = 1000;
+    this.rootGrowingSpeed = 250;
     this.lifeSpan = 300;
     this.datamuseResultMax = 5;
     this.HEIGHT = 100;
@@ -380,10 +394,11 @@ class Plant{
 
   growRoots(timer) {
     for (let j = 0; j < this.roots.length; j++) {
-      this.roots[j].grow();
       const current = this.roots[j].grow();
-      if (Math.random() < 0.02 && this.roots.length < 10) {
-        const newr = new Root(this.id +"_root_"+guid(), this.roots[0].plant, current.pos.x, current.pos.y, current.angle);
+      //const f = this.roots[j].life/this.roots[j].maxLife;
+      if (this.roots.length < this.maxNumOfRoots && this.roots[j].level < 4 && Math.random() < 0.1 ) {
+        console.log("new root,",this.roots.length, this.roots[j].level)
+        const newr = new Root(this.id +"_root_"+guid(), this.roots[0].plant, current.pos.x, current.pos.y, this.roots[j].level++, current.angle);
         newr.timer = timer;
         this.roots.push(newr);
       }
@@ -396,6 +411,9 @@ class Plant{
     const self = this;
 
     function afterResult(data) {
+      // stop growing root after retrieve result
+      console.log("stop growing roots")
+      clearInterval(self.rootTimer);
       self.updateResult(data.results);
       self.endWord = data.endWord
       self.branchTimer = setInterval(() => {
@@ -405,20 +423,19 @@ class Plant{
               self.growBranch(w, branchIdx);
             } else {
               clearInterval(self.branchTimer);
-              self.branchTimer = null;
-              setTimeout(function(){
-                if(self.next != null) self.reGenerate();
-              }, 3000);
+              // growing roots
+              console.log("start growing roots")
+              self.rootTimer = setInterval(() => {
+                if (self.lifeSpan <= 0) clearInterval(self.rootTimer);
+                self.growRoots(self.rootTimer);
+                self.lifeSpan --;
+              }, Math.floor(self.rootGrowingSpeed));
             }
           }
           branchIdx ++;
         }, gs);
 
-      const rootTimer = setInterval(() => {
-        if (self.lifeSpan <= 0) clearInterval(rootTimer);
-        self.growRoots(rootTimer);
-        self.lifeSpan --;
-      }, Math.floor(gs/10));
+
 
     }
 
@@ -429,7 +446,7 @@ class Plant{
     const rWrapper = this.g.append("g")
            .attr("class","roots");
     //Initialize roots
-    const r = new Root(this.id + "_root", this, this.x, this.y);
+    const r = new Root(this.id + "_root", this, this.x, this.y, 0);
     this.roots.push(r);
   }
 
@@ -1087,6 +1104,10 @@ function getDistance(x1,y1,x2,y2){
   const b = y1 - y2;
   return Math.sqrt( a*a + b*b );
 }
+
 Math.radians = function(degrees) {
   return degrees * Math.PI / 180;
+}
+Number.prototype.map = function (in_min, in_max, out_min, out_max) {
+  return (this - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }

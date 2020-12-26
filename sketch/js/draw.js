@@ -39,14 +39,6 @@ const testPlants = ["pine"];
 // bamboo, ginkgo, pine, dandelion, pine : scattering
 
 // shuffle(testPlants);
-initializeSoil(function(){
-
-  const targetIdx = getRandomInt(10);
-  const target = soil[soilOder[targetIdx]];
-  target.dblclick();
-
-});
-adjustView(Y_OFFSET, 1000);
 
 // plant("soap",'sea', randomPlant(), getRandomArbitrary(100, 200), 720);
 // plant("humanity",'technology',  testPlants[1], getRandomArbitrary(350, 400), 600, 15000)
