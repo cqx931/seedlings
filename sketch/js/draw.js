@@ -320,4 +320,11 @@ $( document ).ready(function() {
     $('.contextMenu').hide();
     $('body').removeClass("rightClicked");
   })
+
+  $("#closeButton").click(function(){
+    $('#about').hide();
+  })
+  $("#aboutButton").click(function(){
+    $('#about').toggle();
+  })
 });
