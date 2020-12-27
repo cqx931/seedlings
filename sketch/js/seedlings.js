@@ -1,14 +1,14 @@
 // Switches
 const isCompost = false;
-const ANIME = true;
+let ANIME = true;
 
 // noise
 noise.seed(Math.random());
 
 const SCALE_FACTOR = 20;
 const COMPOST_TIME = 4000;
-const FONT_SIZE = 14,
-      DASH_STYLE = FONT_SIZE/2 + ", " + FONT_SIZE/2,
+let FONT_SIZE = 14;
+const DASH_STYLE = FONT_SIZE/2 + ", " + FONT_SIZE/2,
       SECTION_GAP = 50, // between two plants
       GROUND_WIDTH = 200,
       START_DELAY = 500, // chunk - branch
@@ -206,7 +206,7 @@ class Plant{
 
     // d3 elements
     var self = this;
-    this.g = svg.append("g")
+    this.g = d3.select('svg').append("g")
            .attr("class","seedling " + this.type)
            .attr("id", this.id)
            .on('contextmenu', function(d){

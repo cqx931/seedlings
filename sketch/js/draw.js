@@ -6,26 +6,18 @@ const margin = {top: 20, right: 50, bottom: 20, left: 50};
 const WIDTH = window.innerWidth + margin.left*2,
       HEIGHT = 1000;
 
-const LINE_HEIGHT = 30,  // line height for soil layout
-      X_OFFSET = 50, Y_OFFSET = 700, // offset values for the soil
-      PARA_MARGIN = X_OFFSET + margin.left,
-      PARA_WIDTH = 820, // max width of the paragraph
-      SPACE_WIDTH = 10, // the width of a space
-      RIGHT_EDGE = window.innerWidth - PARA_MARGIN > PARA_MARGIN + PARA_WIDTH ?
-                     PARA_MARGIN + PARA_WIDTH : window.innerWidth - PARA_MARGIN;
+const X_OFFSET = 50, Y_OFFSET = 700, // offset values for the soil
+      PARA_MARGIN = X_OFFSET + margin.left;
+
+let LINE_HEIGHT = FONT_SIZE * 2,  // line height for soil layout
+    PARA_WIDTH = 820, // max width of the paragraph
+    SPACE_WIDTH = 10, // the width of a space
+    RIGHT_EDGE = window.innerWidth - PARA_MARGIN > PARA_MARGIN + PARA_WIDTH ?
+                 PARA_MARGIN + PARA_WIDTH : window.innerWidth - PARA_MARGIN;
 
 var timeOutTracker = null;
 /************** End of Parameters  *****************/
 
-const svg = d3.select(".content").append("svg")
-.attr("width", window.innerWidth)
-.attr("height", HEIGHT)
-.append("g")
-.attr("transform", "translate(" + margin.left + "," + 0 + ")")
-.attr("class","wrapper");
-
-const soilSVG = svg.append("g")
-                   .attr("id","soil")
 // global data
 let plants = {}; // All the plants
 let soil = {}; // The soil object
@@ -45,7 +37,28 @@ const testPlants = ["pine"];
 
 // plant("body",'literature', testPlants[2], getRandomArbitrary(900, 1000), 710, 30000)
 /**********************************/
+function initSvgCanvas(w,h,fontSize) {
+  if (fontSize) {
+    FONT_SIZE = fontSize;
+    LINE_HEIGHT = FONT_SIZE * 2;
+    PARA_WIDTH = 1510; // max width of the paragraph
+    SPACE_WIDTH = FONT_SIZE * 0.57;
+    RIGHT_EDGE = PARA_MARGIN + PARA_WIDTH
+  }
 
+  const svg = d3.select(".content").append("svg")
+  .attr("width", w)
+  .attr("height", h)
+  .append("g")
+  .attr("transform", "translate(" + margin.left + "," + 0 + ")")
+  .attr("class","wrapper")
+  .attr("font-size", fontSize+"px");
+
+  const soilSVG = svg.append("g")
+                     .attr("id","soil");
+
+
+}
 function checkIntersections(r){
   const rootId = r.id,
         x = r.currentPos.x, y = r.currentPos.y,
@@ -121,13 +134,13 @@ function lineRect(x1, y1, x2, y2, rx, ry, rw, rh) {
   return false;
 }
 
-function initializeSoil(callback) {
+function initializeSoil(page, callback) {
   const initialY = Y_OFFSET, initialX = margin.left + X_OFFSET;
   let xPos = initialX, yPos = initialY;
 
   jQuery.get('text.txt', function(data) {
     const allContexts = data.split("________________");
-    const textIdx = getRandomInt(allContexts.length);
+    const textIdx = page!= undefined ? (page-1) : getRandomInt(allContexts.length);
     console.log("Text Index:", textIdx);
     let soil = allContexts[textIdx];
     const lines = soil.split("\n").length;
@@ -137,8 +150,11 @@ function initializeSoil(callback) {
       return " "+match+" ";
     });
     const words = RiTa.tokenize(soil);
+    console.log(words);
+    for (let i = 0; i < words.length; i++) {
+      const w = words[i],
+            nextW = (i!=words.length-1) ? words[i+1] : "";
 
-    for (let w of words) {
       function lineBreak() {
         yPos += LINE_HEIGHT;
         xPos = initialX;
@@ -152,7 +168,8 @@ function initializeSoil(callback) {
         const t = new SoilWord(w, xPos, yPos, true);
         // console.log(t.text, t.boundingBox.width);
         xPos += (t.boundingBox.width + SPACE_WIDTH);
-        if (textIdx != 4 && xPos > RIGHT_EDGE) lineBreak();
+        if (textIdx != 4 && xPos > RIGHT_EDGE
+          && !punctuations.includes(nextW) && nextW != "+") lineBreak();
       }
     }
     // update HEIGHT
@@ -164,7 +181,7 @@ function initializeSoil(callback) {
 }
 
 function updateD3CanvasHeight(newH) {
-  if (newH < HEIGHT) return;
+  if (newH < HEIGHT || pngMode) return;
   d3.select("svg").attr("height", newH);
 }
 

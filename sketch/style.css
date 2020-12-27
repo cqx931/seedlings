@@ -11,7 +11,9 @@
   src: url('font/SourceCodePro-Light.ttf')  format('truetype');
   src: url('font/SourceCodePro-Light.ttf.woff')  format('woff');
 }
-
+canvas{
+  display:none;
+}
 svg, form, #remove{
   -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
@@ -243,7 +245,7 @@ a{
 
 /****** General CSS *******/
 g text, #verticalTest{
-  font: 16px 'SourceCodePro-Light';
+  font-family: 'SourceCodePro-Light';
 }
 g text.soil {
   z-index:30;

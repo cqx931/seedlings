@@ -34,7 +34,7 @@ def fetch(seed, domain, plant):
     r = requests.get(url = URL, params = PARAMS)
 
 def prepareWordLists(text):
-    sections = text.split("--")
+    sections = text.split("________________")
     wordLists = []
     for index in range(len(sections)):
         section = sections[index]
