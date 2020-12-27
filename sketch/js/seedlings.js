@@ -1,15 +1,15 @@
 // Switches
 const isCompost = false;
-let ANIME = true;
+let ANIME = false;
 
 // noise
 noise.seed(Math.random());
 
 const SCALE_FACTOR = 20;
 const COMPOST_TIME = 4000;
-let FONT_SIZE = 14;
-const DASH_STYLE = FONT_SIZE/2 + ", " + FONT_SIZE/2,
-      SECTION_GAP = 50, // between two plants
+let FONT_SIZE = 14,
+    DASH_STYLE = FONT_SIZE/2 + ", " + FONT_SIZE/2;
+const SECTION_GAP = 50, // between two plants
       GROUND_WIDTH = 200,
       START_DELAY = 500, // chunk - branch
       LEFT_MARGIN = 200;
@@ -169,7 +169,7 @@ class Root {
 
       this.history.push(this.currentPos);
       this.life --;
-      checkIntersections(this);
+      if(ANIME) checkIntersections(this);
       // update current with next after append
       this.currentPos.x = this.nextPos.x;
       this.currentPos.y = this.nextPos.y;
@@ -206,7 +206,7 @@ class Plant{
 
     // d3 elements
     var self = this;
-    this.g = d3.select('svg').append("g")
+    this.g = d3.select('.wrapper').append("g")
            .attr("class","seedling " + this.type)
            .attr("id", this.id)
            .on('contextmenu', function(d){
@@ -272,9 +272,8 @@ class Plant{
     if (this.word != word) {
       this.word = word;
       const seed = $('#'+this.id + " .chunk .seed text");
-      const h = word.length*13;
       seed.text(word)
-       .attr("y", this.y - h + FONT_SIZE)
+          .attr("y", this.y - this.calculateHeight() + FONT_SIZE)
       this.HEIGHT = this.calculateHeight();
       if (this.type != "ivy") {
         drawMainBranch(this.x,this.y,this.x,this.y - this.HEIGHT, this.g.select('.chunk'));
@@ -332,7 +331,8 @@ class Plant{
 
   grow() { // plant
     let branchIdx = 0;
-    const gs = this.growingSpeed;
+    const gs = ANIME ? this.growingSpeed : 5;
+    const rgs = ANIME ? this.rootGrowingSpeed : 5;
     const self = this;
 
     function afterResult(data) {
@@ -370,7 +370,7 @@ class Plant{
                 console.log("growing roots", self.lifeSpan)
                 self.growRoots(self.rootTimer);
                 self.lifeSpan --;
-              }, Math.floor(self.rootGrowingSpeed));
+              }, rgs);
             }
           }
           branchIdx ++;
@@ -480,10 +480,10 @@ class Plant{
   }
 
   animate() {
-    if (ANIME) {
       var g = this.g;
-    setTimeout(function(){g.classed("show", true);}, 100);
-    }
+      setTimeout(function(){
+        g.classed("show", true);
+      }, ANIME ? 100: 0);
   }
 
   compost(){
@@ -529,7 +529,7 @@ class Plant{
   }
 
   calculateHeight() {
-    return this.word.length*13 + 10;
+    return this.word.length*(FONT_SIZE-1) + 10;
   }
 
   calculateTime(){
@@ -814,7 +814,7 @@ class Ivy extends Plant {
 class Dandelion extends Plant {
   constructor(data) {
    super(data);
-   this.WIDTH = 400;
+   this.WIDTH = 22 * FONT_SIZE;
    this.LENGTH = this.WIDTH/3;
    this.growingSpeed = 1500;
    this.lifeSpan = 100;
@@ -1022,7 +1022,7 @@ var PLANTS = {
 
 // Functions
 function drawSeed(seed,x,y,g,h) {
-  h = (h != undefined) ? h : seed.length*13;
+  h = seed.length*(FONT_SIZE-1) + 10;
 
   const s = g.append("g")
   .attr("class","seed");
@@ -1092,7 +1092,6 @@ function getClosestSoilText(thisSoil) {
   let dmin=100000, closest;
   d3.selectAll(".soil.active").each(function() {
     if (thisSoil.text == d3.select(this).text()) {
-      console.log("same text")
       return true;
     }
     const soilX = thisSoil.active != undefined ? thisSoil.x : d3.select(thisSoil).attr('x');

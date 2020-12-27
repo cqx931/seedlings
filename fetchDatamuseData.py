@@ -12,7 +12,7 @@ URL = "http://127.0.0.1:5000/datamuse"
 # necessary data
 f2 = open("sketch/stopWords.txt", "r")
 stopWords = f2.read().split("\n")
-punctuations = [",", ".",":","'","?","!","“","”","’","(",")"]
+punctuations = [",", ".",":","'","?","!","“","”","’","(",")",";"]
 plants = ["ginkgo", "plant","ivy","bamboo","pine", "dandelion"]
 # no domain for koru
 wnl = WordNetLemmatizer()
@@ -24,6 +24,8 @@ def batchFetch(words):
                 continue
             for plant in plants:
                 fetch(word1, word2, plant)
+                print(".")
+        print("Finish:", word1)
 
 def fetch(seed, domain, plant):
     PARAMS = {

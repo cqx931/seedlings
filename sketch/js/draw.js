@@ -12,6 +12,7 @@ const X_OFFSET = 50, Y_OFFSET = 700, // offset values for the soil
 let LINE_HEIGHT = FONT_SIZE * 2,  // line height for soil layout
     PARA_WIDTH = 820, // max width of the paragraph
     SPACE_WIDTH = 10, // the width of a space
+
     RIGHT_EDGE = window.innerWidth - PARA_MARGIN > PARA_MARGIN + PARA_WIDTH ?
                  PARA_MARGIN + PARA_WIDTH : window.innerWidth - PARA_MARGIN;
 
@@ -40,10 +41,13 @@ const testPlants = ["pine"];
 function initSvgCanvas(w,h,fontSize) {
   if (fontSize) {
     FONT_SIZE = fontSize;
+    DASH_STYLE = FONT_SIZE/2 + ", " + FONT_SIZE/2;
     LINE_HEIGHT = FONT_SIZE * 2;
     PARA_WIDTH = 1510; // max width of the paragraph
     SPACE_WIDTH = FONT_SIZE * 0.57;
-    RIGHT_EDGE = PARA_MARGIN + PARA_WIDTH
+    RIGHT_EDGE = PARA_MARGIN + PARA_WIDTH;
+    // update fontsize for test & vertical test
+    $("#Test, #verticalTest").css("font-size", fontSize+"px");
   }
 
   const svg = d3.select(".content").append("svg")
@@ -150,7 +154,6 @@ function initializeSoil(page, callback) {
       return " "+match+" ";
     });
     const words = RiTa.tokenize(soil);
-    console.log(words);
     for (let i = 0; i < words.length; i++) {
       const w = words[i],
             nextW = (i!=words.length-1) ? words[i+1] : "";
