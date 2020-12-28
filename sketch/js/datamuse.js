@@ -1,8 +1,8 @@
 // Three destinations to get datamuse data:
-// 1. PythonAnywhere
+// 1. pythonAnywhere
 // 2. localServer
 // 3. localStorage
-const destination = "PythonAnywhere";
+const destination = "pythonAnywhere";
 
 // Where pre-fetched apis are located
 const localStorageLocation = "../localStorage/section2/";
