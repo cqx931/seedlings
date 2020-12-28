@@ -1,15 +1,14 @@
 /************** Parameters  *****************/
 
 // The margin of the svg canvas
-const margin = {top: 20, right: 50, bottom: 20, left: 50};
+let margin = {top: 20, right: 50, bottom: 20, left: 50};
 // Canvas parameters
 const WIDTH = window.innerWidth + margin.left*2,
       HEIGHT = 1000;
 
-const X_OFFSET = 50, Y_OFFSET = 700, // offset values for the soil
-      PARA_MARGIN = X_OFFSET + margin.left;
-
-let LINE_HEIGHT = FONT_SIZE * 2,  // line height for soil layout
+let X_OFFSET = 50, Y_OFFSET = 700, // offset values for the soil
+    PARA_MARGIN = X_OFFSET + margin.left,
+    LINE_HEIGHT = FONT_SIZE * 2,  // line height for soil layout
     PARA_WIDTH = 820, // max width of the paragraph
     SPACE_WIDTH = 10, // the width of a space
 
@@ -46,6 +45,7 @@ function initSvgCanvas(w,h,fontSize) {
     PARA_WIDTH = 1510; // max width of the paragraph
     SPACE_WIDTH = FONT_SIZE * 0.57;
     RIGHT_EDGE = PARA_MARGIN + PARA_WIDTH;
+    margin.left = 150;
     // update fontsize for test & vertical test
     $("#Test, #verticalTest").css("font-size", fontSize+"px");
   }

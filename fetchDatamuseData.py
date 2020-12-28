@@ -57,7 +57,8 @@ def prepareWordLists(text):
 if __name__ == '__main__':
     mp.set_start_method('spawn', force=True)
     wordLists = prepareWordLists(all)
-    batchFetch(wordLists[1])
+    # wordList 1 run till animal in pursuit
+    batchFetch(wordLists[0])
     # pool = mp.Pool(mp.cpu_count())
     # # number of workers equal to number of sections
     # pool.map(batchFetch, [wordList for wordList in wordLists])

@@ -2,12 +2,16 @@ const params = new URLSearchParams(location.search);
 const seed = parseInt(params.get("seed"));
 const page = parseInt(params.get("page"));
 let pngMode = false;
+const w = page != 5 ? 2412 : 3074;
+const h = page != 5 ? 3074 : 2412;
 
 $( document ).ready(function() {
 if (page) {
   pngMode = true;
   $("#aboutButton").hide();
-  initSvgCanvas(2412, 3074, 28);
+
+  initSvgCanvas(w, h, 28);
+  if (page == 5) margin.left = 50;
   initializeSoil(page, function(){
     // plant specific plants without animation
     switch (page) {
@@ -82,8 +86,8 @@ function clickSoilWordByIdx(idx){
 function exportPNG(){
   const container = document.body; // take our full page
   html2canvas(container, { // turn it into a canvas object
-    width:2412,
-    height: 3074
+    width: w,
+    height: h
   }).then(function(canvas) {
     // create a link to a png version of our canvas object, then automatically start downloading it
     let a = document.createElement('a');
