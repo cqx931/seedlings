@@ -80,16 +80,23 @@ class SoilWord {
     $('#plantTypes').css('left', e.clientX + 'px');
     $('#plantTypes').css('top', e.clientY + 'px');
     $('body').addClass("rightClicked");
-    $('#plantTypes ul li').click(function(){
+
+    const handler = function(){
       const type = $(this).text();
       const domain = getClosestSoilText(self);
+      console.log("plant from rightClick select")
       plant(self.text, domain, type,
         Math.floor(self.x)-200, Math.floor(self.y));
 
       $('#plantTypes').hide();
       $( "svg" ).unbind("contextmenu");
       $('body').removeClass("rightClicked");
-    });
+      $('#plantTypes ul li').unbind("click", handler);
+    }
+
+    $('#plantTypes ul li').bind("click", handler);
+
+
   }
 
   mouseover(event, d) {
