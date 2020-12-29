@@ -926,7 +926,7 @@ var margin = {top: 20, right: 50, bottom: 20, left: 50},
     width = window.innerWidth + LEFT_MARGIN*2,
     height = 1100;
 
-var timeOutTracker = null;
+let timeOutTracker = null;
 // var diagonal = d3.svg.diagonal()
 //  .projection(function(d) { return [d.y, d.x]; });
 
@@ -939,30 +939,9 @@ const svg = d3.select(".content").append("svg")
 
 const soilSVG = svg.append("g")
                    .attr("id","soil")
+                   
 let plants = {};//global data
-
-var plantsData = {
-  "0":{
-  "id": "0",
-  "type":"pine",
-  "seed":"spine",
-  "domain":"jerusalem",
-  "x": 300,
-  "y": 400,
-  // "return":"serene",
-  "results":["sie", "sine", "snake", "serene", "spectre", "solstice", "sepulchre", "senescence","subordinate","subservience"], //9
- }
-};
-
-var edges = {
-
-};
-
-var data = {
-  'plants':plantsData,
-  'edges': edges
-};
-
+let edges = {};
 let soil = [];
 
 initializeSoil();

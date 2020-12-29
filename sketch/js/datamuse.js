@@ -5,7 +5,7 @@
 const destination = "pythonAnywhere";
 
 // Where pre-fetched apis are located
-const localStorageLocation = "../localStorage/section2/";
+const localStorageLocation = "localStorage/";
 
 // Urls for each destinations
 const urlOptions = {
@@ -14,8 +14,8 @@ const urlOptions = {
 }
 
 function datamuse(params, plant, callback) {
-  var query = "";
-  for (var item in params) {
+  let query = "";
+  for (const item in params) {
     query += item + "=" + params[item] + "&"
   }
     $.ajax({
@@ -48,7 +48,7 @@ function datamuse(params, plant, callback) {
 
 function plantServer(params, callback) {
   let query = "";
-  for (let item in params) {
+  for (const item in params) {
     query += destination == "localStorage" ? params[item] + "_" : item + "=" + params[item] + "&"
   }
 

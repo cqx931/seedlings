@@ -2,9 +2,6 @@
 const isCompost = false;
 let ANIME = true;
 
-// noise
-noise.seed(Math.random());
-
 const SCALE_FACTOR = 20;
 const COMPOST_TIME = 4000;
 let FONT_SIZE = 14,
@@ -382,7 +379,7 @@ class Plant{
                   clearInterval(self.branchTimer);
                   return;
                 }
-                console.log("growing roots", self.lifeSpan)
+                // console.log("growing roots", self.lifeSpan)
                 self.growRoots(self.rootTimer);
                 self.lifeSpan --;
               }, rgs);
@@ -390,7 +387,7 @@ class Plant{
           }
           branchIdx ++;
         }, gs);
-        console.log("Branch:", self.branchTimer)
+        // console.log("Branch:", self.branchTimer)
 
 
 
@@ -461,7 +458,7 @@ class Plant{
       const current = this.roots[j].grow();
       //const f = this.roots[j].life/this.roots[j].maxLife;
       if (this.roots.length < this.maxNumOfRoots && this.roots[j].level < 4 && Math.random() < 0.1 ) {
-        console.log("new root,",this.roots.length, this.roots[j].level)
+        //console.log("new root,",this.roots.length, this.roots[j].level)
         const newr = new Root(this.id +"_root_"+guid(), this.roots[0].plant, current.pos.x, current.pos.y, this.roots[j].level++, current.angle);
         newr.timer = timer;
         this.roots.push(newr);

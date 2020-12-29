@@ -6,6 +6,14 @@ const w = page != 1 ? 2412 : 3074;
 const h = page != 1 ? 3074 : 2412;
 
 $( document ).ready(function() {
+// replace seed
+if (seed) {
+  Math.seedrandom(seed);
+  noise.seed(seed);
+} else {
+  noise.seed(Math.random());
+}
+// if page
 if (page) {
   pngMode = true;
   $("#aboutButton").hide();
@@ -18,7 +26,6 @@ if (page) {
     page = 1;
   }
   initializeSoil(page, function(){
-    console.log(page)
     // plant specific plants without animation
     switch (page) {
       case 1:
@@ -117,7 +124,7 @@ function plantByList(list){
 
 function plantByIdx(idx, type){
   const target = soil[soilOder[idx]];
-  console.log("Init:", target.text)
+  //console.log("Init:", target.text)
   const domain = getClosestSoilText(target);
   plant(target.text, domain, type, Math.floor(target.x)-200, Math.floor(target.y));
 }

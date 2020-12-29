@@ -1,7 +1,8 @@
 /************** Parameters  *****************/
 
 // The margin of the svg canvas
-let margin = {top: 20, right: 50, bottom: 20, left: 50};
+let margin = {top: 20, right: 50, bottom: 20, left: 50},
+    timeOutTracker = null;
 // Canvas parameters
 const WIDTH = window.innerWidth + margin.left*2,
       HEIGHT = 1000;
@@ -11,32 +12,16 @@ let X_OFFSET = 50, Y_OFFSET = 700, // offset values for the soil
     LINE_HEIGHT = FONT_SIZE * 2,  // line height for soil layout
     PARA_WIDTH = 820, // max width of the paragraph
     SPACE_WIDTH = 10, // the width of a space
-
     RIGHT_EDGE = window.innerWidth - PARA_MARGIN > PARA_MARGIN + PARA_WIDTH ?
                  PARA_MARGIN + PARA_WIDTH : window.innerWidth - PARA_MARGIN;
 
-var timeOutTracker = null;
 /************** End of Parameters  *****************/
-
 // global data
 let plants = {}; // All the plants
 let soil = {}; // The soil object
 let soilOder = []; // A list of soil id
-
-const testPlants = ["pine"];
-// todo: koru
-// done: ivy
-// Issues:
-// plant, words split issue?
-// bamboo, ginkgo, pine, dandelion, pine : scattering
-
-// shuffle(testPlants);
-
-// plant("soap",'sea', randomPlant(), getRandomArbitrary(100, 200), 720);
-// plant("humanity",'technology',  testPlants[1], getRandomArbitrary(350, 400), 600, 15000)
-
-// plant("body",'literature', testPlants[2], getRandomArbitrary(900, 1000), 710, 30000)
 /**********************************/
+
 function initSvgCanvas(w,h,fontSize) {
   if (fontSize) {
     FONT_SIZE = fontSize;
@@ -92,7 +77,7 @@ function checkIntersections(r){
         return;
       }
       if (plant.domainHistory.indexOf(newW) > -1) {
-        console.log("Duplicate domain, skip");
+        //console.log("Duplicate domain, skip");
         r.plant.collision = false;
         return;
       }
@@ -100,7 +85,7 @@ function checkIntersections(r){
       // clear root
       clearInterval(r.timer);
       r.plant.next = r.plant.endWord;
-      console.log("regenerate");
+      //console.log("regenerate");
       setTimeout(r.plant.reGenerate(), 2000);
     }
   }
@@ -188,9 +173,7 @@ function updateD3CanvasHeight(newH) {
   d3.select("svg").attr("height", newH);
 }
 
-function getRandomArbitrary(min, max) {
-  return Math.random() * (max - min) + min;
-}
+
 
 function guid() {
   // Reference: https://slavik.meltser.info/the-efficient-way-to-create-guid-uuid-in-javascript-with-explanation/
@@ -270,6 +253,7 @@ function anime(g) {
   }
 }
 
+/******* Randomness *******/
 function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
 }
@@ -280,18 +264,25 @@ function getRandomIntInclusive(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
 }
 
+function getRandomArbitrary(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
+
 function getRandomItem(obj) {
-    var keys = Object.keys(obj);
+    const keys = Object.keys(obj);
     return obj[keys[ keys.length * Math.random() << 0]];
 };
 
 function randomPlant() {
-    var keys = Object.keys(PLANTS);
+    const keys = Object.keys(PLANTS);
     return keys[ keys.length * Math.random() << 0];
 };
 
+/******* Randomness *******/
+
 function getTextWidth(text, isVertical) {
-  var test = isVertical ? document.getElementById("verticalTest") : document.getElementById("Test");
+  let test = isVertical ? document.getElementById("verticalTest") : document.getElementById("Test");
   test.innerHTML = text;
   return isVertical ? test.clientHeight : test.clientWidth;
 }
@@ -318,7 +309,7 @@ function removePlantById(id) {
 }
 
 function shuffle(array) {
-  var currentIndex = array.length, temporaryValue, randomIndex;
+  let currentIndex = array.length, temporaryValue, randomIndex;
   // While there remain elements to shuffle...
   while (0 !== currentIndex) {
     // Pick a remaining element...
@@ -335,7 +326,6 @@ function shuffle(array) {
 }
 
 $( document ).ready(function() {
-
   $(".content").click(function(){
     $('.contextMenu').hide();
     $('body').removeClass("rightClicked");
