@@ -7,7 +7,7 @@ import plant
 import json
 
 # flags
-SAVE_JSONS = True;
+SAVE_JSONS = False;
 
 app = Flask(__name__)
 # app.config['SECRET_KEY'] = 'the quick brown fox jumps over the lazy   dog'

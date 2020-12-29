@@ -1,9 +1,9 @@
 const params = new URLSearchParams(location.search);
 const seed = parseInt(params.get("seed"));
-const page = parseInt(params.get("page"));
+let page = parseInt(params.get("page"));
 let pngMode = false;
-const w = page != 5 ? 2412 : 3074;
-const h = page != 5 ? 3074 : 2412;
+const w = page != 1 ? 2412 : 3074;
+const h = page != 1 ? 3074 : 2412;
 
 $( document ).ready(function() {
 if (page) {
@@ -11,17 +11,23 @@ if (page) {
   $("#aboutButton").hide();
   ANIME = false;
   initSvgCanvas(w, h, 28);
-  if (page == 5) margin.left = 50;
+  if (page == 1){
+    margin.left = 50;
+    page = 5 // switch horizontal page to first page
+  } else if (page == 5) {
+    page = 1;
+  }
   initializeSoil(page, function(){
+    console.log(page)
     // plant specific plants without animation
     switch (page) {
       case 1:
-      plantByList({
-        0: "pine",
-        19: "plant",
-        37: "bamboo",
-        46: "ginkgo",
-      })
+        plantByList({
+          0: "pine",
+          19: "plant",
+          37: "bamboo",
+          46: "ginkgo",
+        })
       break;
       case 2:
         plantByList({
@@ -45,9 +51,48 @@ if (page) {
           })
           break;
         case 4:
-        // loop through all soil words, relocate 15 words, y down 500-1500, xoffset random
-        // random plant four plants out of these 15
+        let flags = {
+          1: true,
+          2: true,
+          3: true
+        };
+        for (var i = 0; i < 20; i++) {
+          const idx = getRandomInt(soilOder.length);
+          const id = soilOder[idx];
+          const s = soil[id];
+          const newX = s.x + getRandomIntInclusive(-50,50),
+                newY = s.y + getRandomIntInclusive(500,1500);
+          s.updatePos(newX, newY)
+          if (newX > 200 && newX < 700 && flags[1])  {
+            plantByIdx(idx, "plant");
+            flags[1] = false;
+          } else if (newX > 700 && newX < 1400 && flags[2]) {
+            plantByIdx(idx, "plant");
+            flags[2] = false;
+          } else if (newX > 1400 && flags[3]){
+            plantByIdx(idx, "plant");
+            flags[3] = false;
+          }
+        }
         break;
+        case 5:
+        plantByList({
+          16: "pine",
+          17: "pine",
+          30: "pine",
+          32: "pine",
+          34: "bamboo",
+          35: "bamboo",
+          36: "bamboo",
+          43: "pine",
+          46: "pine",
+          49: "pine",
+          50: "bamboo",
+          54: "bamboo",
+          56: "bamboo",
+          58: "bamboo",
+        })
+
       default:
     }
     //TODO: after plants are rendered, exportPNG
