@@ -668,7 +668,7 @@ class Ginkgo extends Plant {
 class Pine extends Plant {
   constructor(data) {
    super(data);
-   this.growingSpeed = 500;
+   this.growingSpeed = 2000;
    this.lifeSpan = 300;
    this.WIDTH = 400;
    this.HEIGHT = this.calculateHeight();;
@@ -699,7 +699,6 @@ class Pine extends Plant {
 
     this.initializeRoots();
     drawGround(x,y,c);
-    console.log(this.word);
     drawSeed(this.word,x,y,c,this.HEIGHT);
     drawMainBranch(x,y,x,y - this.HEIGHT, c);
     drawDomain(this.domain,x,y,c);

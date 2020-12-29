@@ -4,8 +4,7 @@
 let margin = {top: 20, right: 50, bottom: 20, left: 50},
     timeOutTracker = null;
 // Canvas parameters
-const WIDTH = window.innerWidth + margin.left*2,
-      HEIGHT = 1000;
+const WIDTH = window.innerWidth, HEIGHT = 1000;
 
 let X_OFFSET = 50, Y_OFFSET = 700, // offset values for the soil
     PARA_MARGIN = X_OFFSET + margin.left,
@@ -29,8 +28,8 @@ function initSvgCanvas(w,h,fontSize) {
     LINE_HEIGHT = FONT_SIZE * 2;
     PARA_WIDTH = 1510; // max width of the paragraph
     SPACE_WIDTH = FONT_SIZE * 0.57;
+    PARA_MARGIN = X_OFFSET + margin.left,
     RIGHT_EDGE = PARA_MARGIN + PARA_WIDTH;
-    margin.left = 150;
     // update fontsize for test & vertical test
     $("#Test, #verticalTest").css("font-size", fontSize+"px");
   }
@@ -126,6 +125,7 @@ function lineRect(x1, y1, x2, y2, rx, ry, rw, rh) {
 function initializeSoil(page, callback) {
   const initialY = Y_OFFSET, initialX = margin.left + X_OFFSET;
   let xPos = initialX, yPos = initialY;
+  let rightMostXPos = xPos;
 
   jQuery.get('text.txt', function(data) {
     const allContexts = data.split("________________");
@@ -156,12 +156,19 @@ function initializeSoil(page, callback) {
         const t = new SoilWord(w, xPos, yPos, true);
         // console.log(t.text, t.boundingBox.width);
         xPos += (t.boundingBox.width + SPACE_WIDTH);
+        if (xPos > WIDTH && xPos > rightMostXPos) rightMostXPos = xPos;
+
         if (textIdx != 4 && xPos > RIGHT_EDGE
           && !punctuations.includes(nextW) && nextW != "+") lineBreak();
       }
     }
     // update HEIGHT
-    updateD3CanvasHeight(yPos+ PARA_MARGIN);
+    if(!page) {
+      updateD3CanvasHeight(yPos+ PARA_MARGIN);
+      if (rightMostXPos > WIDTH) {
+        updateD3CanvasWidth(rightMostXPos + PARA_MARGIN + margin.right);
+      }
+    }
     callback();
   })
 
@@ -173,6 +180,9 @@ function updateD3CanvasHeight(newH) {
   d3.select("svg").attr("height", newH);
 }
 
+function updateD3CanvasWidth(newW) {
+  d3.select("svg").attr("width", newW);
+}
 
 
 function guid() {

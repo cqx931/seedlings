@@ -16,18 +16,24 @@ if (seed) {
 // if page
 if (page) {
   pngMode = true;
+  let textIdx = page;
+
   $("#aboutButton").hide();
   ANIME = false;
-  initSvgCanvas(w, h, 28);
+  //margin before init canvas
+  margin.left = 200;
   if (page == 1){
     margin.left = 50;
-    page = 5 // switch horizontal page to first page
+    textIdx = 5 // switch horizontal page to first page
   } else if (page == 5) {
-    page = 1;
+    margin.left = 250;
+    textIdx = 1;
   }
-  initializeSoil(page, function(){
+  initSvgCanvas(w, h, 28);
+  // if(page==1) $('#svg').css("transform", "rotate(-90deg)");
+  initializeSoil(textIdx, function(){
     // plant specific plants without animation
-    switch (page) {
+    switch (textIdx) {
       case 1:
         plantByList({
           0: "pine",
@@ -63,20 +69,20 @@ if (page) {
           2: true,
           3: true
         };
-        for (var i = 0; i < 20; i++) {
+        for (let i = 0; i < 20; i++) {
           const idx = getRandomInt(soilOder.length);
           const id = soilOder[idx];
           const s = soil[id];
           const newX = s.x + getRandomIntInclusive(-50,50),
                 newY = s.y + getRandomIntInclusive(500,1500);
           s.updatePos(newX, newY)
-          if (newX > 200 && newX < 700 && flags[1])  {
+          if (newX > 300 && newX < 500 && flags[1])  {
             plantByIdx(idx, "plant");
             flags[1] = false;
-          } else if (newX > 700 && newX < 1400 && flags[2]) {
+          } else if (newX > 900 && newX < 1200 && flags[2]) {
             plantByIdx(idx, "plant");
             flags[2] = false;
-          } else if (newX > 1400 && flags[3]){
+          } else if (newX > 1600 && flags[3]){
             plantByIdx(idx, "plant");
             flags[3] = false;
           }
@@ -105,14 +111,15 @@ if (page) {
     //TODO: after plants are rendered, exportPNG
     // setTimeout(exportPNG, 9000);
   });
-
 } else {
+  const textIdx = getRandomIntInclusive(1,5);
+  if (textIdx == 2 && WIDTH > 1000) margin.left = 200;
   initSvgCanvas(WIDTH, HEIGHT);
-  initializeSoil(undefined, function(){
+  initializeSoil(textIdx, function(){
     const targetIdx = getRandomInt(10);
     clickSoilWordByIdx(targetIdx);
   });
-  adjustView(Y_OFFSET, 1000);
+  adjustView(Y_OFFSET+300, 2000);
 }
 });
 
@@ -136,8 +143,8 @@ function clickSoilWordByIdx(idx){
 }
 
 function exportPNG(){
-  const container = document.body; // take our full page
-  html2canvas(container, { // turn it into a canvas object
+  // const container = document.getElementById('svg'); // take our full page
+  html2canvas(document.body, { // turn it into a canvas object
     width: w,
     height: h
   }).then(function(canvas) {
