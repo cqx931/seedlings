@@ -9,7 +9,7 @@ $( document ).ready(function() {
 if (page) {
   pngMode = true;
   $("#aboutButton").hide();
-
+  ANIME = false;
   initSvgCanvas(w, h, 28);
   if (page == 5) margin.left = 50;
   initializeSoil(page, function(){

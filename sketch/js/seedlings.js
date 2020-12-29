@@ -1,6 +1,6 @@
 // Switches
 const isCompost = false;
-let ANIME = false;
+let ANIME = true;
 
 // noise
 noise.seed(Math.random());

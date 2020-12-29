@@ -7,7 +7,8 @@ f = open("sketch/text.txt", "r")
 all = f.read()
 
 # api-endpoint
-URL = "http://127.0.0.1:5000/datamuse"
+# URL = "http://127.0.0.1:5000/datamuse"
+URL = "https://cqx931.pythonanywhere.com/datamuse"
 
 # necessary data
 f2 = open("sketch/stopWords.txt", "r")
@@ -24,7 +25,7 @@ def batchFetch(words):
                 continue
             for plant in plants:
                 fetch(word1, word2, plant)
-                print(".")
+                print(word1, word2, plant)
         print("Finish:", word1)
 
 def fetch(seed, domain, plant):
@@ -46,7 +47,11 @@ def prepareWordLists(text):
         for token in tokens:
             token = token.lower()
             if (token not in stopWords and token not in punctuations):
-                wordList.append(wnl.lemmatize(token))
+                lemma = wnl.lemmatize(token)
+                if token == 'us':
+                    lemma = 'us'
+                if lemma not in wordList:
+                    wordList.append(lemma)
 
         print("Section:", index+1)
         print("Valid words:", len(wordList))
@@ -58,7 +63,12 @@ if __name__ == '__main__':
     mp.set_start_method('spawn', force=True)
     wordLists = prepareWordLists(all)
     # wordList 1 run till animal in pursuit
-    batchFetch(wordLists[0])
+    #finish wordList 1 but problematic run
+    idx = 2
+    print("Worker", 2,"pythonAnywhere")
+    print(wordLists[idx])
+    batchFetch(wordLists[idx])
+
     # pool = mp.Pool(mp.cpu_count())
     # # number of workers equal to number of sections
     # pool.map(batchFetch, [wordList for wordList in wordLists])
