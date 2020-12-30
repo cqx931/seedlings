@@ -73,7 +73,8 @@ class SoilWord {
     let self = this.active == undefined ? soil[this.id] : this;
     if (!self.active) return; // don't plant for inactive soil
     const domain = getClosestSoilText(self);
-    plant(self.text, domain, randomPlant(self.text),
+    const seed = singularize(self.text);
+    plant(seed, domain, randomPlant(seed),
       Math.floor(self.x) - 200, Math.floor(self.y));
   }
 

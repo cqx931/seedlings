@@ -1,4 +1,5 @@
 const params = new URLSearchParams(location.search);
+const test = parseInt(params.get("test"));
 const seed = parseInt(params.get("seed"));
 let page = parseInt(params.get("page"));
 let pngMode = false;
@@ -6,6 +7,10 @@ const w = page != 1 ? 2412 : 3074;
 const h = page != 1 ? 3074 : 2412;
 
 $(document).ready(function() {
+  if (test){
+    testSingularize();
+    return;
+  }
   // replace seed
   if (seed) {
     Math.seedrandom(seed);

@@ -11,7 +11,7 @@ let margin = {
 // Canvas parameters
 const WIDTH = window.innerWidth,
   HEIGHT = 1000,
-  MAX_PLANTS = 10;
+  MAX_PLANTS = 13;
 
 let X_OFFSET = 50,
   Y_OFFSET = 700, // offset values for the soil
@@ -72,7 +72,7 @@ function checkIntersections(r) {
     if (!r.plant.collision && collid) {
       r.plant.collision = true;
       //console.log("collid", r.plant.collision)
-      const newW = RiTa.stem(s.text);
+      const newW = singularize(s.text).toLowerCase();
       const pos = RiTa.pos(newW)[0];
       if (newW.indexOf("’") > 0) return;
       if (r.plant.lookFor && pos.indexOf(r.plant.lookFor) < 0) {
@@ -86,8 +86,8 @@ function checkIntersections(r) {
         // console.log("plant undefined")
         return;
       }
-      if (plant.domainHistory.indexOf(newW) > -1) {
-        //console.log("Duplicate domain, skip");
+      if (plant.domainHistory.indexOf(newW) > -1 || newW == plant.word) {
+        //console.log("Duplicate domain or domain is same as seed, skip");
         r.plant.collision = false;
         return;
       }
@@ -132,6 +132,23 @@ function lineRect(x1, y1, x2, y2, rx, ry, rw, rh) {
     return true;
   }
   return false;
+}
+
+function testSingularize() {
+  jQuery.get('text.txt', function(data) {
+    const allContexts = data.split("________________");
+    for (let i = 0; i < allContexts.length; i++) {
+      let soil = allContexts[i];
+      const words = RiTa.tokenize(soil);
+      for (let j = 0; j < words.length; j++) {
+        if (!punctuations.includes(w) && !stopWords.includes(w)) {
+          const w = words[j];
+          console.log(w, singularize(w),RiTa.stem(w))
+        }
+      }
+    }
+
+    });
 }
 
 function initializeSoil(page, pageMode, callback) {
@@ -212,15 +229,15 @@ function guid() {
 }
 
 function plant(word, domain, p, x, y, delay = 0) {
-  if (plants.length >= MAX_PLANTS && page == undefined) {
-    console.log("too many plants")
+
+  if (Object.keys(plants).length >= MAX_PLANTS) {
+    alert("Too many plants on this page! Please remove some plants or refresh the page to start again.")
     return;
   }
 
-  // singularize bug
-  if (word != "us") word = singularize(word);
-  if (domain != "us") domain = singularize(domain);
-
+  // singularize & lowercase
+  word = singularize(word).toLowerCase();
+  domain = singularize(domain).toLowerCase();
 
   var data = {
     "id": guid(),
@@ -310,13 +327,26 @@ function getRandomItem(obj) {
 };
 
 function randomPlant(w) {
-  const keys = Object.keys(PLANTS);
-  // if (w && w.length <=3) // remove pine
-  // if (w && w == "cisgender") remove plant
+  let keys = Object.keys(PLANTS);
+  if (w && w.length <=3) {
+     removeItemOnce(keys, "pine");
+  }
+  // !!! text specific
+  if (w && w == "cisgender") {
+    removeItemOnce(keys, "plant");
+    console.log("no plant", keys)
+  }
   return keys[keys.length * Math.random() << 0];
 };
 
 /******* Randomness *******/
+function removeItemOnce(arr, value) {
+  var index = arr.indexOf(value);
+  if (index > -1) {
+    arr.splice(index, 1);
+  }
+  return arr;
+}
 
 function getTextWidth(text, isVertical) {
   let test = isVertical ? document.getElementById("verticalTest") : document.getElementById("Test");
@@ -346,16 +376,21 @@ function removePlantById(id) {
 }
 
 function singularize(word) {
+  // !!! text specific
   let w = RiTa.singularize(word.toLowerCase());
-  // edge cases
+  // fixes
   if (w == "waf" && word == "waves") w = "wave"
-  if (word == "bottomless") w = "bottomless"
-  if (word == "glass") w = "glass"
-  if (word == "dishes") w = "dish"
-  if (word == "goes") w = "go"
   if (w == "knif" && word == "knives") w = "knife"
-  if (word == "undress") w = "undress"
-  if (word == "potatoes") w = "potato"
+  if (word == "senses") w = "sense"
+  // remove es
+  const removeEs = ["dishes", "goes", "potatoes", "paradoxes", "ashes"];
+  if (removeEs.includes(word.toLowerCase())) w = word.slice(0, -2)
+
+  // stay the same
+  const noChange = ["bottomless", "mindless", "glass", "undress", "miss", "hypothesis",
+  "unconscious", "superstitious",  "autonomous", "caress","carcass", "ludicrous", "perhaps"];
+  if (noChange.includes(word.toLowerCase())) w = word;
+
   return w;
 }
 
