@@ -2,14 +2,15 @@
 const isCompost = false;
 let ANIME = true;
 
-const SCALE_FACTOR = 20;
-const COMPOST_TIME = 4000;
-let FONT_SIZE = 14,
-    DASH_STYLE = FONT_SIZE / 2 + ", " + FONT_SIZE / 2;
-const SECTION_GAP = 50, // between two plants
-  GROUND_WIDTH = 200,
-  START_DELAY = 500, // chunk - branch
-  LEFT_MARGIN = 200;
+let FONT_SIZE = 14, DASH_STYLE = FONT_SIZE / 2 + ", " + FONT_SIZE / 2;
+const SCALE_FACTOR = 20, COMPOST_TIME = 4000,
+      GROUND_WIDTH = 200,
+      START_DELAY = 500, // chunk - branch
+      LEFT_MARGIN = 200;
+
+/* Not in use:
+      SECTION_GAP = 50, // between two plants
+*/
 
 const dragEvent = d3.drag().on("drag", function(d) {
   // update d3 text element with the drag position
@@ -237,7 +238,8 @@ class Plant {
 
     this.roots = [];
     this.collision = false;
-    this.totalAnimation = data.results ? this.calculateTime() : 0; // Is this still in use?
+    // totalAnimation not in use for dynamic grow
+    // this.totalAnimation = data.results ? this.calculateTime() : 0;
 
     // Visual Parameters
     this.growingSpeed = 1000;
@@ -300,9 +302,9 @@ class Plant {
       seed.text(word)
         .attr("y", this.y - this.calculateHeight() + FONT_SIZE)
       this.HEIGHT = this.calculateHeight();
-      if (this.type != "ivy") {
-        drawMainBranch(this.x, this.y, this.x, this.y - this.HEIGHT, this.g.select('.chunk'));
-      }
+    }
+    if (this.type != "ivy") {
+      drawMainBranch(this.x, this.y, this.x, this.y - this.HEIGHT, this.g.select('.chunk'));
     }
   }
 
@@ -598,11 +600,11 @@ class Ginkgo extends Plant {
     super(data);
     this.WIDTH = 330;
     this.LENGTH = this.WIDTH / 2;
+    this.HEIGHT = this.calculateHeight();
     this.START_ANGLE = -160 + Math.floor(Math.random() * 60);
     this.growingSpeed = 1000;
     this.lookFor = "nn";
     this.COMPOST_DISTANCE = 150;
-    this.Height = this.calculateHeight() + 40;
   }
 
   updateBranch() {
@@ -852,6 +854,7 @@ class Dandelion extends Plant {
     this.LENGTH = this.WIDTH / 3;
     this.growingSpeed = 1500;
     this.lifeSpan = 100;
+    this.HEIGHT = this.calculateHeight();
   }
 
   calculateTime() {
@@ -904,7 +907,6 @@ class Dandelion extends Plant {
     }
 
     //drawText
-
   }
 
   draw() {
@@ -993,11 +995,6 @@ class Bamboo extends Plant {
       console.warn("Beyond the edge of the canvas");
       return;
     }
-    // if (i == 1) {
-    //   setTimeout(function(){
-    //     adjustView(x,y + window.innerHeight / 2);
-    //   }, START_DELAY + (i + 1) * 1000)
-    // }
 
     b.append("text")
       .attr("x", x)
@@ -1030,15 +1027,6 @@ class Bamboo extends Plant {
     this.initializeRoots();
 
     var HEIGHT = getTextWidth(this.word, true);
-
-    // c.append("text")
-    //  .attr("x", x - FONT_SIZE/2)
-    //  .attr("y", y - 10)
-    //  .style("writing-mode", "tb")
-    //  .attr("text-anchor", "end")
-    //  .attr("dy", ".35em")
-    //  .text(this.word)
-    //  .attr("class","seed");
 
     drawMainBranch(x, y, x, y - HEIGHT, c);
 

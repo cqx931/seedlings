@@ -165,27 +165,27 @@ function plantByIdx(idx, type) {
 
 function clickSoilWordByIdx(idx) {
   const target = soil[soilOder[idx]];
-  console.log("Init:", target.text)
+  //console.log("Init:", target.text)
   target.dblclick();
 }
 
 function exportPNG() {
   console.log("Prepare PNG Export")
-  // const container = document.getElementById('svg'); // take our full page
+  // Pages: export page w/h; Sketch : svg w/h
   html2canvas(document.body, { // turn it into a canvas object
-    width: w,
-    height: h
+    width: isNaN(page) ? $('svg').width() : w,
+    height: isNaN(page) ? $('svg').height() : h
   }).then(function(canvas) {
     // create a link to a png version of our canvas object, then automatically start downloading it
     let a = document.createElement('a');
     a.href = canvas.toDataURL("image/png");
-    a.download = seed + '_' + page + '.png';
+    a.download = isNaN(page) ? "seedlings_FromHumus.png" : seed + '_' + page + '.png';
     a.click();
   });
 }
 
 document.body.onkeyup = function(e) {
-  if (e.keyCode == 32) { // space bar
+  if (e.keyCode == 32) {
     exportPNG();
   }
 }
