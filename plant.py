@@ -193,13 +193,15 @@ def dandelion(word, domain):
     print("Plant " + word + " in " + domain + " as dandelion :")
     history = []
     next = api.words(rel_trg=word, topics=domain, max=SPEED, md="f")
-    while(len(next) < 3):
+
+    while (len(next) < 3):
         similar = api.words(ml=word, max=SPEED, md="f")
         similar = similar[:5]
         shuffle(similar)
         word = similar[0]["word"]
         next = api.words(rel_trg=word, topics=domain, max=SPEED, md="f")
     shuffle(next)
+
     for item in next:
         if isBad(item, history,domain):
             continue

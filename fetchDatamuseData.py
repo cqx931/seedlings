@@ -1,11 +1,13 @@
 import sys
 import requests
+import os.path
 from nltk.tokenize import word_tokenize
 import multiprocessing as mp
 from nltk.stem import WordNetLemmatizer
 import json
 from ast import literal_eval
-f = open("sketch/text.txt", "r")
+
+f = open("seedlings_FromHumus/text.txt", "r")
 all = f.read()
 SAVE_JSONS = True;
 
@@ -14,24 +16,12 @@ URL = "http://127.0.0.1:5000/datamuse"
 # URL = "https://cqx931.pythonanywhere.com/datamuse"
 
 # necessary data
-f2 = open("sketch/stopWords.txt", "r")
+f2 = open("seedlings_FromHumus/stopWords.txt", "r")
 stopWords = f2.read().split("\n")
 punctuations = [",", ".",":","'","?","!","“","”","’","(",")",";"]
 plants = ["ginkgo", "plant","ivy","bamboo","pine", "dandelion"]
 # no domain for koru
 wnl = WordNetLemmatizer()
-
-def fix(word, words):
-    for word1 in words:
-        for word2 in words:
-            if (word1 == word or word2 == word):
-                if (word1 ==word):
-                    word1 = "sense"
-                elif (word2 == word):
-                    word2 = "sense"
-                for plant in plants:
-                    fetch(word1, word2, plant)
-        print("Fixed:", word1)
 
 def batchFetch(words):
     for word1 in words:
@@ -42,6 +32,15 @@ def batchFetch(words):
                 fetch(word1, word2, plant)
                 print(word1, word2, plant)
         print("Finish:", word1)
+
+def fix(word, words):
+    for word1 in words:
+        for word2 in words:
+            if (word is word1 or word is word2):
+                for plant in plants:
+                    fetch(word1, word2, plant)
+                    print(word1, word2, plant)
+    print("Fixed:", word1)
 
 def fetch(seed, domain, plant):
     PARAMS = {
@@ -54,7 +53,7 @@ def fetch(seed, domain, plant):
         filename = seed + "_" + domain + "_" + plant
         try:
             j = literal_eval(r.content.decode('utf8'))
-            with open("localStorage1/" + filename + '.json','w') as f:
+            with open("localStorage_extra/" + filename + '.json','w') as f:
                 json.dump(j, f)
         except:
             print("skip:no valid plant")
@@ -69,10 +68,14 @@ def prepareWordLists(text):
 
         for token in tokens:
             token = token.lower()
-            if (token not in stopWords and token not in punctuations):
-                lemma = wnl.lemmatize(token)
+            lemma = wnl.lemmatize(token)
+            if (token not in stopWords and lemma not in stopWords and token not in punctuations):
                 if token == 'us':
-                    lemma = 'us'
+                    continue
+                if token == 'everywheres':
+                    lemma = 'everywhere'
+                if lemma == 'sens':
+                    lemma = 'sense'
                 if lemma not in wordList:
                     wordList.append(lemma)
 
@@ -81,20 +84,31 @@ def prepareWordLists(text):
         wordLists.append(wordList)
     return wordLists
 
+def checkFile(seed, domain, plant):
+    file = seed + "_" + domain + "_" + plant
+    if not os.path.isfile("sketch/localStorage/" + file + ".json"):
+        print (seed + "_" + domain + "_" + plant + "")
+        # fetch(seed, domain, plant)
+
+def checkLocalStorage(words):
+    for word1 in words:
+        for word2 in words:
+            if (word1 == word2):
+                continue
+            for plant in plants:
+                checkFile(word1, word2, plant)
+        # print("Finish check:", word1)
 
 if __name__ == '__main__':
     mp.set_start_method('spawn', force=True)
     wordLists = prepareWordLists(all)
-    # wordList 0 finished
-    # wordList 1 run till animal in pursuit
-    #finish wordList 1 but problematic run
-    idx = 1
-    print("Worker", 1, "local")
-    print(wordLists[idx])
-    # fix("sens", wordLists[idx])
-    batchFetch(wordLists[idx])
+    # print(wordLists[idx])
+    #
+    # print("Worker", 2,3,4, "local")
+    # # save to localStorage
+    fetch("theory","sponge", "plant");
+    # checkLocalStorage(wordLists[5])
 
-    # pool = mp.Pool(mp.cpu_count())
-    # # number of workers equal to number of sections
-    # pool.map(batchFetch, [wordList for wordList in wordLists])
-    # pool.close()
+    # idx = 4
+    # print(wordLists[idx])
+    # fix("everywhere", wordLists[idx]);
