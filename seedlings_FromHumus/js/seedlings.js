@@ -82,7 +82,6 @@ class SoilWord {
   rightclick(e, d) {
     let self = this.active == undefined ? soil[this.id] : this;
     e.preventDefault();
-    $('#options').hide();
     $('#plantTypes').show();
     $('#plantTypes').css('left', e.clientX + 'px');
     $('#plantTypes').css('top', e.clientY + 'px');
@@ -91,7 +90,6 @@ class SoilWord {
     const handler = function() {
       const type = $(this).text();
       const domain = getClosestSoilText(self);
-      console.log("plant from rightClick select")
       plant(self.text, domain, type,
         Math.floor(self.x) - 200, Math.floor(self.y));
 
@@ -388,7 +386,7 @@ class Plant {
             self.branchTimer = false;
             // start growing roots
             if (self.rootTimer) {
-              console.log("root timer conflict!", self)
+              //console.log("root timer conflict!", self)
               return;
             }
             self.rootTimer = setInterval(() => {
@@ -571,9 +569,8 @@ class Plant {
   }
 
   onrightClicked(d, self) {
-    console.log(self.id, plants[self.id])
     let rightClickOnPlant = self.id;
-    $("svg").bind("contextmenu", function(e) {
+    $("#" + self.id).bind("contextmenu", function(e) {
       if (rightClickOnPlant == null) {
         $("svg").unbind("contextmenu");
         $('svg').removeClass("contextMenu");
@@ -588,7 +585,7 @@ class Plant {
         removePlantById(rightClickOnPlant);
         $('#options').hide();
         rightClickOnPlant = null;
-        $("svg").unbind("contextmenu");
+        $("#" + self.id).unbind("contextmenu");
         $('body').removeClass("rightClicked");
       });
     })
@@ -628,15 +625,15 @@ class Ginkgo extends Plant {
 
   growBranch(w, i) { // gingkgo
     const x = this.x,
-      y = this.currentP.y;
+          y = this.currentP.y;
     var b = this.g.append("g")
-      .style("transition-delay", START_DELAY + i * 500 + "ms")
-      .attr("class", "branch");
+                .style("transition-delay", START_DELAY + i * 500 + "ms")
+                .attr("class", "branch");
     var angle = 15 * i + this.START_ANGLE;
 
     // find the end point
-    var endy = this.LENGTH * Math.sin(Math.radians(angle)) + y
-    var endx = this.LENGTH * Math.cos(Math.radians(angle)) + x
+    var endy = this.LENGTH * Math.sin(Math.radians(angle)) + y;
+    var endx = this.LENGTH * Math.cos(Math.radians(angle)) + x;
 
     b.append("line")
       .style("position", "absolute")
@@ -778,7 +775,7 @@ class Ivy extends Plant {
 
     p = this.processSpecificParameters(p, this.word, this.result);
     if (p == false || p == undefined) {
-      console.warn("[Invalid Parameters]");
+      //console.warn("[Invalid Parameters]");
       return false;
     }
 

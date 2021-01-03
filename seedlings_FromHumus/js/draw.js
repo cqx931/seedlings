@@ -163,9 +163,9 @@ function initializeSoil(page, pageMode, callback) {
     const textIdx = page != undefined ? (page - 1) : getRandomInt(allContexts.length);
     let soil = allContexts[textIdx];
     const lines = soil.split("\n").length;
-    soil = soil.replaceAll("\n", " _lineBreak_ ");
-    soil = soil.replaceAll(/\s{2,}/g, function(match) {
-      match = match.replaceAll(" ", "+")
+    soil = soil.replace(/\n/g, " _lineBreak_ ");
+    soil = soil.replace(/\s{2,}/g, function(match) {
+      match = match.replace(/ /g, "+")
       return " " + match + " ";
     });
     const words = RiTa.tokenize(soil);

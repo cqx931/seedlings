@@ -47,6 +47,7 @@ body.rightClicked {
   width: 100%;
   height: 100%;
   transform-origin: center center;
+  -webkit-transform-origin: center center;
 }
 
 .seedling {
@@ -387,6 +388,7 @@ textPath {
   left: 0;
   top: 0;
   transform-origin: bottom center;
+  -webkit-transform-origin: bottom center;
 }
 
 .node circle {
@@ -410,6 +412,11 @@ textPath {
   text-orientation: upright;
   writing-mode: tb;
   letter-spacing: -1px;
+}
+
+#verticalTest, .bamboo g.branch {
+  /* safari */
+  -webkit-text-orientation: upright;
 }
 
 .koruResult {
