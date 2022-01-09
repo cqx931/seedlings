@@ -64,12 +64,19 @@ const exportPNG = function() {
 }
 
 const exportJSON = function() {
-  // let data = {
-  //   plants:plants,
-  //   soil:soil,
-  //   settings:settings
-  // }
-  exportToJsonFile(plants);
+  // get plant data from plants
+  let plant_data = {};
+  for (const [id, plant] of Object.entries(plants)) {
+    plant_data[id] = plant.getJSON();
+  }
+
+  let data = {
+    plants:plant_data,
+    soil:soil,
+    settings:settings
+  }
+
+  exportToJsonFile(data);
 }
 
 const importJSON = function(jsonData) {
@@ -172,17 +179,19 @@ const dataOnLoadHandler = function(data) {
 
 const exportToJsonFile = function(jsonData) {
     let seen = [];
-    let dataStr = JSON.stringify(jsonData, function(key, val) {
-       if (val != null && typeof val == "object") {
-            if (seen.indexOf(val) >= 0) {
-                console.log(key, val);
-                return;
-            }
-
-            seen.push(val);
-        }
-        return val;
-    });
+    let dataStr = JSON.stringify(jsonData);
+    // no longer in use
+    //, function(key, val) {
+    //    if (val != null && typeof val == "object") {
+    //         if (seen.indexOf(val) >= 0) {
+    //             console.log(key, val);
+    //             return;
+    //         }
+    //
+    //         seen.push(val);
+    //     }
+    //     return val;
+    // }
 
     let dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
 

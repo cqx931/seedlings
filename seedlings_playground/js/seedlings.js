@@ -8,7 +8,7 @@ const SCALE_FACTOR = 20, COMPOST_TIME = 4000,
       START_DELAY = 500, // chunk - branch
       LEFT_MARGIN = 200;
 
-let PAGE_MODE = false;
+let PAGE_MODE = true;
 
 const dragEvent = d3.drag().on("drag", function(d) {
   console.log(d.x, d.y)
@@ -207,6 +207,12 @@ class Root {
 
 class Plant {
   constructor(data) {
+
+    if ('g' in data) {
+      reconstructPlantFromJson(data);
+      return;
+    }
+
     // Basic Plant info
     this.id = data.id;
     this.type = data.type;
@@ -446,9 +452,8 @@ class Plant {
     this.getResult(afterResult);
   }
 
-  growBranch(w, i) {
-
-    var b = this.g.append("g")
+  growBranch(w, i) { // plant
+    var b = d3.select("#" + this.id + " .branches").append("g")
       .attr("class", "branch");
     var w = this.result[i],
       flag = "middle";
@@ -492,7 +497,7 @@ class Plant {
         .attr("y", textY)
         .attr("text-anchor", flag)
         .attr("class", "branch_text bg");
-      }
+    }
 
     b.append("text")
       .text(w)
@@ -538,6 +543,9 @@ class Plant {
     drawDomain(this.domain, x, y, c);
 
     this.initializeRoots();
+    this.g.append("g")
+      .attr("class", "branches");
+
     // SEED
     var seed = drawSeed(this.word, x, y - 10, c);
     // change height based on seed width
@@ -636,6 +644,35 @@ class Plant {
       });
     })
   }
+
+  getJSON() {
+    let data = {
+      id: this.id,
+      type: this.type,
+      word: this.word,
+      domain: this.domain,
+      endWord:this.endWord,
+      result: this.result,
+
+      // Positions info
+      x: this.x,
+      y: this.y,
+      translate: this.translate,
+      currentP: this.currentP,
+      endPos: this.endPos,
+      FontSize: this.FontSize,
+
+      // d3
+      branches: d3.select("#" + this.id + " .branches").node(),
+      //roots: this.roots // circular structure?
+    };
+    console.log(data);
+    return data;
+  }
+
+  reconstructPlantFromJson(){
+
+  }
 }
 
 class Ginkgo extends Plant {
@@ -672,7 +709,7 @@ class Ginkgo extends Plant {
   growBranch(w, i) { // ginkgo
     const x = this.x,
           y = this.currentP.y;
-    var b = this.g.append("g")
+    var b = d3.select("#" + this.id + " .branches").append("g")
                 .style("transition-delay", START_DELAY + i * 500 + "ms")
                 .attr("class", "branch");
     var angle = 15 * i + this.START_ANGLE;
@@ -702,12 +739,12 @@ class Ginkgo extends Plant {
 
 
     if (!PAGE_MODE) {
-    textWrapper.append("text")
-      .attr("x", x)
-      .attr("y", y)
-      .text("            " + w)
-      .attr("font-family", FONT)
-      .attr("class", "branch_text bg");
+      textWrapper.append("text")
+        .attr("x", x)
+        .attr("y", y)
+        .text("            " + w)
+        .attr("font-family", FONT)
+        .attr("class", "branch_text bg");
     }
 
     textWrapper.append("text")
@@ -778,7 +815,7 @@ class Pine extends Plant {
   }
 
   growBranch(word, idx) { //pine
-    var b = this.g.append("g")
+    var b = d3.select("#" + this.id + " .branches").append("g")
       .style("transition-delay", 1500 + "ms")
       .attr("class", "branch");
     const posY = this.y - this.FontSize * 1.5 * idx - this.HEIGHT;
@@ -851,7 +888,7 @@ class Ivy extends Plant {
 
   growBranch(w, idx) { //ivy
 
-    var b = this.g.append("g")
+    var b = d3.select("#" + this.id + " .branches").append("g")
       .style("transition-delay", START_DELAY + idx * 1000 + "ms")
       .attr("class", "branch");
     var v = idx % 2 == 0 ? -1 : 1;
@@ -953,7 +990,7 @@ class Dandelion extends Plant {
   }
 
   growBranch(w, i) { //dandelion
-    var b = this.g.append("g")
+    var b = d3.select("#" + this.id + " .branches").append("g")
       .style("transition-delay", START_DELAY + i * 200 + "ms")
       .attr("class", "branch");
 
@@ -1030,6 +1067,7 @@ class Koru extends Plant {
     super(data);
     this.totalLength = 13 + Math.floor(Math.random() * 5);
     this.spiralWrapper;
+    // TODO: spiralWrapper has a very different dom structure - branches
   }
 
   calculateTime() {
@@ -1083,7 +1121,7 @@ class Bamboo extends Plant {
   growBranch(w, i) { //bamboo
     const x = this.currentP.x,
       y = this.currentP.y;
-    var b = this.g.append("g")
+    var b = d3.select("#" + this.id + " .branches").append("g")
       .style("transition-delay", START_DELAY + i * 1000 + "ms")
       .attr("class", "branch");
     var content = w + (i == 0 ? "" : "=");
