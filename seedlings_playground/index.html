@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Qianxun Chen; Mariana Roa Oliva">
+  <title>Seedlings_:From Humus</title>
+
+  <!-- Preload font files to prevent wrong calculation of text width -->
+  <link rel="preload" href="font/SourceCodePro-Light.ttf.woff" as="font" crossorigin="anonymous" />
+  <link rel="preload" href="font/SourceCodePro-Light.ttf" as="font" crossorigin="anonymous" />
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <script src="js/lib/seedrandom.min.js"></script>
+  <script src="js/lib/jquery.js"></script>
+  <script src="js/lib/rita-web.js"></script>
+  <script src="js/lib/jquery.svg.js"></script>
+  <script src="js/datamuse.js"></script>
+</head>
+
+<body>
+
+  <div id="Test" class="test">
+  </div>
+  <div id="verticalTest" class="test">
+  </div>
+  <div id="plantTypes" class="contextMenu" data-html2canvas-ignore="true">
+    <ul>
+
+    </ul>
+  </div>
+  <div id="options" class="contextMenu" data-html2canvas-ignore="true">
+    <ul>
+      <li class="button" id="remove">Remove</li>
+    </ul>
+  </div>
+
+<div class="menu no-print">
+    <h3>Seedlings_</h3>
+    <br>
+    <div class="buttons">
+    <button id="clearCanvas" type="button" name="button">Clear</button>
+    <button id="import" type="button" name="button">Import Data</button>
+    <button id="export" type="button" name="button">Export Data</button>
+    <input id="importFilePicker" type="file" accept="application/json" class="hiddenFileInput">
+    </div>
+  <!-- <form class="command">
+      PLANT
+    <input type="text" placeholder="a word" name="word" value="">
+     IN
+    <input type="text" placeholder="a topic" name="domain" value="">
+    AS
+    <select name="input" id="plantType" style="width:100px;">
+   <option value="bamboo">bamboo</option>
+   <option value="dandelion">dandelion</option>
+   <option value="ginkgo">ginkgo</option>
+   <option value="ivy">ivy</option>
+   <option value="pine">pine</option>
+   <option value="plant" selected="">plant</option>
+   </select>
+    <input  id="run" type="submit" name="button" value="Run">
+</form> -->
+
+<form id="settings" action="index.html" method="post">
+
+</form>
+
+  </div>
+
+  <div class="content">
+    <!-- load the d3.js library -->
+    <script src="js/lib/d3.v6.min.js"></script>
+    <script src="js/lib/d3-transition.v2.min.js"></script>
+    <script src="js/lib/perlin.js"></script>
+    <script src="js/seedlings.js"></script>
+    <script src="js/draw.js"></script>
+    <script src="js/lib/html2canvas.min.js"></script>
+    <script src="js/ui.js"></script>
+  </div>
+
+</body>
+</html>
