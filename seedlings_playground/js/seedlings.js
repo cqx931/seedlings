@@ -544,10 +544,9 @@ class Plant {
     this.initialize();
 
     // SEED
-    var seed = drawSeed(this.word, x, y - 10, c, this.fontSize);
+    var seed = drawSeed(this.word, x, y - 10, c, this.FontSize);
     // change height based on seed width
     this.HEIGHT = this.calculateHeight();
-    console.log(this.HEIGHT);
     // MAIN BRANCH
     drawMainBranch(x, y, x, y - this.HEIGHT, c);
   }
@@ -785,7 +784,7 @@ class Ginkgo extends Plant {
 
     drawGround(x, y, c)
     // SEED
-    var seed = drawSeed(this.word, x, y - 20, c, this.fontSize)
+    var seed = drawSeed(this.word, x, y - 20, c, this.FontSize)
     drawMainBranch(x, y, x, y - this.HEIGHT, c);
     drawDomain(this.domain, x, y, c);
     this.initialize();
@@ -830,7 +829,7 @@ class Pine extends Plant {
 
     this.initialize();
     drawGround(x, y, c);
-    drawSeed(this.word, x, y, c, this.fontSize);
+    drawSeed(this.word, x, y, c, this.FontSize);
     drawMainBranch(x, y, x, y - this.HEIGHT, c);
     drawDomain(this.domain, x, y, c);
   }
@@ -1076,7 +1075,7 @@ class Dandelion extends Plant {
     drawGround(x, y, c);
 
     this.initialize();
-    var seed = drawSeed(this.word, x, y, c, this.fontSize);
+    var seed = drawSeed(this.word, x, y, c, this.FontSize);
     drawMainBranch(x, y, x, y - LENGTH, c);
     drawDomain(this.domain, x, y, c);
 
@@ -1112,7 +1111,7 @@ class Koru extends Plant {
 
     var w = getTextWidth(this.word);
 
-    drawSeed(this.word, x, y, c, this.fontSize)
+    drawSeed(this.word, x, y, c, this.FontSize)
     drawMainBranch(x, y, x, y - 60, c);
 
     var t = this.g.append("text")
@@ -1280,7 +1279,6 @@ function drawGround(x, y, g) {
 }
 
 function drawMainBranch(x1, y1, x2, y2, g) {
-  console.log("draw main b",x1, y1, x2, y2, g.empty())
   g.append("line")
     .style("stroke-dasharray", DASH_STYLE)
     .attr("x1", x1)
