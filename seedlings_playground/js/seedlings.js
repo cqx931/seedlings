@@ -169,8 +169,8 @@ class Root {
     const deltaX = dis * Math.cos(angle);
     const deltaY = dis * Math.sin(angle);
 
-    this.nextPos.x = this.currentPos.x + deltaX;
-    this.nextPos.y = this.currentPos.y + deltaY;
+    this.nextPos.x = roundTo(this.currentPos.x + deltaX, 3);
+    this.nextPos.y = roundTo(this.currentPos.y + deltaY, 3);
     this.currentAngle = angle;
     this.initialAngle = undefined;
   }
@@ -189,7 +189,7 @@ class Root {
         .attr("x2", this.nextPos.x)
         .attr("y2", this.nextPos.y)
         .attr("stroke-opacity", fillO)
-      this.history.push({x:this.currentPos.x, y:this.currentPos.y});
+      this.history.push([this.currentPos.x, this.currentPos.y]);
       this.life--;
       if (settings.animation) checkIntersections(this);
       // update current with next after append
@@ -645,7 +645,6 @@ class Plant {
 
   getJSON() {
     // console.log(d3.select("#" + this.id + " .branches"), d3.select("#" + this.id + " .branches").html());
-    console.log(this.roots);
     let data = {
       id: this.id,
       type: this.type,
@@ -664,14 +663,36 @@ class Plant {
 
       // d3
       branches: "" + d3.select("#" + this.id + " .branches").html(),
-      roots: "" + d3.select("#" + this.id + " .roots").html()
+      roots:[]
     };
+
+    // roots data
+    for (let i = 0; i < this.roots.length; i++) {
+       data.roots.push({
+         id: this.roots[i].id,
+         history: this.roots[i].history
+       })
+    }
+
     return data;
   }
 
   growFromJSON(data){
     d3.select("#" + this.id + " .branches").html(data.branches);
-    d3.select("#" + this.id + " .roots").html(data.roots);
+    // constrct roots from points
+    for (let i = 0; i < data.roots.length; i++) {
+      console.log(d3.line(data.roots[i].history))
+
+      d3.select("#" + this.id + " .roots")
+        .append("path")
+        .attr("id",data.roots[i].id)
+        .attr("d", d3.line(data.roots[i].history))
+        .attr("stroke", "black")
+        .attr("stroke-opacity", 0.5);
+
+
+    }
+
   }
 }
 
@@ -1286,6 +1307,10 @@ function getClosestSoilText(thisSoil) {
     }
   })
   return closest.text();
+}
+
+function roundTo(num, decimal) {
+    return  parseFloat(num.toFixed(decimal));
 }
 
 function getDistance(x1, y1, x2, y2) {

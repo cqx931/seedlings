@@ -50,15 +50,15 @@ const populateSettings = function() {
 
 const exportPNG = function() {
   console.log("Prepare PNG Export")
-  // Pages: export page w/h; Sketch : svg w/h
+  // TODO: only export svg to png, not the entire page
   html2canvas(document.body, { // turn it into a canvas object
-    width: isNaN(page) ? $('svg').width() : w,
-    height: isNaN(page) ? $('svg').height() : h
+    width: $('svg').width(),
+    height: $('svg').height()
   }).then(function(canvas) {
     // create a link to a png version of our canvas object, then automatically start downloading it
     let a = document.createElement('a');
     a.href = canvas.toDataURL("image/png");
-    a.download = isNaN(page) ? "seedlings_FromHumus.png" : seed + '_' + page + '.png';
+    a.download = "seedlings_FromHumus.png";
     a.click();
   });
 }
@@ -84,6 +84,25 @@ const importJSON = function(jsonData) {
   startJSONFilePicker();
 }
 
+const exportSVG = function() {
+  saveSvg(document.getElementsByTagName("svg")[0], "seedlings.svg")
+};
+
+const saveSvg = function(svgEl, name) {
+    // https://stackoverflow.com/questions/23218174/how-do-i-save-export-an-svg-file-after-creating-an-svg-with-d3-js-ie-safari-an
+    svgEl.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+    var svgData = svgEl.outerHTML;
+    var preface = '<?xml version="1.0" standalone="no"?>\r\n';
+    var svgBlob = new Blob([preface, svgData], {type:"image/svg+xml;charset=utf-8"});
+    var svgUrl = URL.createObjectURL(svgBlob);
+    var downloadLink = document.createElement("a");
+    downloadLink.href = svgUrl;
+    downloadLink.download = name;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+}
+
 const startJSONFilePicker = function() {
   const input = document.getElementById('importFilePicker');
   // Reset to empty string, this will ensure an change event is properly
@@ -100,7 +119,6 @@ function handleImportData(evt) {
   const reader = new FileReader();
 
   reader.onload = function (e) {
-    let adData;
     try {
       const data = JSON.parse(e.target.result);
       dataOnLoadHandler(data);
@@ -166,6 +184,7 @@ const exportToJsonFile = function(jsonData) {
 
 document.body.onkeyup = function(e) {
   if (e.keyCode == 32) {
-    exportPNG();
+    //exportPNG();
+    exportSVG();
   }
 }
