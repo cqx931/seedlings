@@ -99,8 +99,6 @@ function handleImportData(evt) {
 
   const reader = new FileReader();
 
-  console.log("Handle Import Data!")
-
   reader.onload = function (e) {
     let adData;
     try {
@@ -117,44 +115,6 @@ function handleImportData(evt) {
   reader.readAsText(files[0]);
 }
 
-// function handleImportFilePicker() {
-//
-//   const file = this.files[0];
-//   if (file === undefined || file.name === '') {
-//     return;
-//   }
-//   // if ( file.type.indexOf('text') !== 0 ) {
-//   //     return;
-//   // }
-//   const filename = file.name;
-//
-//   const fileReaderOnLoadHandler = function () {
-//     let data;
-//     try {
-//       data = JSON.parse(this.result);
-//       if (typeof userData !== 'object') {
-//         throw 'Invalid';
-//       }
-//       if (typeof userData.userSettings !== 'object') {
-//         //adnauseam admap
-//         dataOnLoadHandler(data);
-//         return;
-//       }
-//
-//     }
-//     catch (e) {
-//       data= undefined;
-//     }
-//     if (data === undefined) {
-//       window.alert("Can't parse data.");
-//       return;
-//     }
-//   };
-//
-//   const fr = new FileReader();
-//   fr.onload = fileReaderOnLoadHandler;
-//   fr.readAsText(file);
-// };
 
 const dataOnLoadHandler = function(data) {
   settings = data.settings;
@@ -165,15 +125,16 @@ const dataOnLoadHandler = function(data) {
     const sW = new SoilWord(d.text, d.x, d.y, d.active, d.id);
   }
 
+
+
   for (const key in data.plants) {
     const d = data.plants[key];
-    const p = new Plant();
+    const p =  new PLANTS[d.type](d);
+    console.log(p)
+    p.draw();
+    p.growFromJSON(d);
+    p.animate();
   }
-
-  // for (const [key, plant] of Object.entries(data.plants)) {
-  //   console.log(plant);
-  //   plant.draw();
-  // }
 
 }
 

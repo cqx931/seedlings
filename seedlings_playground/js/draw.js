@@ -14,7 +14,7 @@ let settings = {
   plantFontSize: 28,
   animation:false,
   disableWhiteTextBg: true,
-  roots: false,
+  roots: true,
   noRegrow: true,
 //soil
   soilFontSize: 28,
@@ -177,7 +177,7 @@ const plant = function(word, domain, p, x, y, delay = 0) {
   const data = {
     "id": guid(),
     "type": p,
-    "seed": word,
+    "word": word,
     "domain": domain,
     "x": x + LEFT_MARGIN,
     "y": y,
@@ -204,7 +204,7 @@ const generateSequence = function(word, domain, x, y) {
    const data = {
       "id": id,
       "type": p,
-      "seed": lastWord ? lastWord : word,
+      "word": lastWord ? lastWord : word,
       "domain": domain,
       "x": lastEndPos ? lastEndPos.x + Math.random() * 400 - 200 : WIDTH / 2,
       "y": lastEndPos ? lastEndPos.y - 200 : HEIGHT - 20,

@@ -189,8 +189,7 @@ class Root {
         .attr("x2", this.nextPos.x)
         .attr("y2", this.nextPos.y)
         .attr("stroke-opacity", fillO)
-
-      this.history.push(this.currentPos);
+      this.history.push({x:this.currentPos.x, y:this.currentPos.y});
       this.life--;
       if (settings.animation) checkIntersections(this);
       // update current with next after append
@@ -207,18 +206,12 @@ class Root {
 
 class Plant {
   constructor(data) {
-
-    if ('g' in data) {
-      reconstructPlantFromJson(data);
-      return;
-    }
-
     // Basic Plant info
     this.id = data.id;
     this.type = data.type;
 
     // Text Info
-    this.word = data.seed;
+    this.word = data.word;
     this.domain = data.domain;
     this.domainHistory = [this.domain];
     this.endWord;
@@ -525,15 +518,21 @@ class Plant {
     }
   }
 
-  initializeRoots() {
+  initialize() { // plant
+    //initialize branches
+    this.g.append("g")
+      .attr("class", "branches");
+
+    //Initialize roots
     const rWrapper = this.g.append("g")
       .attr("class", "roots");
-    //Initialize roots
+
     const r = new Root(this.id + "_root", this, this.x, this.y, 0);
     this.roots.push(r);
   }
 
-  draw() { //plant
+  draw() { // plant
+    console.log("plant draw")
     var x = this.x,
       y = this.y;
     var c = this.g.append("g")
@@ -542,14 +541,13 @@ class Plant {
     drawGround(x, y, c);
     drawDomain(this.domain, x, y, c);
 
-    this.initializeRoots();
-    this.g.append("g")
-      .attr("class", "branches");
+    this.initialize();
 
     // SEED
-    var seed = drawSeed(this.word, x, y - 10, c);
+    var seed = drawSeed(this.word, x, y - 10, c, this.fontSize);
     // change height based on seed width
     this.HEIGHT = this.calculateHeight();
+    console.log(this.HEIGHT);
     // MAIN BRANCH
     drawMainBranch(x, y, x, y - this.HEIGHT, c);
   }
@@ -612,7 +610,7 @@ class Plant {
   }
 
   calculateHeight() {
-    return this.word.length * (FONT_SIZE - 1) + 10;
+    return this.word.length * (this.FontSize - 1) + 10;
   }
 
   calculateTime() {
@@ -646,6 +644,8 @@ class Plant {
   }
 
   getJSON() {
+    // console.log(d3.select("#" + this.id + " .branches"), d3.select("#" + this.id + " .branches").html());
+    console.log(this.roots);
     let data = {
       id: this.id,
       type: this.type,
@@ -663,15 +663,15 @@ class Plant {
       FontSize: this.FontSize,
 
       // d3
-      branches: d3.select("#" + this.id + " .branches").node(),
-      //roots: this.roots // circular structure?
+      branches: "" + d3.select("#" + this.id + " .branches").html(),
+      roots: "" + d3.select("#" + this.id + " .roots").html()
     };
-    console.log(data);
     return data;
   }
 
-  reconstructPlantFromJson(){
-
+  growFromJSON(data){
+    d3.select("#" + this.id + " .branches").html(data.branches);
+    d3.select("#" + this.id + " .roots").html(data.roots);
   }
 }
 
@@ -764,10 +764,10 @@ class Ginkgo extends Plant {
 
     drawGround(x, y, c)
     // SEED
-    var seed = drawSeed(this.word, x, y - 20, c)
+    var seed = drawSeed(this.word, x, y - 20, c, this.fontSize)
     drawMainBranch(x, y, x, y - this.HEIGHT, c);
     drawDomain(this.domain, x, y, c);
-    this.initializeRoots();
+    this.initialize();
 
     // BRANCHES
     this.currentP.y -= this.HEIGHT; //move to center
@@ -801,15 +801,15 @@ class Pine extends Plant {
     return this.totalAnimation = START_DELAY + this.result.length * 1500 + 1000;
   }
 
-  draw() {
+  draw() { // Pine
     var x = this.x,
       y = this.y;
     var c = this.g.append("g")
       .attr("class", "chunk");
 
-    this.initializeRoots();
+    this.initialize();
     drawGround(x, y, c);
-    drawSeed(this.word, x, y, c, this.HEIGHT);
+    drawSeed(this.word, x, y, c, this.fontSize);
     drawMainBranch(x, y, x, y - this.HEIGHT, c);
     drawDomain(this.domain, x, y, c);
   }
@@ -932,7 +932,8 @@ class Ivy extends Plant {
 
   }
 
-  draw() {
+  draw() { // ivy
+    console.log("ivy draw");
     var x = this.x,
       y = this.y;
     var c = this.g.append("g")
@@ -948,7 +949,7 @@ class Ivy extends Plant {
       .attr("class", "ground");
 
     drawDomain(this.domain, x + 100, y, c);
-    this.initializeRoots();
+    this.initialize();
     var p1 = {
       x: this.x,
       y: this.y + (this.FontSize + Math.random() * 15) - this.FontSize * 3
@@ -957,7 +958,7 @@ class Ivy extends Plant {
       x: this.x + 50,
       y: this.y + 20
     };
-     if(this.angle){
+    if (this.angle){
        p1.x = this.x;
        p2 = {
         x: p1.x + GROUND_WIDTH * Math.cos(this.angle),
@@ -1053,8 +1054,8 @@ class Dandelion extends Plant {
 
     drawGround(x, y, c);
 
-    this.initializeRoots();
-    var seed = drawSeed(this.word, x, y, c);
+    this.initialize();
+    var seed = drawSeed(this.word, x, y, c, this.fontSize);
     drawMainBranch(x, y, x, y - LENGTH, c);
     drawDomain(this.domain, x, y, c);
 
@@ -1082,7 +1083,7 @@ class Koru extends Plant {
       .attr("font-family", FONT)
   }
 
-  draw() {
+  draw() { // koru
     var x = this.x,
       y = this.y;
     var c = this.g.append("g")
@@ -1090,7 +1091,7 @@ class Koru extends Plant {
 
     var w = getTextWidth(this.word);
 
-    drawSeed(this.word, x, y, c)
+    drawSeed(this.word, x, y, c, this.fontSize)
     drawMainBranch(x, y, x, y - 60, c);
 
     var t = this.g.append("text")
@@ -1154,7 +1155,7 @@ class Bamboo extends Plant {
 
   }
 
-  draw() {
+  draw() { // bamboo
     var x = this.x,
       y = this.y;
     var WIDTH = 500;
@@ -1164,7 +1165,7 @@ class Bamboo extends Plant {
 
     drawGround(x, y, c);
     drawDomain(this.domain, x, y, c)
-    this.initializeRoots();
+    this.initialize();
 
     var HEIGHT = getTextWidth(this.word, true);
 
@@ -1190,14 +1191,14 @@ const is_safari = ua.indexOf('safari/') > -1 && ua.indexOf('chrome') < 0;
 if(is_safari) delete PLANTS["bamboo"];
 
 // Functions
-function drawSeed(seed, x, y, g, h) {
-  h = seed.length * (FONT_SIZE - 1) + 10;
+function drawSeed(seed, x, y, g, fontSize) {
+  const h = seed.length * (fontSize - 1) + 10;
 
   const s = g.append("g")
     .attr("class", "seed");
-
-  const xPos = x + FONT_SIZE / 2,
-    yPos = y - h + FONT_SIZE;
+  console.log("drawSeed", seed, x, y, g, fontSize)
+  const xPos = x + fontSize / 2,
+    yPos = y - h + fontSize;
 
   if (!PAGE_MODE) {
   s.append("text")
@@ -1258,6 +1259,7 @@ function drawGround(x, y, g) {
 }
 
 function drawMainBranch(x1, y1, x2, y2, g) {
+  console.log("draw main b",x1, y1, x2, y2, g.empty())
   g.append("line")
     .style("stroke-dasharray", DASH_STYLE)
     .attr("x1", x1)
