@@ -40,13 +40,15 @@
     <button id="clearCanvas" type="button" name="button">Clear</button>
     <button id="import" type="button" name="button">Import Data</button>
     <button id="export" type="button" name="button">Export Data</button>
+  <!-- <button id="exportPNG" type="button" name="button">Export PNG</button> -->
+    <button id="exportSVG" type="button" name="button">Export SVG</button>
     <input id="importFilePicker" type="file" accept="application/json" class="hiddenFileInput">
     </div>
   <form class="command">
       PLANT
-    <input type="text" placeholder="a word" name="word" value="">
+    <input type="text"  id="seed" placeholder="a seed" name="word" value="">
      IN
-    <input type="text" placeholder="a topic" name="domain" value="">
+    <input type="text"  id="context" placeholder="a context" name="context" value="">
     AS
     <select name="input" id="plantType" style="width:100px;">
    <option value="bamboo">bamboo</option>
@@ -56,7 +58,7 @@
    <option value="pine">pine</option>
    <option value="plant" selected="">plant</option>
    </select>
-    <input  id="run" type="submit" name="button" value="Run">
+    <button  id="run" type="button" name="button">grow</button>
 </form>
 
 <form id="settings" action="index.html" method="post">

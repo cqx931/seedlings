@@ -258,7 +258,7 @@ h3 {
   margin-top: 18px;
 }
 
-input#run {
+button#run {
   /* font-size: 18px; */
   height: 2em;
   background: white;
@@ -270,6 +270,7 @@ input#run {
   transition: background-color .5s;
   font-weight: 600;
   color: #555;
+  display: inline-block;
   /* padding: 0 5px; */
 }
 
@@ -289,7 +290,7 @@ button, .button {
   font-size: 12px;
   letter-spacing: .2px;
   color: #444;
-  border-bottom: solid 1px #DDD;
+  border: 1px solid #DDD;
   margin-left: 20px;
   margin-right: 0px;
   width: 110px;
@@ -304,7 +305,7 @@ button, .button {
   transition: background-color .5s;
 }
 
-button:hover, #run:hover, #remove:hover {
+button:hover,  #remove:hover {
   background-color: #CCC !important;
 }
 
@@ -324,13 +325,14 @@ button:hover, #run:hover, #remove:hover {
   line-height: 24px;
 }
 
-.command, button, .message {
+button, .message {
   margin: 1em;
 }
 
 .command {
   letter-spacing: 1px;
-  margin-left: 2em;
+  margin-left: 1em;
+  display: block;
 }
 
 .menu>* {

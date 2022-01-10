@@ -18,6 +18,27 @@ $( "#export" ).click(function() {exportJSON();});
 $( "#import" ).click(function() {importJSON();});
 $('#importFilePicker').on('change', handleImportData);
 $( "#clearCanvas" ).click(function() {clearCanvas();});
+$( "#exportSVG" ).click(function() {exportSVG();});
+
+$("#run").click(function() {
+  const p = document.getElementById("plantType").value;
+  const w = document.getElementById("seed").value;
+  const c = document.getElementById("context").value;
+  //const a = document.getElementById("angle").value;
+  const x = 100;
+  const y = 400;
+
+  if ( w!="" && c != "") {
+      plant(w, c, p, x, y);
+  } else console.log("empty string");
+});
+
+document.body.onkeyup = function(e) {
+  if (e.keyCode == 32) {
+    //exportPNG();
+    exportSVG();
+  }
+}
 
 const plantByList = function(list) {
   for (const key in list) {
@@ -180,11 +201,4 @@ const exportToJsonFile = function(jsonData) {
     linkElement.setAttribute('href', dataUri);
     linkElement.setAttribute('download', exportFileDefaultName);
     linkElement.click();
-}
-
-document.body.onkeyup = function(e) {
-  if (e.keyCode == 32) {
-    //exportPNG();
-    exportSVG();
-  }
 }
