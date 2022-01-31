@@ -197,11 +197,10 @@ const generateSequence = function(word, domain, x, y) {
   const id = 0;
   const LIMIT = 5;
   let lastEndPos, lastWord;
-
   function f(id) {
     const p = randomPlant();
     // var p = "plant";
-   const data = {
+    const data = {
       "id": id,
       "type": p,
       "word": lastWord ? lastWord : word,

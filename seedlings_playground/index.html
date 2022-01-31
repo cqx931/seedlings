@@ -8,12 +8,15 @@
   <!-- Preload font files to prevent wrong calculation of text width -->
   <link rel="preload" href="font/SourceCodePro-Light.ttf.woff" as="font" crossorigin="anonymous" />
   <link rel="preload" href="font/SourceCodePro-Light.ttf" as="font" crossorigin="anonymous" />
-  <link rel="stylesheet" type="text/css" href="style.css">
+  <link rel="stylesheet" type="text/css" href="css/normalize.css">
+  <link rel="stylesheet" type="text/css" href="css/skeleton.css">
+  <link rel="stylesheet" type="text/css" href="css/style.css">
   <script src="js/lib/seedrandom.min.js"></script>
   <script src="js/lib/jquery.js"></script>
   <script src="js/lib/rita-web.js"></script>
   <script src="js/lib/jquery.svg.js"></script>
   <script src="js/datamuse.js"></script>
+
 </head>
 
 <body>
@@ -34,13 +37,12 @@
   </div>
 
 <div class="menu no-print">
-    <h3>Seedlings_</h3>
+    <h5>Seedlings_</h5>
     <br>
     <div class="buttons">
-    <button id="clearCanvas" type="button" name="button">Clear</button>
     <button id="import" type="button" name="button">Import Data</button>
     <button id="export" type="button" name="button">Export Data</button>
-  <!-- <button id="exportPNG" type="button" name="button">Export PNG</button> -->
+    <button id="exportPNG" type="button" name="button" disabled>Export PNG</button>
     <button id="exportSVG" type="button" name="button">Export SVG</button>
     <input id="importFilePicker" type="file" accept="application/json" class="hiddenFileInput">
     </div>
@@ -60,9 +62,28 @@
    </select>
     <button  id="run" type="button" name="button">grow</button>
 </form>
-
-<form id="settings" action="index.html" method="post">
-
+<form id="settings" >
+  <b>Settings</b> <br>
+  <div id="pageFormat">
+    <label for="pageFormat">Page Format</label>
+    <label><input type="radio" name="input" value="0" checked="">Single Page</label>
+    <label><input type="radio" name="input" value="1">Split Page</label>
+    <label><input type="radio" name="input" value="2">Specify</label>
+  </div>
+  <label for="">Width</label><input type="text" value="1800" name="width" >
+  <label for="">Height</label><input type="text" value="2460" name="height">
+  <br>
+  <label for="">Plant Font Size</label><input type="number" min="10" max="40" value="24" step="1" name="plantFontSize" required="">
+  <label for="">Soil Font Size</label><input type="number" min="10" max="40" value="24" step="1" name="soilFontSize" required="">
+  <br>
+  <label for="">Soil Offset X</label><input type="text"  value="100" name="SoilOffsetY">
+  <label for="">Soil Offset Y</label><input type="text"  value="100" name="SoilOffsetY">
+  <!-- checkboxes -->
+  <div class="checkboxes">
+  </div>
+  <div class="buttons">
+  <button id="updateCanvas" type="button" name="button">Update Canvas</button> <button id="clearCanvas" cltype="button" name="button">Clear Canvas</button>
+ </div>
 </form>
 
   </div>

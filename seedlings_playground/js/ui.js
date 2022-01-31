@@ -3,15 +3,12 @@ $(document).ready(function() {
      populateSettings();
      // Initialize the canvas
      console.log("init")
-
     const textarea = "demo text";
-
     const id = 'main';
     initSvgCanvas(settings.width, settings.height);
     initializeSoil(textarea, id);
     //word, domain, p, x, y
     plant( "language", "dream", "ivy", 400,200);
-
 });
 
 $( "#export" ).click(function() {exportJSON();});
@@ -19,6 +16,7 @@ $( "#import" ).click(function() {importJSON();});
 $('#importFilePicker').on('change', handleImportData);
 $( "#clearCanvas" ).click(function() {clearCanvas();});
 $( "#exportSVG" ).click(function() {exportSVG();});
+$( "#updateCanvas" ).click(function() {updateCanvas();});
 
 $("#run").click(function() {
   const p = document.getElementById("plantType").value;
@@ -27,7 +25,6 @@ $("#run").click(function() {
   //const a = document.getElementById("angle").value;
   const x = 100;
   const y = 400;
-
   if ( w!="" && c != "") {
       plant(w, c, p, x, y);
   } else console.log("empty string");
@@ -65,8 +62,15 @@ const clickSoilWordByIdx = function(idx) {
 }
 
 const populateSettings = function() {
+  for (var attr in settings) {
+     if (typeof settings[attr] == "boolean" )
+       $( ".checkboxes" ).append('<label for="' + attr + '">' + getNameFromAttr(attr) + '</label><input class="' + attr + '" type="checkbox" name="' + attr + '">');
+  }
+}
 
-  //<input type="checkbox" id="scales" name="scales" checked><label for="scales">Scales</label>
+const getNameFromAttr = function(s) {
+  s = s.replace(/([A-Z])/g, ' $1').trim();
+  return s.toLowerCase();
 }
 
 const exportPNG = function() {
@@ -122,6 +126,21 @@ const saveSvg = function(svgEl, name) {
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
+}
+
+const updateCanvas = function() {
+  // Take parameters and update canvas
+  // If anything is not the same as settings, update and save to settings
+  var currentSettings = parseSerialDataToSettings($('#settings').serialize());
+  console.log(currentSettings);
+}
+
+const parseSerialDataToSettings = function(serial) {
+  const pairs = serial.split("&");
+  for (var i = 0; i < pairs.length; i++) {
+    pairs[i]
+  }
+  return
 }
 
 const startJSONFilePicker = function() {
