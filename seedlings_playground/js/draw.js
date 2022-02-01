@@ -18,10 +18,8 @@ let settings = {
   noRegrow: true,
 //soil
   soilFontSize: 28,
-  soilOffset:{
-    x:100,
-    y:700
-  },
+  SoilOffsetX:100,
+  SoilOffsetY:700,
   greyoutStopWordsInSoil: true,
 }
 
@@ -350,9 +348,8 @@ const initializeSoilWithRandomPlant = function(textIdx) {
 }
 
 const initializeSoil = function(text, svgId, cb) {
-  const SOIL_OFFSET = settings.soilOffset;
-  const initialY = $('#'+svgId).height < SOIL_OFFSET.y ? $('#'+svgId).height*0.7 : SOIL_OFFSET.y ;
-  const initialX = settings.margin.left + SOIL_OFFSET.x;
+  const initialY = $('#'+svgId).height < settings.soilOffsetY ? $('#'+svgId).height*0.7 : settings.soilOffsetY ;
+  const initialX = settings.margin.left + settings.soilOffsetX;
   let xPos = initialX,
     yPos = initialY;
   let rightMostXPos = xPos;
@@ -411,7 +408,7 @@ $(document).ready(function() {
     const textIdx = $(this).attr("idx");
     clearCanvas();
     initializeSoilWithRandomPlant(textIdx);
-    adjustView(settings.soilOffset.y + 300, 2500);
+    adjustView(settings.soilOffsetY + 300, 2500);
   });
 
 });

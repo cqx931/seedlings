@@ -1,14 +1,8 @@
 
 $(document).ready(function() {
-     populateSettings();
+     populateSettingsUI();
      // Initialize the canvas
-     console.log("init")
-    const textarea = "demo text";
-    const id = 'main';
-    initSvgCanvas(settings.width, settings.height);
-    initializeSoil(textarea, id);
-    //word, domain, p, x, y
-    plant( "language", "dream", "ivy", 400,200);
+     renderCanvas();
 });
 
 $( "#export" ).click(function() {exportJSON();});
@@ -37,6 +31,18 @@ document.body.onkeyup = function(e) {
   }
 }
 
+const renderCanvas = function(plants) {
+  initSvgCanvas(settings.width, settings.height);
+  const textarea = "demo text";
+  const id = 'main';
+  initializeSoil(textarea, id);
+  if (plants == null) {
+    plant( "language", "dream", "ivy", 400,200);
+  } else {
+    // TODO: show the same plants with new settings
+  }
+}
+
 const plantByList = function(list) {
   for (const key in list) {
     plantByIdx(key, list[key]);
@@ -61,7 +67,7 @@ const clickSoilWordByIdx = function(idx) {
   target.dblclick();
 }
 
-const populateSettings = function() {
+const populateSettingsUI = function() {
   for (var attr in settings) {
      if (typeof settings[attr] == "boolean" )
        $( ".checkboxes" ).append('<label for="' + attr + '">' + getNameFromAttr(attr) + '</label><input class="' + attr + '" type="checkbox" name="' + attr + '">');
@@ -130,17 +136,32 @@ const saveSvg = function(svgEl, name) {
 
 const updateCanvas = function() {
   // Take parameters and update canvas
-  // If anything is not the same as settings, update and save to settings
-  var currentSettings = parseSerialDataToSettings($('#settings').serialize());
-  console.log(currentSettings);
+
+  parseSerialDataToSettings($('#settings').serialize());
+  // remove current Canvas
+  $( "svg" ).remove();
+  renderCanvas();
+
 }
 
 const parseSerialDataToSettings = function(serial) {
   const pairs = serial.split("&");
   for (var i = 0; i < pairs.length; i++) {
-    pairs[i]
+    const items = pairs[i].split("=");
+    const key = items[0];
+    const value = items[1];
+    updateSetting(key, value);
   }
   return
+}
+
+const updateSetting = function(name, newValue) {
+  // If anything is not the same as settings, update and save to settings
+  if (newValue != settings[name]) {
+    console.log("update", name, newValue);
+    settings[name] = newValue;
+  }
+
 }
 
 const startJSONFilePicker = function() {
@@ -182,8 +203,6 @@ const dataOnLoadHandler = function(data) {
     const d = data.soil[key];
     const sW = new SoilWord(d.text, d.x, d.y, d.active, d.id);
   }
-
-
 
   for (const key in data.plants) {
     const d = data.plants[key];
