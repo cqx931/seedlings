@@ -1,25 +1,25 @@
 /************** Parameters  *****************/
 let settings = {
-//page
+  //page
   pageFormat: 'singlePage',
   width: 1800,
   height: 2400,
-  margin:{
-      top: 20,
-      right: 50,
-      bottom: 20,
-      left: 50
+  margin: {
+    top: 20,
+    right: 50,
+    bottom: 20,
+    left: 50
   },
-//plants
+  //plants
   plantFontSize: 28,
-  animation:false,
+  animation: false,
   disableWhiteTextBg: true,
   roots: true,
   noRegrow: true,
-//soil
+  //soil
   soilFontSize: 28,
-  SoilOffsetX:100,
-  SoilOffsetY:700,
+  SoilOffsetX: 100,
+  SoilOffsetY: 700,
   greyoutStopWordsInSoil: true,
 }
 
@@ -27,7 +27,6 @@ let settings = {
 let SCALE = 1;
 let X_OFFSET = 50,
   PARA_MARGIN = X_OFFSET + settings.margin.left,
-  LINE_HEIGHT = settings.soilFont * 2, // line height for soil layout
   PARA_WIDTH = 820, // max width of the paragraph
   SPACE_WIDTH = 10, // the width of a space
   RIGHT_EDGE = window.innerWidth - PARA_MARGIN > PARA_MARGIN + PARA_WIDTH ?
@@ -46,16 +45,23 @@ const initSvgCanvas = function(w, h) {
     .attr("width", w)
     .attr("height", h)
     .attr("transform", "translate(" + settings.margin.left + "," + settings.margin.top + ")")
-    .attr("class", "wrapper")
-    .attr("font-size", FONT_SIZE + "px");
+    .attr("class", "wrapper");
 
   const soilSVG = svg.append("g")
     .attr("id", "soil");
 
-  const scale = window.innerWidth/w > window.innerHeight/h ? (window.innerHeight - 80)/h : window.innerWidth/w ;
+  const scale = window.innerWidth / w > window.innerHeight / h ? (window.innerHeight - 80) / h : window.innerWidth / w;
   SCALE = scale;
-  $(".content").css("transform", "scale(" + scale + ")")
+  $(".content").css("transform", "scale(" + scale + ")");
 
+  // update test and verticaltest font size
+  $("#Test, #verticalTest").css("font-size", settings.plantFontSize + "px");
+}
+
+const updateBodyHeight = function() {
+  const newBodyHeight = $(".menu").height() + $(".content").height() + 100;
+  console.log("newbodyheight", newBodyHeight,$(".menu").height(), $(".content").height());
+  $("body").height(newBodyHeight);
 }
 
 const checkIntersections = function(r) {
@@ -145,15 +151,15 @@ const updateD3CanvasWidth = function(newW) {
   d3.select("svg").attr("width", newW);
 }
 
-const updatePlantFontSize = function(fontSize){
-    settings.plantFontSize = fontSize;
-    FONT_SIZE = fontSize;
-    DASH_STYLE = fontSize / 2 + ", " + fontSize / 2;
-    // update fontsize for test & vertical test
-    $("#Test, #verticalTest").css("font-size", fontSize + "px");
+const updatePlantFontSize = function(fontSize) {
+  settings.plantFontSize = fontSize;
+  FONT_SIZE = fontSize;
+  DASH_STYLE = fontSize / 2 + ", " + fontSize / 2;
+  // update fontsize for test & vertical test
+  $("#Test, #verticalTest").css("font-size", fontSize + "px");
 }
 
-const guid = function(){
+const guid = function() {
   // Reference: https://slavik.meltser.info/the-efficient-way-to-create-guid-uuid-in-javascript-with-explanation/
   function _random_letter() {
     return String.fromCharCode(97 + Math.floor(Math.random() * 26));
@@ -195,6 +201,7 @@ const generateSequence = function(word, domain, x, y) {
   const id = 0;
   const LIMIT = 5;
   let lastEndPos, lastWord;
+
   function f(id) {
     const p = randomPlant();
     // var p = "plant";
@@ -259,8 +266,8 @@ const getRandomItem = function(obj) {
 
 const randomPlant = function(w) {
   let keys = Object.keys(PLANTS);
-  if (w && w.length <=3) {
-     removeItemOnce(keys, "pine");
+  if (w && w.length <= 3) {
+    removeItemOnce(keys, "pine");
   }
 
   return keys[keys.length * Math.random() << 0];
@@ -307,7 +314,8 @@ const singularize = function(word) {
 
   // stay the same
   const noChange = ["bottomless", "mindless", "glass", "undress", "miss", "hypothesis",
-  "unconscious", "superstitious",  "autonomous", "caress","carcass", "ludicrous", "perhaps"];
+    "unconscious", "superstitious", "autonomous", "caress", "carcass", "ludicrous", "perhaps"
+  ];
   if (noChange.includes(word.toLowerCase())) w = word;
 
   return w;
@@ -333,7 +341,7 @@ const shuffle = function(array) {
 
 const clearCanvas = function() {
   $("#pages li").removeClass("current");
-  $("#soil" ).empty();
+  $("#soil").empty();
   $("svg g.seedling").remove();
   plants = {}; // All the plants
   soil = {}; // The soil object
@@ -348,46 +356,46 @@ const initializeSoilWithRandomPlant = function(textIdx) {
 }
 
 const initializeSoil = function(text, svgId, cb) {
-  const initialY = $('#'+svgId).height < settings.soilOffsetY ? $('#'+svgId).height*0.7 : settings.soilOffsetY ;
-  const initialX = settings.margin.left + settings.soilOffsetX;
+  const initialY = $('#' + svgId).height < settings.SoilOffsetY ? $('#' + svgId).height * 0.7 : settings.SoilOffsetY;
+  const initialX = settings.margin.left + settings.SoilOffsetX;
   let xPos = initialX,
     yPos = initialY;
   let rightMostXPos = xPos;
+  let soil = text;
+  const lines = soil.split("\n").length;
+  soil = soil.replace(/\n/g, " _lineBreak_ ");
+  soil = soil.replace(/\s{2,}/g, function(match) {
+    match = match.replace(/ /g, "+")
+    return " " + match + " ";
+  });
 
-    let soil = text;
-    const lines = soil.split("\n").length;
-    soil = soil.replace(/\n/g, " _lineBreak_ ");
-    soil = soil.replace(/\s{2,}/g, function(match) {
-      match = match.replace(/ /g, "+")
-      return " " + match + " ";
-    });
-    const words = RiTa.tokenize(soil);
-    for (let i = 0; i < words.length; i++) {
-      const w = words[i],
-        nextW = (i != words.length - 1) ? words[i + 1] : "";
+  const words = RiTa.tokenize(soil);
+  for (let i = 0; i < words.length; i++) {
+    const w = words[i],
+          nextW = (i != words.length - 1) ? words[i + 1] : "";
 
-      const lineBreak = function() {
-        yPos += settings.LINE_HEIGHT;
-        xPos = initialX;
-      }
-      if (w == "_lineBreak_") {
-        lineBreak();
-      } else if (w.indexOf('+') > -1) {
-        xPos += w.length * SPACE_WIDTH;
-      } else {
-        if (punctuations.includes(w)) xPos -= SPACE_WIDTH;
-        const t = new SoilWord(w, xPos, yPos, true);
-        // console.log(t.text, t.boundingBox.width);
-        xPos += (t.boundingBox.width + SPACE_WIDTH);
-        if (xPos > settings.width && xPos > rightMostXPos) rightMostXPos = xPos;
-
-        if (xPos > RIGHT_EDGE &&
-          !punctuations.includes(nextW) && nextW != "+") lineBreak();
-
-      }
+    const lineBreak = function() {
+      yPos += settings.soilFontSize * 2;
+      xPos = initialX;
     }
+    if (w == "_lineBreak_") {
+      lineBreak();
+    } else if (w.indexOf('+') > -1) {
+      xPos += w.length * SPACE_WIDTH;
+    } else {
+      if (punctuations.includes(w)) xPos -= SPACE_WIDTH;
+      const t = new SoilWord(w, xPos, yPos, true);
+      // console.log(t.text, t.boundingBox.width);
+      xPos += (t.boundingBox.width + SPACE_WIDTH);
+      if (xPos > settings.width && xPos > rightMostXPos) rightMostXPos = xPos;
 
-    if(cb && typeof cb === "function") cb();
+      if (xPos > RIGHT_EDGE &&
+        !punctuations.includes(nextW) && nextW != "+") lineBreak();
+
+    }
+  }
+
+  if (cb && typeof cb === "function") cb();
 }
 
 $(document).ready(function() {
@@ -404,7 +412,7 @@ $(document).ready(function() {
     $('#about').toggle();
   })
 
-  $("#pages ul li" ).click(function() {
+  $("#pages ul li").click(function() {
     const textIdx = $(this).attr("idx");
     clearCanvas();
     initializeSoilWithRandomPlant(textIdx);

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="author" content="Qianxun Chen; Mariana Roa Oliva">
@@ -27,7 +28,6 @@
   </div>
   <div id="plantTypes" class="contextMenu" data-html2canvas-ignore="true">
     <ul>
-
     </ul>
   </div>
   <div id="options" class="contextMenu" data-html2canvas-ignore="true">
@@ -36,59 +36,61 @@
     </ul>
   </div>
 
-<div class="menu no-print">
+  <div class="menu no-print">
     <h5>Seedlings_</h5>
     <br>
     <div class="buttons">
-    <button id="import" type="button" name="button">Import Data</button>
-    <button id="export" type="button" name="button">Export Data</button>
-    <button id="exportPNG" type="button" name="button" disabled>Export PNG</button>
-    <button id="exportSVG" type="button" name="button">Export SVG</button>
-    <input id="importFilePicker" type="file" accept="application/json" class="hiddenFileInput">
+      <button id="import" type="button" name="button">Import Data</button>
+      <button id="export" type="button" name="button">Export Data</button>
+      <!-- <button id="exportPNG" type="button" name="button" disabled>Export PNG</button> -->
+      <button id="exportSVG" type="button" name="button">Export SVG</button>
+      <input id="importFilePicker" type="file" accept="application/json" class="hiddenFileInput">
     </div>
-  <form class="command">
+    <form class="command">
       PLANT
-    <input type="text"  id="seed" placeholder="a seed" name="word" value="">
-     IN
-    <input type="text"  id="context" placeholder="a context" name="context" value="">
-    AS
-    <select name="input" id="plantType" style="width:100px;">
-   <option value="bamboo">bamboo</option>
-   <option value="dandelion">dandelion</option>
-   <option value="ginkgo">ginkgo</option>
-   <option value="ivy">ivy</option>
-   <option value="pine">pine</option>
-   <option value="plant" selected="">plant</option>
-   </select>
-    <button  id="run" type="button" name="button">grow</button>
-</form>
-<form id="settings" >
-  <b>Settings</b> <br>
-  <div id="pageFormat">
-    <label for="pageFormat">Page Format</label>
-    <label><input type="radio" name="pageFormat" value="singlePage" checked="">Single Page</label>
-    <label><input type="radio" name="pageFormat" value="splitPage">Split Page</label>
-    <label><input type="radio" name="pageFormat" value="spicify">Specify</label>
-  </div>
-  <label for="">Width</label><input type="text" value="1800" name="width" >
-  <label for="">Height</label><input type="text" value="2460" name="height">
-  <br>
-  <label for="">Plant Font Size</label><input type="number" min="10" max="40" value="24" step="1" name="plantFontSize" required="">
-  <label for="">Soil Font Size</label><input type="number" min="10" max="40" value="24" step="1" name="soilFontSize" required="">
-  <br>
-  <label for="">Soil Offset X</label><input type="text"  value="100" name="SoilOffsetX">
-  <label for="">Soil Offset Y</label><input type="text"  value="100" name="SoilOffsetY">
-  <!-- checkboxes -->
-  <div class="checkboxes">
-  </div>
-  <div class="buttons">
-  <button id="updateCanvas" type="button" name="button">Update Canvas</button> <button id="clearCanvas" cltype="button" name="button">Clear Canvas</button>
- </div>
-</form>
+      <input type="text" id="seed" placeholder="a seed" name="word" value="">
+      IN
+      <input type="text" id="context" placeholder="a context" name="context" value="">
+      AS
+      <select name="input" id="plantType" style="width:100px;">
+        <option value="bamboo">bamboo</option>
+        <option value="dandelion">dandelion</option>
+        <option value="ginkgo">ginkgo</option>
+        <option value="ivy">ivy</option>
+        <option value="pine">pine</option>
+        <option value="plant" selected="">plant</option>
+      </select>
+      <button id="run" type="button" name="button">grow</button>
+    </form>
+    <form id="settings">
+      <span id="toggleSettings">Settings ↓</span>
+      <div class="settingsWrapper">
+        <div id="pageFormat">
+          <label for="pageFormat">Page Format</label>
+          <label><input type="radio" name="pageFormat" value="singlePage" checked>Single Page</label>
+          <label><input type="radio" name="pageFormat" value="splitPage">Split Page</label>
+          <label><input type="radio" name="pageFormat" value="spicify">Specify</label>
+        </div>
+        <label for="">Width</label><input id="widthInput" type="text" value="1800" name="width">
+        <label for="">Height</label><input id="heightInput" type="text" value="2460" name="height">
+        <br>
+        <label for="">Plant Font Size</label><input type="number" min="10" max="40" value="24" step="1" name="plantFontSize" required="">
+        <label for="">Soil Font Size</label><input type="number" min="10" max="40" value="24" step="1" name="soilFontSize" required="">
+        <br>
+        <label for="">Soil Offset X</label><input type="text" value="100" name="SoilOffsetX">
+        <label for="">Soil Offset Y</label><input type="text" value="100" name="SoilOffsetY">
+        <!-- checkboxes -->
+        <div class="checkboxes">
+        </div>
+        <div class="buttons">
+          <button id="updateCanvas" type="button" name="button">Update Canvas</button> <button id="clearCanvas" cltype="button" name="button">Clear Canvas</button>
+        </div>
+      </div>
+    </form>
 
   </div>
 
-  <div class="content">
+  <div class="content" style="display: inline-flex">
     <!-- load the d3.js library -->
     <script src="js/lib/d3.v6.min.js"></script>
     <script src="js/lib/d3-transition.v2.min.js"></script>
@@ -100,4 +102,5 @@
   </div>
 
 </body>
+
 </html>

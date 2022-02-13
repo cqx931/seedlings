@@ -11,6 +11,7 @@ canvas {
 }
 
 svg, form, #remove {
+  margin-bottom: 0;
   -webkit-touch-callout: none;
   /* iOS Safari */
   -webkit-user-select: none;
@@ -47,10 +48,12 @@ h5 {
   margin:10px 20px;
 }
 .content {
-  /* position: absolute;
-  left:50%; */
+  position: absolute;
+  /* left:50%; */
   transform-origin: left top;
   -webkit-transform-origin: left top;
+  padding:50px;
+  overflow: hidden;
 }
 
 .seedling {
@@ -117,13 +120,22 @@ select {
   padding: 4px 8px;
 }
 #settings {
-  padding:10px 20px 5px;
+  padding:10px 0px 5px;
   margin:0 10px 20px 160px;
-  width:480px;
-  background-color:rgba(0,0,0,0.05);
+  width:500px;
+
 }
 #settings> label{
   width:120px;
+}
+#toggleSettings {
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.settingsWrapper {
+  padding: 10px 20px ;
+  background-color:rgba(0,0,0,0.05);
 }
 .floatingElement {
   position: fixed;
@@ -466,6 +478,7 @@ textPath {
 
 #verticalTest {
   opacity: 0;
+  position: absolute;
 }
 
 .bamboo text[class*="branch"], .bamboo text[class*="seed"], #verticalTest {

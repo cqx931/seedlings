@@ -1,16 +1,39 @@
-
 $(document).ready(function() {
-     populateSettingsUI();
-     // Initialize the canvas
-     renderCanvas();
+  populateSettingsUI();
+  // Initialize the canvas
+  renderCanvas();
+  updateBodyHeight();
 });
 
-$( "#export" ).click(function() {exportJSON();});
-$( "#import" ).click(function() {importJSON();});
+$("#export").click(function() {
+  exportJSON();
+});
+$("#import").click(function() {
+  importJSON();
+});
 $('#importFilePicker').on('change', handleImportData);
-$( "#clearCanvas" ).click(function() {clearCanvas();});
-$( "#exportSVG" ).click(function() {exportSVG();});
-$( "#updateCanvas" ).click(function() {updateCanvas();});
+$("#clearCanvas").click(function() {
+  clearCanvas();
+});
+$("#exportSVG").click(function() {
+  exportSVG();
+});
+$("#updateCanvas").click(function() {
+  updateCanvas();
+});
+$("#toggleSettings").click(function() {
+  $(".settingsWrapper").toggle();
+});
+$("#pageFormat input").click(function() {
+  if (this.value == "singlePage") {
+    $("#widthInput").val(1800);
+    $("#heightInput").val( 2460);
+  } else if (this.value == "splitPage") {
+    $("#widthInput").val(3600);
+    $("#heightInput").val(2460);
+  }
+});
+
 
 $("#run").click(function() {
   const p = document.getElementById("plantType").value;
@@ -18,11 +41,29 @@ $("#run").click(function() {
   const c = document.getElementById("context").value;
   //const a = document.getElementById("angle").value;
   const x = 100;
-  const y = 400;
-  if ( w!="" && c != "") {
-      plant(w, c, p, x, y);
+  const y = 1000;
+  if (w != "" && c != "") {
+    plant(w, c, p, x, y);
   } else console.log("empty string");
 });
+
+// override serialize https://stackoverflow.com/questions/10147149/how-can-i-override-jquerys-serialize-to-include-unchecked-checkboxes
+const originalSerializeArray = $.fn.serializeArray;
+$.fn.extend({
+    serializeArray: function () {
+        var brokenSerialization = originalSerializeArray.apply(this);
+        var checkboxValues = $(this).find('input[type=checkbox]').map(function () {
+            return { 'name': this.name, 'value': this.checked };
+        }).get();
+        var checkboxKeys = $.map(checkboxValues, function (element) { return element.name; });
+        var withoutCheckboxes = $.grep(brokenSerialization, function (element) {
+            return $.inArray(element.name, checkboxKeys) == -1;
+        });
+
+        return $.merge(withoutCheckboxes, checkboxValues);
+    }
+});
+
 
 document.body.onkeyup = function(e) {
   if (e.keyCode == 32) {
@@ -33,11 +74,13 @@ document.body.onkeyup = function(e) {
 
 const renderCanvas = function(plants) {
   initSvgCanvas(settings.width, settings.height);
-  const textarea = "demo text";
+  const textarea = "This is a demo text";
   const id = 'main';
+
   initializeSoil(textarea, id);
+
   if (plants == null) {
-    plant( "language", "dream", "ivy", 400,200);
+    plant("language", "dream", "plant", 400, 1000);
   } else {
     // TODO: show the same plants with new settings
   }
@@ -69,9 +112,11 @@ const clickSoilWordByIdx = function(idx) {
 
 const populateSettingsUI = function() {
   for (var attr in settings) {
-     if (typeof settings[attr] == "boolean" )
-       $( ".checkboxes" ).append('<label for="' + attr + '">' + getNameFromAttr(attr) + '</label><input class="' + attr + '" type="checkbox" name="' + attr + '">');
+    const checked = settings[attr] ? 'checked ':'';
+    if (typeof settings[attr] == "boolean")
+      $(".checkboxes").append('<label for="' + attr + '">' + getNameFromAttr(attr) + '</label><input ' +  checked  +  'class="' + attr + '" type="checkbox" name="' + attr + '">');
   }
+  $("#toggleSettings").click();
 }
 
 const getNameFromAttr = function(s) {
@@ -102,9 +147,9 @@ const exportJSON = function() {
   }
 
   let data = {
-    plants:plant_data,
-    soil:soil,
-    settings:settings
+    plants: plant_data,
+    soil: soil,
+    settings: settings
   }
 
   exportToJsonFile(data);
@@ -120,18 +165,20 @@ const exportSVG = function() {
 };
 
 const saveSvg = function(svgEl, name) {
-    // https://stackoverflow.com/questions/23218174/how-do-i-save-export-an-svg-file-after-creating-an-svg-with-d3-js-ie-safari-an
-    svgEl.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-    var svgData = svgEl.outerHTML;
-    var preface = '<?xml version="1.0" standalone="no"?>\r\n';
-    var svgBlob = new Blob([preface, svgData], {type:"image/svg+xml;charset=utf-8"});
-    var svgUrl = URL.createObjectURL(svgBlob);
-    var downloadLink = document.createElement("a");
-    downloadLink.href = svgUrl;
-    downloadLink.download = name;
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
+  // https://stackoverflow.com/questions/23218174/how-do-i-save-export-an-svg-file-after-creating-an-svg-with-d3-js-ie-safari-an
+  svgEl.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+  var svgData = svgEl.outerHTML;
+  var preface = '<?xml version="1.0" standalone="no"?>\r\n';
+  var svgBlob = new Blob([preface, svgData], {
+    type: "image/svg+xml;charset=utf-8"
+  });
+  var svgUrl = URL.createObjectURL(svgBlob);
+  var downloadLink = document.createElement("a");
+  downloadLink.href = svgUrl;
+  downloadLink.download = name;
+  document.body.appendChild(downloadLink);
+  downloadLink.click();
+  document.body.removeChild(downloadLink);
 }
 
 const updateCanvas = function() {
@@ -139,26 +186,34 @@ const updateCanvas = function() {
 
   parseSerialDataToSettings($('#settings').serialize());
   // remove current Canvas
-  $( "svg" ).remove();
+  $("svg").remove();
   renderCanvas();
-
 }
 
 const parseSerialDataToSettings = function(serial) {
+  //console.log(serial);
   const pairs = serial.split("&");
   for (var i = 0; i < pairs.length; i++) {
     const items = pairs[i].split("=");
     const key = items[0];
-    const value = items[1];
+    let value = items[1];
+    // value, int, boolean, string
+    if (value == "true") {
+      value = true;
+    } else if (value == "false") {
+      value = false;
+    } else if (key != "pageFormat"){
+      value = parseInt(value);
+    }
     updateSetting(key, value);
   }
-  return
+return
 }
 
 const updateSetting = function(name, newValue) {
   // If anything is not the same as settings, update and save to settings
   if (newValue != settings[name]) {
-    console.log("update", name, newValue);
+    console.log("update", name, newValue)
     settings[name] = newValue;
   }
 
@@ -179,7 +234,7 @@ function handleImportData(evt) {
 
   const reader = new FileReader();
 
-  reader.onload = function (e) {
+  reader.onload = function(e) {
     try {
       const data = JSON.parse(e.target.result);
       dataOnLoadHandler(data);
@@ -206,37 +261,37 @@ const dataOnLoadHandler = function(data) {
 
   for (const key in data.plants) {
     const d = data.plants[key];
-    const p =  new PLANTS[d.type](d);
-    console.log(p)
+    const p = new PLANTS[d.type](d);
     p.draw();
     p.growFromJSON(d);
+    console.log("after grow from json");
     p.animate();
   }
 
 }
 
 const exportToJsonFile = function(jsonData) {
-    let seen = [];
-    let dataStr = JSON.stringify(jsonData);
-    // no longer in use
-    //, function(key, val) {
-    //    if (val != null && typeof val == "object") {
-    //         if (seen.indexOf(val) >= 0) {
-    //             console.log(key, val);
-    //             return;
-    //         }
-    //
-    //         seen.push(val);
-    //     }
-    //     return val;
-    // }
+  let seen = [];
+  let dataStr = JSON.stringify(jsonData);
+  // no longer in use
+  //, function(key, val) {
+  //    if (val != null && typeof val == "object") {
+  //         if (seen.indexOf(val) >= 0) {
+  //             console.log(key, val);
+  //             return;
+  //         }
+  //
+  //         seen.push(val);
+  //     }
+  //     return val;
+  // }
 
-    let dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+  let dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
 
-    let exportFileDefaultName = 'data.json';
+  let exportFileDefaultName = 'data.json';
 
-    let linkElement = document.createElement('a');
-    linkElement.setAttribute('href', dataUri);
-    linkElement.setAttribute('download', exportFileDefaultName);
-    linkElement.click();
+  let linkElement = document.createElement('a');
+  linkElement.setAttribute('href', dataUri);
+  linkElement.setAttribute('download', exportFileDefaultName);
+  linkElement.click();
 }
