@@ -264,7 +264,6 @@ const dataOnLoadHandler = function(data) {
     const p = new PLANTS[d.type](d);
     p.draw();
     p.growFromJSON(d);
-    console.log("after grow from json");
     p.animate();
   }
 

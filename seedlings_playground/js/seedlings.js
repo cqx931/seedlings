@@ -128,7 +128,6 @@ class SoilWord {
 }
 
 class Root {
-
   constructor(id, plant, x, y, l, a) {
     this.maxLife = 200;
     this.life = this.maxLife;
@@ -761,17 +760,27 @@ class Plant {
   }
 
   growFromJSON(data) {
+    const line = d3.line().context(null);
     d3.select("#" + this.id + " .branches").html(data.branches);
-    // TODO: constrct roots from points
-    // for (let i = 0; i < data.roots.length; i++) {
-    //   console.log(d3.line(data.roots[i].history))
-    //   d3.select("#" + this.id + " .roots")
-    //     .append("path")
-    //     .attr("id", data.roots[i].id)
-    //     .attr("d", d3.line(data.roots[i].history))
-    //     .attr("stroke", "black")
-    //     .attr("stroke-opacity", 0.5);
-    // }
+    for (let i = 0; i < data.roots.length; i++) {
+      const g = d3.select("#" + this.id + " .roots")
+        .append("g")
+        .attr("id", data.roots[i].id)
+
+        for (var j = 0; j < data.roots[i].history.length-1; j++) {
+          const currentPos = data.roots[i].history[j];
+          const nextPos = data.roots[i].history[j+1];
+
+          g.append("line")
+            .attr("x1", currentPos[0])
+            .attr("y1", currentPos[1])
+            .attr("x2", nextPos[0])
+            .attr("y2", nextPos[1])
+            .attr("stroke-opacity", 0.5)
+
+        }
+
+    }
 
   }
 }
