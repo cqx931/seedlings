@@ -121,7 +121,7 @@ select {
 }
 #settings {
   padding:10px 0px 5px;
-  margin:0 10px 20px 160px;
+  margin:0 10px 20px 1em;
   width:500px;
 
 }
@@ -303,7 +303,6 @@ button#run {
 
 .buttons {
   margin-top:5px;
-  float: right;
   /* width:300px; */
 }
 .buttons button{
