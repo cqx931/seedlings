@@ -12,13 +12,12 @@ const SCALE_FACTOR = 20,
 let PAGE_MODE = true;
 
 const dragEvent = d3.drag().on("drag", function(d) {
-  console.log(d.x, d.y)
-  // update d3 text element with the drag position
-  const newX = d.x / SCALE,
-    newY = d.y / SCALE + 5;
+  const offsetX = 77, offsetY = 54;   // WHY?
+  const newX = (d.x + offsetX) / SCALE,
+        newY = (d.y + offsetY) / SCALE + 5 ;
   // update the soilWord object
   const s = soil[this.id];
-  s.updatePos(newX, newY);
+  if (s) s.updatePos(newX, newY);
 });
 
 const stopWords = ['i', 'me', 'my', 'myself', 'we', 'we’ve', 'our', 'ours', 'ourselves', 'you', 'your', 'yours', 'yourself', 'yourselves', 'he', 'him', 'his', 'himself', 'she', 'her', 'hers', 'herself', 'it', 'its', 'itself', 'they', 'them', 'their', 'theirs', 'themselves', 'what', 'which', 'who', 'whom', 'this', 'that', 'these', 'those', 'am', 'is', 'isn\’t', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'having', 'do', 'don\’t', 'does', 'did', 'doing', 'a', 'an', 'the', 'and', 'but', 'if', 'or', 'because', 'as', 'until', 'while', 'of', 'at', 'by', 'for', 'with', 'about', 'against', 'between', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'to', 'from', 'up', 'down', 'in', 'out', 'on', 'off', 'over', 'under', 'again', 'further', 'then', 'once', 'here', 'there', 'there\’s', 'when', 'where', 'why', 'how', 'all', 'any', 'both', 'each', 'few', 'more', 'most', 'other', 'some', 'such', 'no', 'nor', 'not', 'only', 'own', 'same', 'so', 'than', 'too', 'very', 's', 't', 'can', 'will', 'won\’t', 'just', 'don', 'should', 'now', 'us', 'go'];
