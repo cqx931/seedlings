@@ -44,6 +44,7 @@ const initSvgCanvas = function(w, h) {
   const svg = d3.select(".content").append("svg")
     .attr("width", w)
     .attr("height", h)
+    .attr("id", "main")
     .attr("transform", "translate(" + settings.margin.left + "," + settings.margin.top + ")")
     .attr("class", "wrapper");
 

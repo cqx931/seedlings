@@ -377,9 +377,16 @@ a {
   font-size: 12px;
   padding-top: 5px;
 }
-
+.menu > div{
+  margin-right: 20px;
+}
 .darktheme g text {
   color: white !important;
+}
+
+textarea {
+  width:400px;
+  margin: 10px 0 0px 10px;
 }
 
 /****** General CSS *******/
@@ -391,7 +398,6 @@ g text.soil {
   z-index: 30;
   letter-spacing: -0.5px;
 }
-
 
 g text.bg {
   opacity: 0.8;

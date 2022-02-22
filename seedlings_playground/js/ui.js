@@ -47,6 +47,8 @@ $("#run").click(function() {
   } else console.log("empty string");
 });
 
+$("#updateSoil").click(function() { updateSoil();});
+
 // override serialize https://stackoverflow.com/questions/10147149/how-can-i-override-jquerys-serialize-to-include-unchecked-checkboxes
 const originalSerializeArray = $.fn.serializeArray;
 $.fn.extend({
@@ -64,20 +66,13 @@ $.fn.extend({
     }
 });
 
-
-document.body.onkeyup = function(e) {
-  if (e.keyCode == 32) {
-    //exportPNG();
-    exportSVG();
-  }
+const updateSoil =function() {
+  initializeSoil($("#soilText").val(), 'main');
 }
 
 const renderCanvas = function(plants) {
   initSvgCanvas(settings.width, settings.height);
-  const textarea = "This is a demo text";
-  const id = 'main';
-
-  initializeSoil(textarea, id);
+  updateSoil();
 
   if (plants == null) {
     plant("language", "dream", "plant", 400, 1000);
