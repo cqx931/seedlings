@@ -1,4 +1,5 @@
 $(document).ready(function() {
+  fnBrowserDetect();
   populateSettingsUI();
   // Initialize the canvas
   renderCanvas();
@@ -47,7 +48,17 @@ $("#run").click(function() {
   } else console.log("empty string");
 });
 
-$("#updateSoil").click(function() { updateSoil();});
+$("#updateSoil").click(function() {
+  updateSoil();
+  updateCanvas();
+});
+
+$("#toggleScale").click(function() {
+  if (isScale == true) isScale = false;
+  else isScale = true;
+  scale();
+});
+
 
 // override serialize https://stackoverflow.com/questions/10147149/how-can-i-override-jquerys-serialize-to-include-unchecked-checkboxes
 const originalSerializeArray = $.fn.serializeArray;

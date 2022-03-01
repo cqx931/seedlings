@@ -2,6 +2,7 @@
 let FONT_SIZE = settings.plantFontSize;
 
 const isCompost = false;
+let browserName = "";
 const FONT = "Source Code Pro Light, monospace";
 const SCALE_FACTOR = 20,
   COMPOST_TIME = 4000,
@@ -12,12 +13,20 @@ const SCALE_FACTOR = 20,
 let PAGE_MODE = true;
 
 const dragEvent = d3.drag().on("drag", function(d) {
-  const offsetX = 77, offsetY = 54;   // WHY?
-  const newX = (d.x + offsetX) / SCALE,
-        newY = (d.y + offsetY) / SCALE + 5 ;
-  // update the soilWord object
+  console.log(isScale, d.x, d.y)
+
   const s = soil[this.id];
-  if (s) s.updatePos(newX, newY);
+
+  if (browserName == "firefox") {
+    const offsetX = 77, offsetY = 54;   // WHY?
+    const newX = isScale ? (d.x + offsetX) / SCALE : d.x,
+          newY = isScale ? (d.y + offsetY) / SCALE + 5 : d.y;
+    // update the soilWord object
+    if (s) s.updatePos(newX, newY);
+  } else if (browserName == "chrome") {
+    if (s) s.updatePos(d.x, d.y);
+  }
+
 });
 
 const stopWords = ['i', 'me', 'my', 'myself', 'we', 'we’ve', 'our', 'ours', 'ourselves', 'you', 'your', 'yours', 'yourself', 'yourselves', 'he', 'him', 'his', 'himself', 'she', 'her', 'hers', 'herself', 'it', 'its', 'itself', 'they', 'them', 'their', 'theirs', 'themselves', 'what', 'which', 'who', 'whom', 'this', 'that', 'these', 'those', 'am', 'is', 'isn\’t', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'having', 'do', 'don\’t', 'does', 'did', 'doing', 'a', 'an', 'the', 'and', 'but', 'if', 'or', 'because', 'as', 'until', 'while', 'of', 'at', 'by', 'for', 'with', 'about', 'against', 'between', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'to', 'from', 'up', 'down', 'in', 'out', 'on', 'off', 'over', 'under', 'again', 'further', 'then', 'once', 'here', 'there', 'there\’s', 'when', 'where', 'why', 'how', 'all', 'any', 'both', 'each', 'few', 'more', 'most', 'other', 'some', 'such', 'no', 'nor', 'not', 'only', 'own', 'same', 'so', 'than', 'too', 'very', 's', 't', 'can', 'will', 'won\’t', 'just', 'don', 'should', 'now', 'us', 'go'];
@@ -47,6 +56,7 @@ class SoilWord {
       .text(this.text)
       .attr("font-family", FONT)
       .attr("font-size", settings.soilFontSize)
+      .attr("text-anchor", "middle")
       .attr("x", this.x)
       .attr("y", this.y)
       .call(dragEvent)
@@ -277,10 +287,13 @@ class Plant {
   }
 
   dragged(d) {
-    const newX = d.x / SCALE,
-      newY = d.y / SCALE;
+
+    const newX = (isScale && browserName == "Firefox") ? d.x / SCALE : d.x,
+      newY = (isScale && browserName == "Firefox") ?d.y / SCALE : d.y;
+
     const p = plants[this.id];
     p.updatePos(newX - this.cursorStart.x, newY - this.cursorStart.y);
+
   }
 
   /*********** Updates ***********/
@@ -1339,6 +1352,32 @@ function getDistance(x1, y1, x2, y2) {
   const a = x1 - x2;
   const b = y1 - y2;
   return Math.sqrt(a * a + b * b);
+}
+
+function fnBrowserDetect(){
+    // Notes on Browser
+    // ON Drag works best with chrome based browsers, no need to do extra calculation for scaling
+    // Edge is also detected as chrome but dragging works finished
+    // Firefox: needs recalculation based on ratio for scaled Canvas
+    // Safari: cursor value is weird... not supported at the moment
+
+     let userAgent = navigator.userAgent;
+
+      if (userAgent.match(/chrome|chromium|crios/i)){
+         browserName = "chrome";
+       } else if (userAgent.match(/firefox|fxios/i)){
+         browserName = "firefox";
+       } else if (userAgent.match(/safari/i)){
+         browserName = "safari";
+       } else if (userAgent.match(/opr\//i)){
+         browserName = "opera";
+       } else if(userAgent.match(/edg/i)){
+         browserName = "edge";
+       } else {
+         browserName="No browser detection";
+       }
+
+      console.log("You are using "+ browserName +" browser");
 }
 
 Math.radians = function(degrees) {

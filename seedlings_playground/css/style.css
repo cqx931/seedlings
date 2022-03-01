@@ -79,7 +79,12 @@ label {
 button:hover {
   background-color: #AAA;
 }
-
+#toggleScale {
+  position:absolute;
+  top:5px;
+  right:5px;
+  cursor: pointer;
+}
 input:focus, button:focus, select:focus {
   outline: none;
 }
@@ -260,6 +265,7 @@ select {
   border-radius: 10px;
   overflow: hidden;
   background-color: rgb(245, 245, 245);
+  z-index:50;
 }
 
 .contextMenu ul {
@@ -385,7 +391,7 @@ a {
 }
 
 textarea {
-  width:400px;
+  width:300px;
   margin: 10px 0 0px 10px;
 }
 

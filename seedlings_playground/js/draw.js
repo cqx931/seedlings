@@ -32,6 +32,7 @@ let X_OFFSET = 50,
   RIGHT_EDGE = window.innerWidth - PARA_MARGIN > PARA_MARGIN + PARA_WIDTH ?
   PARA_MARGIN + PARA_WIDTH : window.innerWidth - PARA_MARGIN;
 
+let isScale = true;
 /************** End of Parameters  *****************/
 // global data
 let plants = {}; // All the plants
@@ -51,9 +52,7 @@ const initSvgCanvas = function(w, h) {
   const soilSVG = svg.append("g")
     .attr("id", "soil");
 
-  const scale = window.innerWidth / w > window.innerHeight / h ? (window.innerHeight - 80) / h : window.innerWidth / w;
-  SCALE = scale;
-  $(".content").css("transform", "scale(" + scale + ")");
+  scale();
 
   // update test and verticaltest font size
   $("#Test, #verticalTest").css("font-size", settings.plantFontSize + "px");
@@ -63,6 +62,19 @@ const updateBodyHeight = function() {
   const newBodyHeight = $(".menu").height() + $(".content").height() + 100;
   console.log("newbodyheight", newBodyHeight,$(".menu").height(), $(".content").height());
   $("body").height(newBodyHeight);
+}
+
+const scale = function() {
+  const w = settings.width,
+        h = settings.height;
+  console.log(isScale)
+  if (isScale) {
+    const scaleRatio = window.innerWidth / w > window.innerHeight / h ? (window.innerHeight - 80) / h : window.innerWidth / w;
+    SCALE = scaleRatio;
+    $(".content").css("transform", "scale(" + SCALE + ")");
+  } else {
+    $(".content").css("transform", "scale(1)");
+  }
 }
 
 const checkIntersections = function(r) {
