@@ -1380,6 +1380,10 @@ function fnBrowserDetect(){
       console.log("You are using "+ browserName +" browser");
 }
 
+function degreeToRad(deg) {
+  var rad = deg * Math.PI/180;
+  return rad;
+}
 Math.radians = function(degrees) {
   return degrees * Math.PI / 180;
 }

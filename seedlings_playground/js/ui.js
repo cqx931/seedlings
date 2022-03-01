@@ -40,12 +40,37 @@ $("#run").click(function() {
   const p = document.getElementById("plantType").value;
   const w = document.getElementById("seed").value;
   const c = document.getElementById("context").value;
-  //const a = document.getElementById("angle").value;
+  const a = document.getElementById("angle").value;
+
   const x = 100;
   const y = 1000;
-  if (w != "" && c != "") {
+
+  if(w!="" && c != "") {
+  if(a!= "" && p == "ivy") {
+    const data = {
+    "id": guid(),
+    "type": p,
+    "word": w,
+    "domain": c,
+    "x": x,
+    "y": y,
+    "angle": a
+};
+
+const newP = new PLANTS[p](data);
+
+setTimeout(function() {
+ newP.draw();
+ newP.grow();
+ newP.animate();
+}, 100)
+  } else {
     plant(w, c, p, x, y);
-  } else console.log("empty string");
+    //console.log(p,w,c,a);
+  }
+
+} else console.log("empty string");
+
 });
 
 $("#updateSoil").click(function() {

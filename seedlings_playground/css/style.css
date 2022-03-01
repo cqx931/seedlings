@@ -45,6 +45,8 @@ body.rightClicked {
   overflow-y: hidden;
 }
 h5 {
+  font-size: 1.2em;
+  font-weight: 400;
   margin:10px 20px;
 }
 .content {
@@ -68,9 +70,12 @@ input {
 }
 
 input[type="text"], input[type="number"], select{
-  width:100px;
+  width:90px;
   height:24px;
   border-radius: 0px;
+}
+input#angle {
+  width:60px;
 }
 label {
   font-weight: 400;
@@ -323,6 +328,7 @@ button, .button {
   letter-spacing: .2px;
   color: #444;
   border: 1px solid #DDD;
+  padding: 0 15px;
   margin-left: 20px;
   margin-right: 0px;
   text-align: center;

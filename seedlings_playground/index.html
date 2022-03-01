@@ -49,10 +49,7 @@
       </div>
       <form class="command">
         PLANT
-        <input type="text" id="seed" placeholder="a seed" name="word" value="">
-        IN
-        <input type="text" id="context" placeholder="a context" name="context" value="">
-        AS
+        a
         <select name="input" id="plantType" style="width:100px;">
           <option value="bamboo">bamboo</option>
           <option value="dandelion">dandelion</option>
@@ -61,6 +58,12 @@
           <option value="pine">pine</option>
           <option value="plant" selected="">plant</option>
         </select>
+        FROM
+        <input type="text" id="seed" placeholder="a seed" name="word" value="">
+        IN
+        <input type="text" id="context" placeholder="a context" name="context" value="">
+        WITH
+        <input type="text" id="angle" placeholder="angle" name="context" value="">
         <button id="run" type="button" name="button">grow</button>
 
         <div id="toggleScale" type="button" name="button">&#128269;</div>
