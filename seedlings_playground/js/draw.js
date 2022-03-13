@@ -28,9 +28,7 @@ let SCALE = 1;
 let X_OFFSET = 50,
   PARA_MARGIN = X_OFFSET + settings.margin.left,
   PARA_WIDTH = 820, // max width of the paragraph
-  SPACE_WIDTH = 10, // the width of a space
-  RIGHT_EDGE = window.innerWidth - PARA_MARGIN > PARA_MARGIN + PARA_WIDTH ?
-  PARA_MARGIN + PARA_WIDTH : window.innerWidth - PARA_MARGIN;
+  SPACE_WIDTH = 10; // the width of a space;
 
 let isScale = true;
 /************** End of Parameters  *****************/
@@ -408,8 +406,7 @@ const initializeSoil = function(text, svgId, cb) {
       xPos += (t.boundingBox.width + SPACE_WIDTH);
 
       if (xPos > settings.width && xPos > rightMostXPos) rightMostXPos = xPos;
-
-      if (xPos > RIGHT_EDGE &&
+      if (xPos > settings.width - settings.margin.right &&
         !punctuations.includes(nextW) && nextW != "+") lineBreak();
 
     }
