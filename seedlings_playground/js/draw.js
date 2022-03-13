@@ -383,8 +383,10 @@ const initializeSoil = function(text, svgId, cb) {
   });
 
   SPACE_WIDTH = settings.soilFontSize / 12 * 10;
-
+  // if soil is empty string, return;
+  if (soil == "") return;
   const words = RiTa.tokenize(soil);
+
   for (let i = 0; i < words.length; i++) {
     const w = words[i],
           nextW = (i != words.length - 1) ? words[i + 1] : "";

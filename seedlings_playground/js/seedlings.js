@@ -13,7 +13,7 @@ const SCALE_FACTOR = 20,
 let PAGE_MODE = true;
 
 const dragEvent = d3.drag().on("drag", function(d) {
-  console.log(isScale, d.x, d.y)
+  //console.log(isScale, d.x, d.y)
 
   const s = soil[this.id];
 
