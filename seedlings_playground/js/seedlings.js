@@ -56,7 +56,7 @@ class SoilWord {
       .text(this.text)
       .attr("font-family", FONT)
       .attr("font-size", settings.soilFontSize)
-      .attr("text-anchor", "middle")
+      .attr("text-anchor", "left")
       .attr("x", this.x)
       .attr("y", this.y)
       .call(dragEvent)

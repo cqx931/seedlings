@@ -20,7 +20,7 @@ let settings = {
   soilFontSize: 28,
   SoilOffsetX: 100,
   SoilOffsetY: 700,
-  greyoutStopWordsInSoil: true,
+  greyoutStopWordsInSoil: false,
 }
 
 // Canvas parameters
@@ -382,6 +382,8 @@ const initializeSoil = function(text, svgId, cb) {
     return " " + match + " ";
   });
 
+  SPACE_WIDTH = settings.soilFontSize / 12 * 10;
+
   const words = RiTa.tokenize(soil);
   for (let i = 0; i < words.length; i++) {
     const w = words[i],
@@ -397,9 +399,12 @@ const initializeSoil = function(text, svgId, cb) {
       xPos += w.length * SPACE_WIDTH;
     } else {
       if (punctuations.includes(w)) xPos -= SPACE_WIDTH;
+
       const t = new SoilWord(w, xPos, yPos, true);
-      // console.log(t.text, t.boundingBox.width);
+      //console.log(t.text, t.boundingBox.width, xPos);
+
       xPos += (t.boundingBox.width + SPACE_WIDTH);
+
       if (xPos > settings.width && xPos > rightMostXPos) rightMostXPos = xPos;
 
       if (xPos > RIGHT_EDGE &&

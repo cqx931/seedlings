@@ -111,7 +111,7 @@ const renderCanvas = function(plants) {
   updateSoil();
 
   if (plants == null) {
-    plant("language", "dream", "plant", 400, 1000);
+    // plant("language", "dream", "plant", 400, 1000);
   } else {
     // TODO: show the same plants with new settings
   }
