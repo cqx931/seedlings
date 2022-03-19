@@ -44,10 +44,8 @@ class SoilWord {
     this.active = settings.greyoutStopWordsInSoil ? this.isValid(text) : active;
     this.draw();
     this.boundingBox = this.getBBox();
-    if (this.active) {
-      soil[this.id] = this;
-      soilOder.push(this.id);
-    }
+    soil[this.id] = this;
+    soilOder.push(this.id);
   }
 
   draw() {

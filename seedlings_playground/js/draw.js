@@ -58,14 +58,13 @@ const initSvgCanvas = function(w, h) {
 
 const updateBodyHeight = function() {
   const newBodyHeight = $(".menu").height() + $(".content").height() + 100;
-  console.log("newbodyheight", newBodyHeight,$(".menu").height(), $(".content").height());
+  //console.log("newbodyheight", newBodyHeight,$(".menu").height(), $(".content").height());
   $("body").height(newBodyHeight);
 }
 
 const scale = function() {
   const w = settings.width,
         h = settings.height;
-  console.log(isScale)
   if (isScale) {
     const scaleRatio = window.innerWidth / w > window.innerHeight / h ? (window.innerHeight - 80) / h : window.innerWidth / w;
     SCALE = scaleRatio;
