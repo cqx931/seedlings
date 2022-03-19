@@ -75,7 +75,7 @@ setTimeout(function() {
 
 $("#updateSoil").click(function() {
   updateSoil();
-  updateCanvas();
+  //updateCanvas(); // dont clear plants if update soil
 });
 
 $("#toggleScale").click(function() {
@@ -103,6 +103,9 @@ $.fn.extend({
 });
 
 const updateSoil =function() {
+  $("#soil").empty();
+  soil = {}; // The soil object
+  soilOder = []; // A list of soil id
   initializeSoil($("#soilText").val(), 'main');
 }
 
