@@ -1,3 +1,4 @@
+
 $(document).ready(function() {
   fnBrowserDetect();
   populateSettingsUI();
@@ -18,6 +19,9 @@ $("#clearCanvas").click(function() {
 });
 $("#exportSVG").click(function() {
   exportSVG();
+});
+$("#exportPDF").click(function() {
+  exportPDF();
 });
 $("#updateCanvas").click(function() {
   updateCanvas();
@@ -171,6 +175,12 @@ const exportPNG = function() {
     a.download = "seedlings_FromHumus.png";
     a.click();
   });
+}
+
+const exportPDF = function() {
+  console.log("Export PDF");
+  $('#main').attr('xmlns','http://www.w3.org/2000/svg');
+  xepOnline.Formatter.Format('main',{pageWidth:'6in', pageHeight:'8.2in',render:'download', srctype:'svg'});
 }
 
 const exportJSON = function() {
