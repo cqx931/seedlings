@@ -197,7 +197,9 @@ class Root {
         .attr("y1", this.currentPos.y)
         .attr("x2", this.nextPos.x)
         .attr("y2", this.nextPos.y)
-        .attr("stroke-opacity", fillO)
+        .attr("stroke", "grey")
+        //.attr("stroke-opacity", fill0)
+
       this.history.push([this.currentPos.x, this.currentPos.y]);
       this.life--;
       if (settings.animation) checkIntersections(this);
@@ -631,6 +633,7 @@ class Plant {
       .attr("y1", this.y)
       .attr("x2", this.x + GROUND_WIDTH / 2)
       .attr("y2", this.y)
+      .attr("stroke", "grey")
       .attr("class", "ground");
   }
 
@@ -641,6 +644,7 @@ class Plant {
       .attr("y1", y1)
       .attr("x2", x2)
       .attr("y2", y2)
+      .attr("stroke", "grey")
       .attr("class", "main_branch");
   }
 
@@ -786,6 +790,7 @@ class Plant {
             .attr("y1", currentPos[1])
             .attr("x2", nextPos[0])
             .attr("y2", nextPos[1])
+            .attr("stroke", "grey")
             .attr("stroke-opacity", 0.5)
 
         }
@@ -845,6 +850,7 @@ class Ginkgo extends Plant {
       .attr("y1", y)
       .attr("x2", endx)
       .attr("y2", endy)
+      .attr("stroke", "grey")
       .attr("class", "branch_line");
 
     const transform = "translate(5px) rotate(" + (angle) + "deg) ",
@@ -874,6 +880,7 @@ class Ginkgo extends Plant {
       .text("            " + w)
       .attr("font-family", FONT)
       .attr("font-size", this.FontSize)
+      .attr("white-space", "pre")
       .attr("class", "branch_text");
 
   }
@@ -1135,6 +1142,7 @@ class Dandelion extends Plant {
       .attr("y1", local_Y)
       .attr("x2", endx)
       .attr("y2", endy)
+      .attr("stroke", "grey")
       .attr("class", "branch_line");
 
     const transform = "translate(5px) rotate(" + (angle / 5 - 60) + "deg) ";

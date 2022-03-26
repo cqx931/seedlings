@@ -417,10 +417,6 @@ g text.bg {
   stroke-width: 0.5em;
 }
 
-line {
-  stroke: grey;
-}
-
 .print .seedling line {
   stroke: #555 !important;
 }
