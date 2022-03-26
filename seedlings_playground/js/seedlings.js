@@ -1257,40 +1257,34 @@ class Bamboo extends Plant {
   }
 
   growBranch(w, i) { //bamboo
+    var content = w + (i == 0 ? "" : "=");
+    var h = getTextWidth(content, true);
+    this.currentP.y -= h;
+
     const x = this.currentP.x,
       y = this.currentP.y;
+
     var b = d3.select("#" + this.id + " .branches").append("g")
       .style("transition-delay", START_DELAY + i * 1000 + "ms")
       .attr("class", "branch");
-    var content = w + (i == 0 ? "" : "=");
-    var h = getTextWidth(content, true);
-    if (y - h < 0) {
+
+    if (y < 0) {
       // don't show the word if it's not fully visible
       console.warn("Beyond the edge of the canvas");
       return;
     }
 
-    if (!PAGE_MODE) {
+    for (var i = content.length - 1; i >= 0; i--) {
+      const t = content.charAt(i).toUpperCase();
       b.append("text")
         .attr("x", x)
-        .attr("y", y)
+        .attr("y", y + this.FontSize*i)
         .attr("text-anchor", "end")
-        .text(content)
+        .text(t)
         .attr("font-family", FONT)
         .attr("font-size", this.FontSize)
-        .attr("class", "branch_text bg");
+        .attr("class", "branch_text");
     }
-
-    b.append("text")
-      .attr("x", x)
-      .attr("y", y)
-      .attr("text-anchor", "end")
-      .text(content)
-      .attr("font-family", FONT)
-      .attr("font-size", this.FontSize)
-      .attr("class", "branch_text");
-
-    this.currentP.y -= h;
 
   }
 
