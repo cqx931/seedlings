@@ -1,4 +1,4 @@
-
+const { jsPDF } = window.jspdf;
 $(document).ready(function() {
   fnBrowserDetect();
   populateSettingsUI();
@@ -19,6 +19,9 @@ $("#clearCanvas").click(function() {
 });
 $("#exportSVG").click(function() {
   exportSVG();
+});
+$("#exportPNG").click(function() {
+  exportPNG();
 });
 $("#exportPDF").click(function() {
   exportPDF();
@@ -163,9 +166,9 @@ const getNameFromAttr = function(s) {
 }
 
 const exportPNG = function() {
-  console.log("Prepare PNG Export")
-  // TODO: only export svg to png, not the entire page
-  html2canvas(document.body, { // turn it into a canvas object
+  console.log("export to png")
+  //todo: fix the margin issue
+  html2canvas(document.querySelector(".content"), { // turn it into a canvas object
     width: $('svg').width(),
     height: $('svg').height()
   }).then(function(canvas) {
@@ -178,9 +181,19 @@ const exportPNG = function() {
 }
 
 const exportPDF = function() {
-  console.log("Export PDF");
-  $('#main').attr('xmlns','http://www.w3.org/2000/svg');
-  xepOnline.Formatter.Format('main',{pageWidth:'6in', pageHeight:'8.2in',render:'download', srctype:'svg'});
+  console.log("export to pdf")
+  html2canvas(document.querySelector(".content"), { // turn it into a canvas object
+    width: $('svg').width(),
+    height: $('svg').height(),
+  }).then(function(canvas) {
+    var imgData = canvas.toDataURL('image/png');
+    var doc = new jsPDF('p','in',[6,8]);
+    var width = doc.internal.pageSize.getWidth();
+    var height = doc.internal.pageSize.getHeight();
+    doc.addImage(imgData, 'PNG', 0, 0, width, height);
+    doc.margin = {horiz: 0,vert: 0};
+    doc.save('seedlings_FromHumus.pdf');
+  });
 }
 
 const exportJSON = function() {
