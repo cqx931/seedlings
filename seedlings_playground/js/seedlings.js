@@ -866,21 +866,20 @@ class Ginkgo extends Plant {
 
     if (!PAGE_MODE) {
       textWrapper.append("text")
-        .attr("x", x)
+        .attr("x", x+180)
         .attr("y", y)
-        .text("            " + w)
+        .text(w)
         .attr("font-family", FONT)
         .attr("font-size", this.FontSize)
         .attr("class", "branch_text bg");
     }
 
     textWrapper.append("text")
-      .attr("x", x)
+      .attr("x", x+180)
       .attr("y", y)
-      .text("            " + w)
+      .text(w)
       .attr("font-family", FONT)
       .attr("font-size", this.FontSize)
-      .attr("white-space", "pre")
       .attr("class", "branch_text");
 
   }
