@@ -13,7 +13,7 @@ const SCALE_FACTOR = 20,
 let PAGE_MODE = true;
 
 const dragEvent = d3.drag().on("drag", function(d) {
-  //console.log(isScale, d.x, d.y)
+  //console.log("soil dragged:", isScale, d.x, d.y)
 
   const s = soil[this.id];
 
@@ -280,9 +280,9 @@ class Plant {
   }
 
   dragstart(event) {
-    this.cursorStart = {
-      x: event.x,
-      y: event.y
+    this.cursorLast = {
+      x: (isScale && browserName == "Firefox") ? event.x / SCALE : event.x,
+      y: (isScale && browserName == "Firefox") ? event.y / SCALE : event.y
     }
   }
 
@@ -290,9 +290,15 @@ class Plant {
 
     const newX = (isScale && browserName == "Firefox") ? d.x / SCALE : d.x,
       newY = (isScale && browserName == "Firefox") ?d.y / SCALE : d.y;
-
+    // console.log("plant dragged");
+    // console.log("cursor", newX, newY);
     const p = plants[this.id];
-    p.updatePos(newX - this.cursorStart.x, newY - this.cursorStart.y);
+    p.updatePos(newX - this.cursorLast.x, newY - this.cursorLast.y);
+
+    this.cursorLast = {
+      x: newX,
+      y: newY
+    }
 
   }
 
@@ -351,9 +357,12 @@ class Plant {
   }
 
   updatePos(deltaX, deltaY) {
-    d3.select('#' + this.id).attr("style", "transform:translate(" + deltaX + "px, " + deltaY + "px);");
-    this.translate.x = deltaX;
-    this.translate.y = deltaY;
+    // console.log("translate plant:", deltaX, deltaY);
+    // console.log("current",this.translate.x, this.translate.y);
+    // update old translate based on new changes
+    this.translate.x += deltaX;
+    this.translate.y += deltaY;
+    d3.select('#' + this.id).attr("style", "transform:translate(" + this.translate.x + "px, " + this.translate.y + "px);");
   }
 
   /*********** End of Updates ***********/
