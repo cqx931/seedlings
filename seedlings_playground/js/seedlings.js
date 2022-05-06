@@ -1086,6 +1086,7 @@ class Ivy extends Plant {
       .attr("y1", y)
       .attr("x2", x + GROUND_WIDTH)
       .attr("y2", y)
+      .attr("stroke", "grey")
       .attr("class", "ground");
 
     this.drawDomain(x + 100, y, c);
