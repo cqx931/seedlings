@@ -324,7 +324,7 @@ const dataOnLoadHandler = function(data) {
     p.draw();
     p.growFromJSON(d);
     p.animate();
-    p.updatePos(d.translate.x, d.translate.y);
+    p.updatePos(0,0);
   }
 
 }
