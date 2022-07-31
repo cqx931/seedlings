@@ -230,27 +230,25 @@ def koru(seed, domain=""):
     print("Plant " + seed + " as koru:")
     word = seed
     history = [word]
-    print(word)
     for i in range(MAX):
         next = api.words(rel_ant=word, max=SPEED, md="f")
 
-        if len(next) == 0:
-            next = api.words(ml=word, max=SPEED, md="pf")
-            shuffle(next)
-            for item in next:
-                w = item["word"]
-                if getPosTag(word) == getPosTag(w):
-                    if w in history:
-                        continue
-                    else:
-                        next = api.words(rel_ant=w, max=SPEED, md="f")
-                        if len(next) != 0:
-                            history.append(w)
-                            word = w
-                            print("~", w)
-                            break
-            continue
-
+        # if len(next) == 0:
+        #     next = api.words(ml=word, max=SPEED, md="pf")
+        #     shuffle(next)
+        #     for item in next:
+        #         w = item["word"]
+        #         if getPosTag(word) == getPosTag(w):
+        #             if w in history:
+        #                 continue
+        #             else:
+        #                 next = api.words(rel_ant=w, max=SPEED, md="f")
+        #                 if len(next) != 0:
+        #                     history.append(w)
+        #                     word = w
+        #                     print("~", w)
+        #                     break
+        #     continue
         shuffle(next)
 
         for item in next:
@@ -292,6 +290,30 @@ def pine(seed, domain):
     return history, lastword
 # def some root ....
 
+def willow (center,domain):
+    # https://api.datamuse.com/words?rel_rhy=forgetful
+    print("--------------------------------------")
+    print("Plant " + center + " in " + domain + " as willow:")
+    word = center
+    history = []
+    for i in range(8):
+        next = api.words(rel_rhy=center, ml=domain, max=SPEED, md="f")
+        if len(next) == 0:
+            continue
+        next = next[0:20]
+        shuffle(next)
+        for item in next:
+            w = item["word"]
+            if w in history or " " in w:
+                continue
+            history.append(w)
+            word = w
+            print(w)
+            break
+    lastword = choice(history)
+    print("-->", lastword)
+    return history, lastword
+
 def ginkgo(center,domain):
     # input has to be noun
     print("--------------------------------------")
@@ -319,6 +341,7 @@ PLANTS = {
 "pine":pine,
 "dandelion":dandelion,
 "bamboo":bamboo,
+"willow":willow,
 "koru":koru
 }
 
@@ -361,8 +384,9 @@ def demo():
     ivy("dream","proximity")
     dandelion("utopia","translation")
     pine("justice","alchemy")
-    koru("binary")
     bamboo("bitterness","desert")
+    koru("binary")
+    willow("rest","dream") # willow works both with defined and not defined context
 
 if __name__ == '__main__':
 
@@ -390,6 +414,8 @@ if __name__ == '__main__':
             pine(sys.argv[1],sys.argv[3])
         elif sys.argv[idx] == "dandelion":
             dandelion(sys.argv[1],sys.argv[3])
+        elif sys.argv[idx] == "willow":
+            willow(sys.argv[1],sys.argv[3])
         elif sys.argv[idx] == "random":
             randomPlant(sys.argv[1],sys.argv[3])
         else:
