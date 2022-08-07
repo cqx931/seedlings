@@ -66,7 +66,7 @@ def reversePrint(toPrint):
 ######################################
 # Plants
 
-def plant(start, domain,pos=""):
+def plant(start, domain, max=10):
     # can only start with jj or nn
 
     word = start
@@ -77,7 +77,7 @@ def plant(start, domain,pos=""):
     print("--------------------------------------")
     print("Plant " + start + " in " + domain + ":")
 
-    for i in range(MAX):
+    for i in range(max):
         pos = getPosTag(word)
         if pos == "NN" or pos =="NNS":
             # print("CASE", "NN")
@@ -129,7 +129,7 @@ def plant(start, domain,pos=""):
     # reversePrint(toPrint)
     return toPrint, word
 
-def ivy(start, domain):
+def ivy(start, domain, max=13):
     print("--------------------------------------")
     print("Plant " + start + " in " + domain + " as ivy :")
     word = start
@@ -151,14 +151,14 @@ def ivy(start, domain):
             if isBad(item, history, domain):
                 # print("isBad", item["word"], float(item["tags"][-1][2:]))
                 continue
-            if len(history) < 4 and item["word"] is ".":
+            if len(history) < 4 and item["word"] == ".":
                 continue
             next = item["word"]
             history.append(next)
             print(" " + next, end="", flush=True)
             word = next
             break
-        if word is '.' or ("NN" in getPosTag(word) and len(history) > 5) or len(history) > 13:
+        if word == '.' or ("NN" in getPosTag(word) and len(history) > 5) or len(history) >= max:
             break
 
     idk = -1;
@@ -360,9 +360,12 @@ def randomPlant(start, domain):
         last = key
     return
 
-def datamuse(word, context, type):
+def datamuse(word, context, type, max):
     f = PLANTS[type]
-    return f(word, context)
+    if max is None:
+        return f(word, context)
+    else:
+        return f(word, context, int(max))
 
 #plant: nn or jj
 #ginkgo: nn
@@ -371,12 +374,14 @@ def datamuse(word, context, type):
 ############
 
 def test():
-    print(getPosTag("more"), "RB" in getPosTag("more"));
-    context = api.words(rel_jja="more", topics="environment", max=SPEED, md="pf")
-    print(context)
+    # print(getPosTag("more"), "RB" in getPosTag("more"));
+    # context = api.words(rel_jja="more", topics="environment", max=SPEED, md="pf")
+    # print(context)
     # detecting edge cases
     # for i in range(10):
-    #     plant("ancient","environment")
+    #     f("ancient","environment")
+    plant("technology","consciousness", 15);
+
 
 def demo():
     plant("technology","consciousness")
@@ -386,7 +391,7 @@ def demo():
     pine("justice","alchemy")
     bamboo("bitterness","desert")
     koru("binary")
-    willow("rest","dream") # willow works both with defined and not defined context
+    willow("rest","dream") # willow works both with defined/not defined context
 
 if __name__ == '__main__':
 

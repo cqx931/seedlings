@@ -23,12 +23,14 @@ def askDatamuse():
     w = request.args.get('word')
     c = request.args.get('domain')
     t = request.args.get('type')
+    max = request.args.get('max')
     print("plant" + w + " in " + c + " as " + t)
-    result, lastWord = plant.datamuse(w, c, t)
+    result, lastWord = plant.datamuse(w, c, t, max)
     data = {
     "type":t,
     "seed":w,
     "domain":c,
+    "max": max,
     "endWord":lastWord,
     "results":result
     }
