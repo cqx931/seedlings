@@ -75,7 +75,7 @@ def plant(start, domain, max=10):
     context = []
 
     print("--------------------------------------")
-    print("Plant " + start + " in " + domain + ":")
+    print("Plant " + start + " in " + domain + " max" + str(max) + ":")
 
     for i in range(max):
         pos = getPosTag(word)
@@ -158,7 +158,7 @@ def ivy(start, domain, max=13):
             print(" " + next, end="", flush=True)
             word = next
             break
-        if word == '.' or ("NN" in getPosTag(word) and len(history) > 5) or len(history) >= max:
+        if word == '.' or ("NN" in getPosTag(word) and len(history) >= max):
             break
 
     idk = -1;
@@ -362,11 +362,12 @@ def randomPlant(start, domain):
 
 def datamuse(word, context, type, max):
     f = PLANTS[type]
-    if max is None:
-        return f(word, context)
-    else:
+    if max is not None and (type == "plant" or type == "ivy"):
+        print("special")
         return f(word, context, int(max))
-
+    else :
+        print("default")
+        return f(word, context)
 #plant: nn or jj
 #ginkgo: nn
 #koru: adj/nn

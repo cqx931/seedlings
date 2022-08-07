@@ -24,7 +24,7 @@ def askDatamuse():
     c = request.args.get('domain')
     t = request.args.get('type')
     max = request.args.get('max')
-    print("plant" + w + " in " + c + " as " + t)
+    print("plant " + w + " in " + c + " as " + t + "max " + str(max))
     result, lastWord = plant.datamuse(w, c, t, max)
     data = {
     "type":t,
