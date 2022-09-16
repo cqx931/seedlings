@@ -1,128 +1,146 @@
-@media print
-{
-    .no-print, .no-print *
-    {
-        display: none !important;
-    }
+@media print {
+  .no-print, .no-print * {
+    display: none !important;
+  }
 }
 
-svg, form, #remove{
-  -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-     -khtml-user-select: none; /* Konqueror HTML */
-       -moz-user-select: none; /* Firefox */
-        -ms-user-select: none; /* Internet Explorer/Edge */
-            user-select: none; /* Non-prefixed version, currently
+svg, form, #remove {
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Safari */
+  -khtml-user-select: none;
+  /* Konqueror HTML */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge */
+  user-select: none;
+  /* Non-prefixed version, currently
                                   supported by Chrome and Opera */
 }
-body{
+
+body {
   overflow-x: hidden;
 }
 
-.content{
+.content {
   width: 100%;
   height: 100%;
 }
 
-input{
-    margin:5px;
-    border:1px #DDD solid;
-    color: #444;
-    padding: 1px 1px 1px 5px;
+input {
+  margin: 5px;
+  border: 1px #DDD solid;
+  color: #444;
+  padding: 1px 1px 1px 5px;
 }
+
 button:hover {
   background-color: #AAA;
 }
-input:focus, button:focus, select:focus{
+
+input:focus, button:focus, select:focus {
   outline: none;
 }
+
 select {
- -webkit-appearance: none;
- -moz-appearance: none;
- appearance: none;
- border-radius:0px;
- width:130px;
- padding: 1px 1px 1px 5px;
- border:1px #DDD solid;
- color: #444;
- background-color: white;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border-radius: 0px;
+  width: 130px;
+  padding: 1px 1px 1px 5px;
+  border: 1px #DDD solid;
+  color: #444;
+  background-color: white;
 }
+
 .menu {
-  top:0;
-  left:0;
-  margin:0;
+  top: 0;
+  left: 0;
+  margin: 0;
   width: 100%;
   position: fixed;
-  font-family:sans-serif;
+  font-family: sans-serif;
   background-color: #EEE;
 }
-.interface{
-    top: 100px;
-    left: 0;
-    margin: 0;
-    width: 100%;
-    position: fixed;
-    font-family: sans-serif;
+
+.interface {
+  top: 100px;
+  left: 0;
+  margin: 0;
+  width: 100%;
+  position: fixed;
+  font-family: sans-serif;
 }
-#options, #form{
-  position:fixed;
-  display:none;
+
+#options, #form {
+  position: fixed;
+  display: none;
   margin: 0;
   /* width: 800px; */
 }
-#options ul{
-  margin:2px 0;
+
+#options ul {
+  margin: 2px 0;
   padding-left: 0;
   width: fit-content;
 }
-#form form{
+
+#form form {
   width: 660px;
-  background-color:#EEE;
-  padding:2px 10px;
-  top:0px;
-  left:0px;
-  margin:0;
+  background-color: #EEE;
+  padding: 2px 10px;
+  top: 0px;
+  left: 0px;
+  margin: 0;
 }
 
-.message{
+.message {
   letter-spacing: 2px;
-  color:#888;
+  color: #888;
   font-size: 12px;
-  line-height:30px;
+  line-height: 30px;
   font-weight: 400;
   padding-top: 5px;
 }
-h3{
+
+h3 {
   letter-spacing: 3px;
   margin-left: 40px;
   margin-top: 18px;
 }
-input#run{
+
+input#run {
   /* font-size: 18px; */
-  height:2em;
+  height: 2em;
   background: white;
-  width: 50px!important;
+  width: 50px !important;
   /* border:grey solid 1px; */
   border-radius: 20px;
-  -webkit-transition: background-color .5s; /* Safari */
+  -webkit-transition: background-color .5s;
+  /* Safari */
   transition: background-color .5s;
   font-weight: 600;
   color: #555;
   /* padding: 0 5px; */
 }
-#clearCanvas{
+
+#clearCanvas {
   margin-top: 21px;
   float: right;
 }
-button, #remove{
+
+button, #remove {
   height: 22px;
   background-color: white;
   font-size: 12px;
   letter-spacing: .2px;
-  color:#444;
+  color: #444;
   border: solid 1px #DDD;
   margin-left: 20px;
-  margin-right:0px;
+  margin-right: 0px;
   width: 110px;
   border-radius: 20px;
   list-style-type: none;
@@ -131,56 +149,70 @@ button, #remove{
   font-weight: 600;
   color: #555;
   /* line-height: 26px; */
-  -webkit-transition: background-color .5s; /* Safari */
+  -webkit-transition: background-color .5s;
+  /* Safari */
   transition: background-color .5s;
 }
+
 #options ul li {
-    background-color: rgba(238,238,238,.95) !important;
-    margin-left: 0px !important;
+  background-color: rgba(238, 238, 238, .95) !important;
+  margin-left: 0px !important;
 }
+
 button:hover, #run:hover, #remove:hover {
   background-color: #CCC !important;
 }
+
 #remove {
   line-height: 24px;
 }
-.command, button, .message{
-  margin:1em;
+
+.command, button, .message {
+  margin: 1em;
 }
+
 .command {
   letter-spacing: 1px;
   margin-left: 2em;
 }
-.menu > *{
-  float:left;
+
+.menu>* {
+  float: left;
 }
-.menu a{
-  color:#444;
+
+.menu a {
+  color: #444;
 }
-.menu .author{
-  float:right;
-    margin:2em;
-    color:grey;
-    letter-spacing: 2px;
-    font-size:12px;
-    padding-top:5px;
+
+.menu .author {
+  float: right;
+  margin: 2em;
+  color: grey;
+  letter-spacing: 2px;
+  font-size: 12px;
+  padding-top: 5px;
 }
+
 .darktheme g text {
-  color:white !important;
+  color: white !important;
 }
 
 /* line {
   stroke:white !important;
 } */
-
 /****** General CSS *******/
-g text {font: 14px 'source code pro';x: 655;y: 200;}
+g text {
+  font: 14px 'source code pro';
+  x: 655;
+  y: 200;
+}
 
-.seedling > g{
+.seedling>g {
   opacity: 0;
   transition: 3s opacity;
 }
-.seedling.show >g{
+
+.seedling.show>g {
   opacity: 1;
   position: absolute;
 }
@@ -192,34 +224,41 @@ g text {font: 14px 'source code pro';x: 655;y: 200;}
   display: block;
   white-space: pre;
 }
-.pine .branch_text{
+
+.pine .branch_text {
   text-align: center;
   display: inline-block;
   width: 200px;
 }
-.plant .branch_text{
+
+.plant .branch_text {
   white-space: pre;
-  }
+}
+
 textPath {
   letter-spacing: 18px;
 }
-.seedling:hover{
-  cursor:pointer;
+
+.seedling:hover {
+  cursor: pointer;
 }
-.dandelion .branch_text{
+
+.dandelion .branch_text {
   position: absolute;
   width: 20px;
   left: 0;
   top: 0;
   transform-origin: bottom center;
 }
+
 .node circle {
-   fill: #fff;
-   stroke: steelblue;
-   stroke-width: 3px;
- }
- .link {
-   fill: none;
-   stroke: white;
-   stroke-width: 2px;
- }
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 3px;
+}
+
+.link {
+  fill: none;
+  stroke: white;
+  stroke-width: 2px;
+}

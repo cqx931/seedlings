@@ -5,13 +5,13 @@ function datamuse(params, callback) {
   for (var item in params) {
     query += item + "=" + params[item] + "&"
   }
-    console.log(query)
-    $.ajax({
-    url : "http://cqx931.pythonanywhere.com/datamuse?" + query,
-    type : 'GET',
-    tryCount : 0,
-    retryLimit : 3,
-    success : function(data) {
+  console.log(query)
+  $.ajax({
+    url: "http://cqx931.pythonanywhere.com/datamuse?" + query,
+    type: 'GET',
+    tryCount: 0,
+    retryLimit: 3,
+    success: function(data) {
       callback(data);
       if (save) {
         console.log("save")
@@ -20,22 +20,21 @@ function datamuse(params, callback) {
         window.open(url, '_blank')
       }
     },
-    error : function(xhr, textStatus, errorThrown ) {
-        if (textStatus == 'timeout' || xhr.status == 500) {
-            this.tryCount++;
-            if (this.tryCount <= this.retryLimit) {
-                $.ajax(this);
-                return;
-            }
-            callback("error");
-            $('.message').html("Oops, please try another seed.")
+    error: function(xhr, textStatus, errorThrown) {
+      if (textStatus == 'timeout' || xhr.status == 500) {
+        this.tryCount++;
+        if (this.tryCount <= this.retryLimit) {
+          $.ajax(this);
+          return;
         }
-        else {
-            //handle error
-            callback("error")
-        }
+        callback("error");
+        $('.message').html("Oops, please try another seed.")
+      } else {
+        //handle error
+        callback("error")
+      }
     }
-});
+  });
 
   // var ajax = $.get(
   //     "http://127.0.0.1:5000/datamuse?" + query,

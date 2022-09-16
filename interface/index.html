@@ -1,56 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8">
-<title>Seedlings_</title>
-<link rel="stylesheet" type="text/css" href="style.css">
-<script src="../lib/jquery.js"></script>
-<script type="text/javascript" src="../lib/jquery.svg.js"></script>
-<script src="datamuse.js"></script>
+  <meta charset="utf-8">
+  <title>Seedlings_</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <script src="../lib/jquery.js"></script>
+  <script type="text/javascript" src="../lib/jquery.svg.js"></script>
+  <script src="datamuse.js"></script>
 </head>
 
 <body>
   <div class="content">
 
 
-<div class="menu no-print">
-    <h3>Seedlings_</h3>
-  <form class="command">
-      PLANT
-    <input type="text" placeholder="a word" name="word" value="">
-     IN
-    <input type="text" placeholder="a topic" name="domain" value="">
-    AS
-    <select>
-      <option value="random">Random</option>
-    </select>
-    <input  id="run" type="submit" name="button" value="Run">
-</form>
+    <div class="menu no-print">
+      <h3>Seedlings_</h3>
+      <form class="command">
+        PLANT
+        <input type="text" placeholder="a word" name="word" value="">
+        IN
+        <input type="text" placeholder="a topic" name="domain" value="">
+        AS
+        <select>
+          <option value="random">Random</option>
+        </select>
+        <input id="run" type="submit" name="button" value="Run">
+      </form>
 
-<div class="message">
-</div>
+      <div class="message">
+      </div>
 
-<button id="clearCanvas" type="button" name="button">Clear</button>
+      <button id="clearCanvas" type="button" name="button">Clear</button>
 
-  </div>
+    </div>
 
-<div class="interface">
+    <div class="interface">
 
-  <div id="options">
-    <ul>
-        <!-- <li id="regenerate">Regenerate</li> -->
-        <li class="button" id="remove">Remove</li>
-    </ul>
-  </div>
+      <div id="options">
+        <ul>
+          <!-- <li id="regenerate">Regenerate</li> -->
+          <li class="button" id="remove">Remove</li>
+        </ul>
+      </div>
 
-  <div id="form">
+      <div id="form">
 
-  </div>
+      </div>
 
-</div>
-<!-- load the d3.js library -->
-<script src="../lib/d3.v4.min.js"></script>
-<script src="draw.js"></script>
+    </div>
+    <!-- load the d3.js library -->
+    <script src="../lib/d3.v4.min.js"></script>
+    <script src="draw.js"></script>
   </div>
 </body>
+
 </html>

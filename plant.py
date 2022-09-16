@@ -158,7 +158,7 @@ def ivy(start, domain, max=13):
             print(" " + next, end="", flush=True)
             word = next
             break
-        if word == '.' or ("NN" in getPosTag(word) and len(history) >= max):
+        if word == '.' or ("NN" in getPosTag(word) and len(history) >= max) or len(history) >= max:
             break
 
     idk = -1;
@@ -166,7 +166,7 @@ def ivy(start, domain, max=13):
          idk = idk - 1
     while(-idk <= len(history) and "NN" not in getPosTag(word)):
         idk = idk - 1
-    lastword = history[idk]
+    #lastword = history[idk]
     print("-->", lastword)
     return history, lastword
 
