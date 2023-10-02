@@ -91,6 +91,8 @@ You can access most of the features of the API at the URL [api.datamuse.com/word
 | Ginkgo  | Adjectives that are often used to describe *context* + *word*|
 | Ivy | A sequence of Frequent followers(rel_bga)|
 | Pine | A list of words that start and end with the same letters as *word* in *context*|
+| Bamboo | A sequence of words that ends with the first letter of the previous *word* in *context*|
+| Willow | A list of words that rythm with the given *word*|
 
 ### 2.2 Visualization
 #### Plant
