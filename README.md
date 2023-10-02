@@ -110,6 +110,10 @@ You can access most of the features of the API at the URL [api.datamuse.com/word
 #### Pine
 ![Pine](https://github.com/cqx931/seedlings/raw/master/images/pine.gif)
 
+#### Bamboo
+![Bamboo](https://github.com/cqx931/seedlings/raw/master/images/bamboo_m.gif)
+
+
 ### 2.3 Interface
 
 Check [here](http://chenqianxun.com/seedlings/interface/) to play with Seedlings_.(Best Viewed in Chrome)
