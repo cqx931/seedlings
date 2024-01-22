@@ -30,5 +30,12 @@
  - http://globalwordnet.org/resources/wordnets-in-the-world/
 - Multilingual Pronounciation Library
  - https://github.com/Kyubyong/pron_dictionaries
+- Pos Tagger
+ - https://rdrpostagger.sourceforge.net/
 - Portuguese NLP
   - https://github.com/ajdavidl/Portuguese-NLP
+
+# TODO
+- implement plant
+  - nltk tagger issue -> artagger
+  - get chatgpt calls to provide a list of adjectives/nouns
