@@ -34,7 +34,7 @@
  - https://rdrpostagger.sourceforge.net/
 - Portuguese NLP
   - https://github.com/ajdavidl/Portuguese-NLP
-
+  - corpus: https://www.corpusdoportugues.org/hist-gen/
 # TODO
 - implement plant
   - nltk tagger issue -> artagger
