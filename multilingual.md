@@ -35,6 +35,8 @@
 - Portuguese NLP
   - https://github.com/ajdavidl/Portuguese-NLP
   - corpus: https://www.corpusdoportugues.org/hist-gen/
+- n-grams
+  - https://www.ngrams.info/portuguese.asp
 # TODO
 - implement plant
   - nltk tagger issue -> artagger
