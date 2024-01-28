@@ -1,8 +1,8 @@
 # General Evaluation of multilingual implementation of Seedlings_
 
 ## Current in use in Seedlings_
-| Query parameters | Example | Result |
-| ------------- | ------------- | ------------- |
+| Query parameters | Example | Result | Notes |
+| ------------- | ------------- | ------------- | -------------
 | topics  | Adjectives describing *ocean* sorted by how related they are to *temperature*  | [/words?rel_jjb=ocean&topics=temperature](https://api.datamuse.com/words?rel_jjb=ocean&topics=temperature)  | |
 | rel_jjb  | Adjectives that are often used to describe *ocean* | [/words?rel_jjb=ocean](https://api.datamuse.com/words?rel_jjb=ocean)  |plant& ginkgo |
 | rel_jja  | Nouns that are often described by the adjective *yellow*  | [/words?rel_jja=yellow](https://api.datamuse.com/words?rel_jja=yellow)  |plant: |

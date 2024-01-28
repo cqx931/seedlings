@@ -7,7 +7,7 @@ function datamuse(params, callback) {
   }
   console.log(query)
   $.ajax({
-    url: "http://cqx931.pythonanywhere.com/datamuse?" + query,
+    url: "https://cqx931.pythonanywhere.com/datamuse?" + query,
     type: 'GET',
     tryCount: 0,
     retryLimit: 3,

@@ -7,8 +7,13 @@ from datamuse import datamuse
 import nltk
 import re
 
+# Multiplingual
+from portuguese_api import portuguese_api
+from artagger import Tagger
+tagger = Tagger()
+# default
 api = datamuse.Datamuse()
-
+language = "en"
 # Parameters
 MAX = 10
 SPEED = 50
@@ -25,11 +30,16 @@ SPEED = 50
 # Tools
 
 def getPosTag(word):
-    entry = nltk.pos_tag([word.lower()])
-    if len(entry) > 0:
-        tag = entry[0][1]
-    else:
-        tag = ""
+    tag = ""
+    if language == "en":
+        entry = nltk.pos_tag([word.lower()])
+        if len(entry) > 0:
+            tag = entry[0][1]
+    elif language == "pt":
+        entry = tagger.tag(word.lower())
+        if len(entry) > 0:
+            tag = entry[0].tag
+            print(word,tag)
     return tag
 
 def getSimilarWord(word, avoid=[]):
@@ -79,13 +89,15 @@ def plant(start, domain, max=10):
 
     for i in range(max):
         pos = getPosTag(word)
-        if pos == "NN" or pos =="NNS":
+        print("ADJ" in pos)
+        if pos == "NN" or pos == "NNS" or pos == "N":
             # print("CASE", "NN")
             context = api.words(rel_jjb=word, topics=domain, max=SPEED, md="pf")
-        elif pos == "JJ" or "RB" in pos:
+        elif (pos == "JJ" or "RB" in pos or "ADJ" in pos):
             # print("CASE", "JJ")
             context = api.words(rel_jja=word, topics=domain, max=SPEED, md="pf")
         else:
+            # print("CASE", "else")
             # edge case: when getPosTag can't return any, treat as nn
             context = api.words(rel_jjb=word, topics=domain, max=SPEED, md="pf")
 
@@ -354,7 +366,7 @@ def randomPlant(start, domain):
         while(True):
             key, function = choice(list(PLANTS.items()))
             if key is not last:
-                if (key is "ginkgo" and "NN" in tag) or (key in "plant koru" and tag in "NN NNS JJ") or key in "ivy bamboo pine dandelion":
+                if (key == "ginkgo" and "NN" in tag) or (key in "plant koru" and tag in "NN NNS JJ") or key in "ivy bamboo pine dandelion":
                     break
         history, word = function(word, domain)
         last = key
@@ -395,13 +407,15 @@ def demo():
     willow("rest","dream") # willow works both with defined/not defined context
 
 if __name__ == '__main__':
+    # set portuguese
+    api = portuguese_api();
+    language = "pt"
 
     if len(sys.argv) == 2:
         if sys.argv[1] == "test":
             test()
         elif sys.argv[1] == "demo":
             demo()
-
     elif (len(sys.argv) == 4 and sys.argv[2] == "in"):
         print("4", sys.argv)
         plant(sys.argv[1],sys.argv[3])
@@ -430,3 +444,5 @@ if __name__ == '__main__':
     else:
         print("Wrong command, please follow the format: ")
         print("plant --word(noun or adjective) in --domain as --name")
+# Portuguese
+# plant --word(noun or adjective) in --domain as --name
